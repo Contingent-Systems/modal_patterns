@@ -1,0 +1,525 @@
+@inproceedings{tejperennial19,
+author = {Chajed, Tej and Tassarotti, Joseph and Kaashoek, M. Frans and Zeldovich, Nickolai},
+title = {Verifying concurrent, crash-safe systems with Perennial},
+year = {2019},
+isbn = {9781450368735},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3341301.3359632},
+doi = {10.1145/3341301.3359632},
+abstract = {This paper introduces Perennial, a framework for verifying concurrent, crash-safe systems. Perennial extends the Iris concurrency framework with three techniques to enable crash-safety reasoning: recovery leases, recovery helping, and versioned memory. To ease development and deployment of applications, Perennial provides Goose, a subset of Go and a translator from that subset to a model in Perennial with support for reasoning about Go threads, data structures, and file-system primitives. We implemented and verified a crash-safe, concurrent mail server using Perennial and Goose that achieves speedup on multiple cores. Both Perennial and Iris use the Coq proof assistant, and the mail server and the framework's proofs are machine checked.},
+booktitle = {Proceedings of the 27th ACM Symposium on Operating Systems Principles},
+pages = {243–258},
+numpages = {16},
+keywords = {concurrency, crash safety, separation logic},
+location = {Huntsville, Ontario, Canada},
+series = {SOSP '19}
+}
+@misc{kuru2024modalabstractionsvirtualizingmemory,
+      title={Modal Abstractions for Virtualizing Memory Addresses}, 
+      author={Ismail Kuru and Colin S. Gordon},
+      year={2024},
+      eprint={2307.14471},
+      archivePrefix={arXiv},
+      primaryClass={cs.PL},
+      url={https://arxiv.org/abs/2307.14471}, 
+}
+@misc{perennialgit,
+  title        = {Post-crash modality in Perennial’s Coq Mechanization},
+  author       = {Tej Chajed, Josep Tassarotti, and contributors},
+  year         = 2023,
+   url={https://github.com/mit-pdos/perennial/blob/master/src/goose\_lang/crash\_modality.v} 
+}
+@article{garbagecollect,
+author = {Moine, Alexandre and Chargu\'{e}raud, Arthur and Pottier, Fran\c{c}ois},
+title = {A High-Level Separation Logic for Heap Space under Garbage Collection},
+year = {2023},
+issue_date = {January 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {7},
+number = {POPL},
+url = {https://doi.org/10.1145/3571218},
+doi = {10.1145/3571218},
+abstract = {We present a Separation Logic with space credits for reasoning about heap
+space in a sequential call-by-value lambda-calculus equipped with garbage
+collection and mutable state. A key challenge is to design
+sound, modular, lightweight mechanisms for establishing the unreachability of
+a block. Prior work in this area uses pointed-by assertions to keep track of
+the predecessors of every block, but is carried out in the setting of an
+assembly-like programming language. We take up the challenge in the setting of
+a high-level language, where a key problem is to identify and reason about the
+memory locations that the garbage collector considers as roots. For this
+purpose, we propose novel "stackable" assertions, which keep track of the
+existence of stack-to-heap pointers without explicitly recording their origin.
+Furthermore, we explain how to reason about closures -- concrete
+heap-allocated data structures that implement the abstract concept of a
+first-class function. We demonstrate the expressiveness and tractability of
+our program logic via a range of examples, including recursive functions on
+linked lists, objects implemented using closures and mutable internal state,
+recursive functions in continuation-passing style, and three stack
+implementations that exhibit different space bounds. These last three examples
+illustrate reasoning about the reachability of the items stored in a container
+as well as amortized reasoning about space. All of our results are proved in
+Coq on top of Iris.},
+journal = {Proc. ACM Program. Lang.},
+month = jan,
+articleno = {25},
+numpages = {30},
+keywords = {live data, program verification, separation logic, tracing garbage collection}
+}
+
+
+@phdthesis{tejthesis,
+  title        = {Verifying a concurrent, crash-safe file system with sequential reasoning},
+  author       = {Tej Chajed},
+  year         = 2022,
+  address      = {Cambridge, MA},
+  note         = {Available at \url{https://dspace.mit.edu/handle/1721.1/144578}},
+  school       = {Machetutes Institute of Technology},
+  type         = {Ph.D. Dissertation}
+}
+@inproceedings{fsl,
+author = {Doko, Marko and Vafeiadis, Viktor},
+title = {A Program Logic for C11 Memory Fences},
+year = {2016},
+isbn = {9783662491218},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-662-49122-5_20},
+doi = {10.1007/978-3-662-49122-5_20},
+abstract = {We describe a simple, but powerful, program logic for reasoning about C11 relaxed accesses used in conjunction with release and acquire memory fences. Our logic, called fenced separation logic FSL, extends relaxed separation logic with special modalities for describing state that has to be protected by memory fences. Like its precursor, FSL allows ownership transfer over synchronizations and can be used to verify the message-passing idiom and other similar programs. The soundness of FSL has been established in Coq.},
+booktitle = {Proceedings of the 17th International Conference on Verification, Model Checking, and Abstract Interpretation - Volume 9583},
+pages = {413–430},
+numpages = {18},
+location = {St. Petersburg, FL, USA},
+series = {VMCAI 2016}
+}
+@inproceedings{fsl++,
+author = {Doko, Marko and Vafeiadis, Viktor},
+title = {Tackling Real-Life Relaxed Concurrency with FSL++},
+year = {2017},
+isbn = {978-3-662-54433-4},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+url = {https://doi.org/10.1007/978-3-662-54434-1_17},
+doi = {10.1007/978-3-662-54434-1_17},
+abstract = {We extend fenced separation logic (FSL), a program logic for reasoning about C11 relaxed access and memory fences. Our extensions to FSL allow us to handle concurrent algorithms appearing in practice. New features added to FSL allow for reasoning about concurrent non-atomic reads, atomic updates, ownership transfer via release sequences, and ghost state. As a demonstration of power of the extended FSL, we verify correctness of the atomic reference counter (ARC), a standard library of the Rust programing language, whose implementation relies heavily on advanced features of the C11 memory model. Soundness of FSL and its extensions, as well as the correctness proof of ARC have been established in Coq.},
+booktitle = {Programming Languages and Systems: 26th European Symposium on Programming, ESOP 2017, Held as Part of the European Joint Conferences on Theory and Practice of Software, ETAPS 2017, Uppsala, Sweden, April 22–29, 2017, Proceedings},
+pages = {448–475},
+numpages = {28},
+location = {Uppsala, Sweden}
+}
+@article{derekrustbelt20,
+author = {Dang, Hoang-Hai and Jourdan, Jacques-Henri and Kaiser, Jan-Oliver and Dreyer, Derek},
+title = {RustBelt meets relaxed memory},
+year = {2019},
+issue_date = {January 2020},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {4},
+number = {POPL},
+url = {https://doi.org/10.1145/3371102},
+doi = {10.1145/3371102},
+abstract = {The Rust programming language supports safe systems programming by means of a strong ownership-tracking type system. In their prior work on RustBelt, Jung et al. began the task of setting Rust’s safety claims on a more rigorous formal foundation. Specifically, they used Iris, a Coq-based separation logic framework, to build a machine-checked proof of semantic soundness for a λ-calculus model of Rust, as well as for a number of widely-used Rust libraries that internally employ unsafe language features. However, they also made the significant simplifying assumption that the language is sequentially consistent. In this paper, we adapt RustBelt to account for the relaxed-memory operations that concurrent Rust libraries actually use, in the process uncovering a data race in the Arc library. We focus on the most interesting technical problem: how to reason about resource reclamation under relaxed memory, using a logical construction we call synchronized ghost state.},
+journal = {Proc. ACM Program. Lang.},
+month = dec,
+articleno = {34},
+numpages = {29},
+keywords = {Iris, Rust, relaxed memory models, semantic soundness}
+}
+
+@article{amalreal2024,
+author = {Wagner, Andrew and Eisbach, Zachary and Ahmed, Amal},
+title = {Realistic Realizability: Specifying ABIs You Can Count On},
+year = {2024},
+issue_date = {October 2024},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {8},
+number = {OOPSLA2},
+url = {https://doi.org/10.1145/3689755},
+doi = {10.1145/3689755},
+abstract = {The Application Binary Interface (ABI) for a language defines the interoperability rules for its target platforms, including data layout and calling conventions, such that compliance with the rules ensures “safe” execution and perhaps certain resource usage guarantees. These rules are relied upon by compilers, libraries, and foreign-function interfaces. Unfortunately, ABIs are typically specified in prose, and while type systems for source languages have evolved, ABIs have comparatively stalled, lacking advancements in expressivity and safety.
+We propose a vision for richer, semantic ABIs to improve interoperability and library integration, supported by a methodology for formally specifying ABIs using realizability models. These semantic ABIs connect abstract, high-level types to unwieldy, but well-behaved, low-level code. We illustrate our approach with a case study formalizing the ABI of a functional source language in terms of a reference-counting implementation in a C-like target language. A key contribution supporting this case study is a graph-based model of separation logic that captures the ownership and accessibility of reference-counted resources using modalities inspired by hybrid logic. To highlight the flexibility of our methodology, we show how various design decisions can be interpreted into the semantic ABI. Finally, we provide the first formalization of library evolution, a distinguishing feature of Swift’s ABI.},
+journal = {Proc. ACM Program. Lang.},
+month = oct,
+articleno = {315},
+numpages = {30},
+keywords = {application binary interfaces, logical relations, program logics, reference counting, semantics, separation logic, type soundness}
+}
+
+
+@inproceedings{larsnextgen25,
+author = {Vindum, Simon Friis and Georges, A\"{\i}na Linn and Birkedal, Lars},
+title = {The Nextgen Modality: A Modality for Non-Frame-Preserving Updates in Separation Logic},
+year = {2025},
+isbn = {9798400713477},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3703595.3705876},
+doi = {10.1145/3703595.3705876},
+abstract = {As separation logic is a logic of resources, the way in which resources can soundly change and be updated is a fundamental aspect. Such changes have typically been restricted to certain local or frame-preserving updates. However, recently we have seen separation logics where the restriction to frame-preserving updates seems to be a hindrance towards achieving the ideal program reasoning rules. In this, paper we propose a novel nextgen modality that enables reasoning across generations where each generational change can update resources in ways that are non-local and non-frame-preserving. We implement the idea as an extension to the Iris base logic, which enriches Iris with an entirely new capability: the ability to make non-frame-preserving updates to ghost state. We show that two existing Iris modalities are special cases of the nextgen modality. Our “extension” can thus also be seen as a generalization and simplification of the Iris base logic. To demonstrate the utility of the nextgen modality we use it to construct a separation logic for a programming language with explicit stack allocation and with a return operation that clears entire stack frames. The nextgen modality is used to great effect in the reasoning rule for return, where a modular and practical reasoning rule is otherwise out of reach. This is the first separation logic for a high-level programming language with stack allocation. We sketch ideas for future work in other domains where we think the nextgen modality can be useful.},
+booktitle = {Proceedings of the 14th ACM SIGPLAN International Conference on Certified Programs and Proofs},
+pages = {83–97},
+numpages = {15},
+keywords = {Coq, Iris, modality, program logic, separation logic},
+location = {Denver, CO, USA},
+series = {CPP '25}
+}
+@inproceedings{pnueli1977temporal,
+  title={The temporal logic of programs},
+  author={Pnueli, Amir},
+  booktitle={18th Annual Symposium on Foundations of Computer Science},
+  series={{FOCS}},
+  pages={46--57},
+  year={1977},
+  organization={IEEE}
+}
+@article{halpern1990knowledge,
+  title={Knowledge and common knowledge in a distributed environment},
+  author={Halpern, Joseph Y and Moses, Yoram},
+  journal={Journal of the ACM (JACM)},
+  volume={37},
+  number={3},
+  pages={549--587},
+  year={1990},
+  publisher={ACM New York, NY, USA}
+}
+@book{hintikka1962knowledge,
+  title={Knowledge and belief: An introduction to the logic of the two notions},
+  author={Hintikka, Kaarlo Jaakko Juhani},
+  year={1962},
+  publisher = {Cornell University Press}
+}
+@book{harel1979first,
+  title={First-order dynamic logic},
+  author={Harel, David},
+  year={1979},
+  publisher={Springer}
+}
+@inproceedings{pratt1976semantical,
+  title={Semantical considerations on Floyd-Hoare logic},
+  author={Pratt, Vaughan R},
+  booktitle={17th Annual Symposium on Foundations of Computer Science},
+  series = {{FOCS}},
+  pages={109--121},
+  year={1976},
+  organization={IEEE}
+}
+@article{dijkstra1975guarded,
+  title={Guarded commands, nondeterminacy and formal derivation of programs},
+  author={Dijkstra, Edsger W},
+  journal={Communications of the ACM},
+  volume={18},
+  number={8},
+  pages={453--457},
+  year={1975},
+  publisher={ACM New York, NY, USA}
+}
+@article{blackburn1995hybrid,
+  title={Hybrid languages},
+  author={Blackburn, Patrick and Seligman, Jerry},
+  journal={Journal of Logic, Language and Information},
+  volume={4},
+  number={3},
+  pages={251--272},
+  year={1995},
+  publisher={Springer}
+}
+@article{goranko1996hierarchies,
+  title={Hierarchies of modal and temporal logics with reference pointers},
+  author={Goranko, Valentin},
+  journal={Journal of Logic, Language and Information},
+  volume={5},
+  number={1},
+  pages={1--24},
+  year={1996},
+  publisher={Springer}
+}
+@article{areces2001hybrid,
+  title={Hybrid logics: Characterization, interpolation and complexity},
+  author={Areces, Carlos and Blackburn, Patrick and Marx, Maarten},
+  journal={The Journal of Symbolic Logic},
+  volume={66},
+  number={3},
+  pages={977--1010},
+  year={2001},
+  publisher={Cambridge University Press}
+}
+@article{gargov1993modal,
+  title={Modal logic with names},
+  author={Gargov, George and Goranko, Valentin},
+  journal={Journal of Philosophical Logic},
+  volume={22},
+  number={6},
+  pages={607--636},
+  year={1993},
+  publisher={Springer}
+}
+@article{denning1970virtual,
+  title={Virtual memory},
+  author={Denning, Peter J},
+  journal={ACM Computing Surveys (CSUR)},
+  volume={2},
+  number={3},
+  pages={153--189},
+  year={1970},
+  publisher={ACM New York, NY, USA}
+}
+@article{jul1988fine,
+  title={Fine-grained mobility in the Emerald system},
+  author={Jul, Eric and Levy, Henry and Hutchinson, Norman and Black, Andrew},
+  journal={ACM Transactions on Computer Systems (TOCS)},
+  volume={6},
+  number={1},
+  pages={109--133},
+  year={1988},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{bonwick2003zettabyte,
+  title={The zettabyte file system},
+  author={Bonwick, Jeff and Ahrens, Matt and Henson, Val and Maybee, Mark and Shellenbaum, Mark},
+  booktitle={Proc. of the 2nd Usenix Conference on File and Storage Technologies},
+  volume={215},
+  year={2003}
+}
+@inproceedings{hitz1994file,
+  title={File System Design for an NFS File Server Appliance.},
+  author={Hitz, Dave and Lau, James and Malcolm, Michael A},
+  booktitle={USENIX winter},
+  volume={94},
+  pages={10--5555},
+  year={1994}
+}
+@article{rosenblum1992design,
+  title={The design and implementation of a log-structured file system},
+  author={Rosenblum, Mendel and Ousterhout, John K},
+  journal={ACM Transactions on Computer Systems (TOCS)},
+  volume={10},
+  number={1},
+  pages={26--52},
+  year={1992},
+  publisher={ACM New York, NY, USA}
+}
+@article{rodeh2013btrfs,
+  title={BTRFS: The Linux B-tree filesystem},
+  author={Rodeh, Ohad and Bacik, Josef and Mason, Chris},
+  journal={ACM Transactions on Storage (TOS)},
+  volume={9},
+  number={3},
+  pages={1--32},
+  year={2013},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{reynolds2002separation,
+  title={Separation logic: A logic for shared mutable data structures},
+  author={Reynolds, John C},
+  booktitle={Proceedings 17th Annual IEEE Symposium on Logic in Computer Science},
+  pages={55--74},
+  year={2002},
+  organization={IEEE}
+}
+@article{hoare1969axiomatic,
+  title={An axiomatic basis for computer programming},
+  author={Hoare, Charles Antony Richard},
+  journal={Communications of the ACM},
+  volume={12},
+  number={10},
+  pages={576--580},
+  year={1969},
+  publisher={ACM New York, NY, USA}
+}
+@article{klein2014comprehensive,
+  title={Comprehensive formal verification of an OS microkernel},
+  author={Klein, Gerwin and Andronick, June and Elphinstone, Kevin and Murray, Toby and Sewell, Thomas and Kolanski, Rafal and Heiser, Gernot},
+  journal={ACM Transactions on Computer Systems (TOCS)},
+  volume={32},
+  number={1},
+  pages={1--70},
+  year={2014},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{jensen2012fictional,
+  title={Fictional separation logic},
+  author={Jensen, Jonas Braband and Birkedal, Lars},
+  booktitle={Programming Languages and Systems: 21st European Symposium on Programming, ESOP 2012, Held as Part of the European Joint Conferences on Theory and Practice of Software, ETAPS 2012, Tallinn, Estonia, March 24-April 1, 2012. Proceedings 21},
+  pages={377--396},
+  year={2012},
+  organization={Springer}
+}
+@article{jung2018iris,
+  title={Iris from the ground up: A modular foundation for higher-order concurrent separation logic},
+  author={Jung, Ralf and Krebbers, Robbert and Jourdan, Jacques-Henri and Bizjak, Ale{\v{s}} and Birkedal, Lars and Dreyer, Derek},
+  journal={Journal of Functional Programming},
+  volume={28},
+  pages={e20},
+  year={2018},
+  publisher={Cambridge University Press}
+}
+@inproceedings{jung2016higher,
+  title={Higher-order ghost state},
+  author={Jung, Ralf and Krebbers, Robbert and Birkedal, Lars and Dreyer, Derek},
+  booktitle={Proceedings of the 21st ACM SIGPLAN International Conference on Functional Programming},
+  pages={256--269},
+  year={2016}
+}
+@inproceedings{chlipala2011mostly,
+  title={Mostly-automated verification of low-level programs in computational separation logic},
+  author={Chlipala, Adam},
+  booktitle={Proceedings of the 32nd ACM SIGPLAN conference on Programming language design and implementation},
+  pages={234--245},
+  year={2011}
+}
+@inproceedings{ni2007using,
+  title={Using XCAP to certify realistic systems code: Machine context management},
+  author={Ni, Zhaozhong and Yu, Dachuan and Shao, Zhong},
+  booktitle={International Conference on Theorem Proving in Higher Order Logics},
+  pages={189--206},
+  year={2007},
+  organization={Springer}
+}
+@inproceedings{chajed2019verifying,
+  title={Verifying concurrent, crash-safe systems with Perennial},
+  author={Chajed, Tej and Tassarotti, Joseph and Kaashoek, M Frans and Zeldovich, Nickolai},
+  booktitle={Proceedings of the 27th ACM Symposium on Operating Systems Principles},
+  pages={243--258},
+  year={2019}
+}
+@inproceedings{murphy2007type,
+  title={Type-safe distributed programming with ML5},
+  author={Murphy VII, Tom and Crary, Karl and Harper, Robert},
+  booktitle={International Symposium on Trustworthy Global Computing},
+  pages={108--123},
+  year={2007},
+  organization={Springer}
+}
+@inproceedings{gordon2019modal,
+  title={Modal assertions for actor correctness},
+  author={Gordon, Colin S},
+  booktitle={Proceedings of the 9th ACM SIGPLAN International Workshop on Programming Based on Actors, Agents, and Decentralized Control},
+  pages={11--20},
+  year={2019}
+}
+@article{strom1986typestate,
+  title={Typestate: A programming language concept for enhancing software reliability},
+  author={Strom, Robert E and Yemini, Shaula},
+  journal={IEEE transactions on software engineering},
+  number={1},
+  pages={157--171},
+  year={1986},
+  publisher={IEEE}
+}
+@article{garcia2014foundations,
+  title={Foundations of typestate-oriented programming},
+  author={Garcia, Ronald and Tanter, {\'E}ric and Wolff, Roger and Aldrich, Jonathan},
+  journal={ACM Transactions on Programming Languages and Systems (TOPLAS)},
+  volume={36},
+  number={4},
+  pages={1--44},
+  year={2014},
+  publisher={ACM New York, NY, USA}
+}
+@book{halpern2017reasoning,
+  title={Reasoning about uncertainty},
+  author={Halpern, Joseph Y},
+  year={2017},
+  publisher={MIT press}
+}
+@article{halpern1989modelling,
+  title={Modelling knowledge and action in distributed systems},
+  author={Halpern, Joseph Y and Fagin, Ronald},
+  journal={Distributed computing},
+  volume={3},
+  pages={159--177},
+  year={1989},
+  publisher={Springer}
+}
+
+@article{emerson1982using,
+  title={Using branching time temporal logic to synthesize synchronization skeletons},
+  author={Emerson, E Allen and Clarke, Edmund M},
+  journal={Science of Computer programming},
+  volume={2},
+  number={3},
+  pages={241--266},
+  year={1982},
+  publisher={Elsevier}
+}
+@article{lamport1994temporal,
+  title={The temporal logic of actions},
+  author={Lamport, Leslie},
+  journal={ACM Transactions on Programming Languages and Systems (TOPLAS)},
+  volume={16},
+  number={3},
+  pages={872--923},
+  year={1994},
+  publisher={ACM New York, NY, USA}
+}
+@article{lamport2002specifying,
+  title={Specifying systems: the TLA+ language and tools for hardware and software engineers},
+  author={Lamport, Leslie},
+  year={2002}
+}
+@inproceedings{ongaro2014search,
+  title={In search of an understandable consensus algorithm},
+  author={Ongaro, Diego and Ousterhout, John},
+  booktitle={2014 USENIX annual technical conference (USENIX ATC 14)},
+  pages={305--319},
+  year={2014}
+}
+@article{ailijiang2019wpaxos,
+  title={WPaxos: Wide area network flexible consensus},
+  author={Ailijiang, Ailidani and Charapko, Aleksey and Demirbas, Murat and Kosar, Tevfik},
+  journal={IEEE Transactions on Parallel and Distributed Systems},
+  volume={31},
+  number={1},
+  pages={211--223},
+  year={2019},
+  publisher={IEEE}
+}
+@article{smans2012implicit,
+  title={Implicit dynamic frames},
+  author={Smans, Jan and Jacobs, Bart and Piessens, Frank},
+  journal={ACM Transactions on Programming Languages and Systems (TOPLAS)},
+  volume={34},
+  number={1},
+  pages={1--58},
+  year={2012},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{leino2010dafny,
+  title={Dafny: An automatic program verifier for functional correctness},
+  author={Leino, K Rustan M},
+  booktitle={International conference on logic for programming artificial intelligence and reasoning},
+  pages={348--370},
+  year={2010},
+  organization={Springer}
+}
+@article{lattuada2023verus,
+  title={Verus: Verifying rust programs using linear ghost types},
+  author={Lattuada, Andrea and Hance, Travis and Cho, Chanhee and Brun, Matthias and Subasinghe, Isitha and Zhou, Yi and Howell, Jon and Parno, Bryan and Hawblitzel, Chris},
+  journal={Proceedings of the ACM on Programming Languages},
+  volume={7},
+  number={OOPSLA1},
+  pages={286--315},
+  year={2023},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{vazou2014refinement,
+  title={Refinement types for Haskell},
+  author={Vazou, Niki and Seidel, Eric L and Jhala, Ranjit and Vytiniotis, Dimitrios and Peyton-Jones, Simon},
+  booktitle={Proceedings of the 19th ACM SIGPLAN international conference on Functional programming},
+  pages={269--282},
+  year={2014}
+}
+@article{krebbers2018mosel,
+  title={MoSeL: A general, extensible modal framework for interactive proofs in separation logic},
+  author={Krebbers, Robbert and Jourdan, Jacques-Henri and Jung, Ralf and Tassarotti, Joseph and Kaiser, Jan-Oliver and Timany, Amin and Chargu{\'e}raud, Arthur and Dreyer, Derek},
+  journal={Proceedings of the ACM on Programming Languages},
+  volume={2},
+  number={ICFP},
+  pages={1--30},
+  year={2018},
+  publisher={ACM New York, NY, USA}
+}
