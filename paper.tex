@@ -1194,7 +1194,7 @@ sn & \textsf{struct name}   & &  i,j & \mathsf{nat (indices)}  \\
 %\bibliography{references/paper}
 \begin{document}
 %
-\title{Safe Deferred Memory Reclamation with Types}
+\title{Modal Verification Patterns for Systems}
 %
 %\titlerunning{RCU Types}
 % If the paper title is too long for the running head, you can set
@@ -1286,71 +1286,29 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %%
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
-\maketitle
-\section{Introduction}
-\label{sec:intro}
-Systems verification has attracted much attention from both the verification community and the systems community over the past couple of decades. %There are two main streams of verification efforts on systems. In one class of verification, \emph{automated} verification tools are used. They allow people to specify systems via specific annotation languages they offer, and incorporate translation of these specifications into SMT-like formulas for which proofs are searched by the SMT solvers at the backend ~\cite{}. 
-Most of this effort has been build on top of \emph{program logics}~\cite{reynolds2002separation,hoare1969axiomatic,smans2012implicit,pratt1976semantical},
-which are formal logics of reasoning about program behaviour --- given any starting state
-satisfying a particular precondition, running a certain code segment of interest should not fail and should produce a final state satisfying a desired postcondition.
-This requires an interacting family of pieces, including a specification language
-to describe those desired pre- and postconditions, as well as rules of the logic to deal with
-how program operations like variable or register assignments and memory accesses interact with pre- and postconditions.
-Since most low-level systems are stateful, \emph{separation logic} has been the focus 
-of most recent work.
-%has been either the foundational or direct choice of logic in these verification efforts. 
-%\Colin{Talking about separation logic makes lots of sense. Do we care about Iris/Coq/Lean/etc. vs. automation? Using the modality idea
-%for something like Dafny would certainly look different from the Iris work, but can't it work?
-%e.g. \url{https://csgordon.github.io/publications/agere19/}
-%I don't want to push to plug my own work if you don't think it makes sense or are making a different point. But I think it's worth
-%considering how broadly the big ideas can be applied.
-%}
+%\maketitle
+\section{Introduction}\label{sec:intro}
+Low-level systems exhibit certain patterns in their designs, especially when interacting with computing resources. Exploiting certain patterns while designing software has been an important field of study. In this regard, we think that certain properties of modalities enable us to understand and do the verification challenges that show certain patterns.
+\subsection{Contributions to Identifying the Verification Patterns via Modal Abstractions}
+We argue how modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
+\paragraph{Identifying System Verification Challenges} We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
+\paragraph{Introducing the Concept of \emph{Resource}} Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
+\paragraph{Introducing the Concept of \emph{Nominals}} Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
+\paragraph{Taxonomy of the Current Modal Approaches in System Verification} Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis, perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
 
-%Advancements in separation logic have been drastic ~\cite{}. These advancements, such as the capability of introducing \emph{ghost} (logical) bookkeeping and associating this bookkeeping with the concept of \emph{invariant} in Iris separation logic, increased the expressivity of any logic that is built on top. Expectedly, many logics enjoying these strong \emph{separation logic} capabilities have been built to verify low-level systems~\cite{}.  %All these program logics built on top of Iris customize and utilize two main aspects of a separation logic like Iris.
-%%\paragraph{Custom-Tailored Weakest-Precondition (WP)}
-%%\todo[inline]{speak about crash modality etc, encoding how the state should get changed ... GC as well}
-%%\paragraph{An Essential Step in Operational Semantics}
-%%\todo[inline]{speak about crash step in operational semantics. GC as well}
-%%Regarding generalization of customized weakest-preconditions, there has been foundational generalizations defined over incorporating the knowledge of how the resources change, i.e.,transformation of resources, ~\cite{nextgenmodality}, into the separation logic resource assertions. This allows encoding the many customized weakest-preconditions as an instance of a generalized modality definition and lifting of the composition of resource transformation knowledge, which itself is defined as a resource algebra, to the ordinary separation logic resource assertions so that all the underlying resource algebra capabilities can be used for the assertions decorated with the resource-transformation modality. However, even with this kind of generalization effort, it still customizes both the weakest-precondition and resource assertions with the version value (\emph{transformation-generation} value) which most probably lacks being generalizable regarding the real systems to be specified with it as it is not always the case that systems take \emph{versioning} as its key aspect. In general, modalities used in program verification ~\cite{}, are either still tightly coupled with the separation logic they are hosted in, i.e., modalities as definitions for hiding which state a certain truth on resources holds, or as part of the underlying logic's machinery, e.g., later modality as logical machinery encoding step-indexing mechanism.
-Modern separation logics are often implemented as frameworks (notably \textsc{Iris}~\cite{jung2018iris}), which offers a collection of tools for building custom separation logic variants for resources of interest, modularly. This makes it possible to
-reuse significant amounts of work across verifications using memory~\cite{jung2018iris},
-disks~\cite{chajed2019verifying}, and other diverse resources.
-%Highly customizable logic ~\cite{iris,..} being the basis for building custom-tailored logics for specific verification tasks ~\cite{some sl refs} enabled building clean and intuitive specifications and proof rules. 
-When not using such a framework and instead using an existing tool~\cite{leino2010dafny,vazou2014refinement} as a basis, one can often customize the assertion language by defining libraries of specification definitions and lemmas to effectively have a custom logic.
+\section{Definitions}
+Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
+  In this section, we argue the position that \emph{modalities}  
+  should be a go-to approach when specifying and verifying low-level systems code.
+  We explain how the concept of a \emph{resource context} helps guide the design of new modalities
+  for verification of systems code, and
+  we justify our perspective by discussing prior systems that have used modalities for systems verification
+  successfully, arguing that they fit into the verification design pattern we articulate,
+  and explaining how this approach might apply to other systems verification challenges.
 
-With these options comes the question: if you can customize your verification tool and how it expresses program states, \emph{how should} you customize it?
-We argue that a go-to methodology should be to define \emph{modalities},
-which it turns out are in active use in a variety of systems papers because that approach seems to naturally fit many problems that arise in verifying systems code
-~\cite{tejperennial19,tejthesis, derekrustbelt20, jung2018iris, kuru2024modalabstractionsvirtualizingmemory, garbagecollect, amalreal2024,fsl, fsl++}.
-
-This paper  
- \begin{itemize}
- \item builds an intuition from a systems-verification perspective about the modal concepts that have been used in recent years with modern program logic -- Section \ref{sec:motivation}
-\item describes the common structure underlying the modalities used in systems verification work, effectively a high-level design pattern and process for designing a customized specification language, which has not previously been described --- Section \ref{sec:definitions} % to understand the structure of modal abstractions given for different kinds of systems in Table \ref{table:decomposition}
-%\item identifies the common patterns in different modal abstractions for different systems
-\item gives example specifications to critical steps of different systems, and discuss how modal abstractions look in these specifications
-\end{itemize}
-
-\section{Motivation, Background, and Related Work}
-\label{sec:motivation}
-To explain our ideas clearly, we briefly recap some of the background and themes our ideas build on,
-casting them in a certain way to bring out the relevance of our philosophy.
-%\begin{table}[h]
-%\centering
-%\caption{Decomposing Systems}
-%\label{table:decompositionsys}
-%\begin{tabular}{@{}lcScP{2cm}@{}}
-%\toprule
-%   & Column & Column                    & Column                   & Column \\ \midrule
-%Row & 1      & 2                         & 3                        & $k=a+b+c+d+e+f+g$      \\
-%Row & 5      & \multicolumn{2}{c}{\multirow{2}{*}{Because why not}} & 8      \\
-%Row & 9      & \multicolumn{2}{c}{}                                 & 12     \\
-%Row & 13     & $k=a+b+c+d+e$                        & 15                       & 16     \\ \bottomrule
-%\end{tabular}
-%\end{table}
-
-\subsection{Resources in Systems Software}
-\label{sec:systemsoft}
+  To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
+  \subsection{Resources in Systems Software}
+  \label{sec:systemsoft}
 Systems software, in general, interfaces with an underlying computing architecture such that any software system at any higher level in the software stack can (at least indirectly) utilize the resources of the machine.
 The last layer of software before the hardware is naturally critical to the correctness of an overall system,
 as essentially all software built on top of it assumes its correctness.
@@ -1361,22 +1319,17 @@ of the software stack is typically intricate and naturally error-prone, despite 
 Typically systems software has, as a primary focus, the task of \emph{abstracting} from hardware details to simplify 
 the construction of higher layers of the stack.
 
-\paragraph{Virtualization}
+\subsubsection{Virtualization}
 One of the most common forms of abstraction provided by systems software is \emph{virtualization},
 which abstracts the relationship between conceptual and physical computing resources. 
-Operating System (OS) kernels virtualize memory locations and quantity (via virtual memory and paging~\cite{denning1970virtual}).
+Operating System (OS) kernels virtualize memory locations and quantity (via virtual memory and paging~\cite{Denning1970VM}).
 Distributed language runtimes may virtualize addresses, even when processes may migrate across machines~\cite{jul1988fine}.
-Filesystems virtualize locations on disk~\cite{rodeh2013btrfs,hitz1994file,rosenblum1992design,bonwick2003zettabyte}.
+Filesystems virtualize locations on disk~\cite{rodeh2013btrfs,hitz1994file,Rosenblum1992LFS,bonwick2003zettabyte}.
 Programs built on top of the corresponding systems software layer work logically at the level of these virtualized resources,
 and it makes sense to specify the systems software directly in terms of those abstractions.
-
-\paragraph{Sharing} is one of the fundamental reasons for kernels to {virtualize} resources,
-for creating the illusion of exclusive access to virtualized versions of shared resources, including CPU time (via preemption).
-An implementation of sharing relies on two concepts: \emph{indirection} and \emph{coordination}. Indirection is a method that allows the mapping of resources of one type into another. By doing so, it allows treating the limited resources (e.g. hardware resources such as physical memory) as if there are more than they actually are (e.g. via virtual memory addresses and paging). Consequently, virtualization for the sake of ensuring availability requires \emph{sharing} of the resources that exist in reality.
-
 \paragraph{Access by Translation}
 Accessing virtualized resources via translation is a common way to virtualize notions of location (e.g.,
-virtual memory addresses, inodes or object IDs instead of disk addresses~\cite{bonwick2003zettabyte,hitz1994file,rosenblum1992design,rodeh2013btrfs}).
+virtual memory addresses, inodes or object IDs instead of disk addresses~\cite{bonwick2003zettabyte,hitz1994file,Rosenblum1992LFS,rodeh2013btrfs}).
 %Accessing the hardware resources in the presence of sharing means having more resource references (references to the virtualized resources) to access the \emph{mapped} resources that are physical and potentially fewer. 
 B-trees~\cite{}, page tables~\cite{}, and related structures both behave like maps, when the corresponding physical resources exist as such
 just in a different location.
@@ -1385,71 +1338,18 @@ such as filling holes in sparse files, or demand paging (both from disk or lazil
 Although the realization of these maps may differ from a system to system based on the context (and sometimes hardware details),
 they are semantically --- logically --- partial maps, worth treating as such in verification. 
 
-%\paragraph{Isolation Hand-in-Hand with Sharing}
-%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
-%\Colin{Not sure what you want here?}
+%\subsection{Sharing} Sharing is one of the fundamental reasons for kernels to {virtualize} resources,
+%for creating the illusion of exclusive access to virtualized versions of shared resources, including CPU time (via preemption).
+%An implementation of sharing relies on two concepts: \emph{indirection} and \emph{coordination}. Indirection is a method that allows the mapping of resources of one type into another. By doing so, it allows treating the limited resources (e.g. hardware resources such as physical memory) as if there are more than they actually are (e.g. via virtual memory addresses and paging). Consequently, virtualization for the sake of ensuring availability requires \emph{sharing} of the resources that exist in reality.
+%%\paragraph{Isolation Hand-in-Hand with Sharing}
+%%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
+%%\Colin{Not sure what you want here?}
 
-\subsection{Logic of Resources \& Systems Verification }
-\label{sec:seplogic}
-Separation logic~\cite{reynolds2002separation} is a specialization of Hoare Logic~\cite{hoare1969axiomatic}
-to better deal with reasoning about disjoint resources.
-Classic Hoare Logic, as used in prominent systems verifications like \textsc{seL4}~\cite{klein2014comprehensive},
-deals with pre- and post-conditions. A so-called ``triple''
-\[
-\{P\}\;C\;\{Q\}
-\]
-represents an assertion that if the current program state is accurately described by assertion $P$,
-then executing the ``command'' (program) $C$ will not crash, and if it terminates then $Q$ will accurately
-describe the ending program state.
-
-\paragraph{Ownership} Separation Logic extends Hoare Logic 
-with an additional logical connective $\ast$ (called \emph{separating conjunction}) such that $P \ast Q$ asserts that $P$ and $Q$ not only both hold, but apply to
-\emph{disjoint} portions of the program state.\footnote{Though much like systems design, modern separation logics~\cite{jung2018iris}
-allow this separation to apply to a kind of virtualization of physical resources~\cite{jensen2012fictional},
-or even resources that only exist in the logic~\cite{jung2016higher}.
-}
-This disjointness assumption leads to discussing separation logic assertions as asserting \emph{ownership}
-of the (physical or virtual) resources they hold on.
-The classic \emph{points-to} assertion $\ell\mapsto v$ asserts ownership of a portion of memory containing memory address
-$\ell$, and that the memory at that location contains value $v$. The disjointness from separating conjunction
-is useful: if $\ell\mapsto v \ast \ell'\mapsto v'$ is true, it means $\ell$ and $\ell'$ are distinct memory addresses,
-because they must hold on disjoint parts of memory.
-
-Modern separation logics~\cite{jung2018iris} allow definition of more nuanced versions of this idea.
-A common form of this, which we revisit in Section \ref{sec:definitions}, is the parameterization of this and
-other assertions by a kind of context --- a \emph{resource context} --- resulting in assertions like  $\ell \mapsto_{\textsf{Ctx}} v$, conveying the ownership of the resource defined by the reference $\ell$ and the value ($v$) it's referring to, but where the \emph{resource context}
-of the assertion may have the name ($\ell$) and value ($v$) exist not in a partial map of physical memory locations to values,
-but of register names to register values~\cite{chlipala2011mostly,ni2007using},
-filesystem block indices to block contents~\cite{chajed2019verifying},
-or other kinds of associations.
-Thus much of the machinery of modern separation logics comes from shifting the notion of which resource context 
-assertions are relative to.
-
-%\Colin{Regarding next paragraph: separation logics are not necessarily foundational (early work was all pen-and-paper,
-%automated work with SMT solvers clearly isn't foundational). Unless you mean ``foundational'' in a non-technical sense (in which case, a different word should be used, to avoid confusion).}
-%\paragraph{Specification} Separation logics~\cite{} rely on foundational Hoare-Logic when introducing their abstractions: make specific assertions and abstractions appear in the form of pre- and post-conditions, $\{P\} e \{Q\}$, called Hoare Triple. It is also important to note that program logics also enjoy encoding Hoare Triples in terms of weakest-precondition~\cite{dijkstra1975guarded} program logics~\cite{pratt1976semantical}, which is roughly
-%\[\textsf{P} \; -\ast \;\textsf{wp}\; e \; \{Q\}\]
-%where $-\ast$ can  be intuitively thought of as \textit{"when P is added into the resource context we can have the resource represented with Q"}
-%\Colin{\emph{Is} it important to note this? I'm genuinely not sure it is.}
-
-\subsection{Modal Reasoning}
+\subsection{Nominals}
 \label{sec:modalbackground}
-Modal logics are logics of contingent truth, enabling reasoning about cases where something is or may
-be true in alternate circumstances. These alternate circumstances are expressed via modal operators,
-which decorate a proposition with those alternate circumstances of its truth. This can be express
-conditions related to time~\cite{pnueli1977temporal} (e.g., $\diamond P$ for $P$ being true at some point in the future in \textsc{LTL}), necessity and/or possibility~\cite{harel1979first,pratt1976semantical} (e.g., $[C]P$ indicating that $P$ is true after execution
-of the program command $C$ terminates), or knowledge and belief~\cite{halpern1990knowledge,hintikka1962knowledge}
-(e.g., $\mathcal{K}_a P$ indicating that node $a$ in a distributed system possesses knowledge of $P$),
-or the location \emph{where} something is true~\cite{murphy2007type,gordon2019modal}.
 
-\paragraph{Nominals} 
-Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
-This naming generally resembles
-the \emph{satisfaction} operator of 
-\emph{hybrid logic}~\cite{blackburn1995hybrid,areces2001hybrid}: $@_\iota P$ which evaluates the truth of $P$ at the named (Kripke model) state $\iota$. For this reason we refer to the general idea of naming circumstances explicitly as \emph{nominalization},
-even though the examples we discuss are not necessarily actually hybrid logics.
 
-\subsection{Modal Operators in Program Specifications}
+\subsubsection{Recapping Modal Operators in Program Specifications: Systems Perspective}
 The value of modal operators in program specifications is that they permit describing something that is true
 within some context(s), without needing to fully describe the context itself. Yet unlike shorthands,
 abbreviations, or general definitions, modal operators interact with the logic in systematic --- rather than ad hoc --- ways.
@@ -1462,17 +1362,20 @@ classic work; the next section argues that this is \emph{particularly} true for 
 the concepts and reasoning that arise in low-level software are naturally captured by modalities.
 
 Although we focus on understanding the modal patterns in the program logics themselves for verifying the client programs (Section \ref{sec:definitions}), not in the logical machinery they implement, we think that it sheds light on how the modal operator utilized in the machinery of the program logics shows resemblance and can be lifted to the task of client verification. 
-
 \paragraph{Temporal Operators}
 The best known class of modal logics in the systems community is undoubtedly temporal logics (whether \textsc{LTL}~\cite{pnueli1977temporal}, \textsc{CTL}~\cite{emerson1982using}, \textsc{TLA}~\cite{lamport1994temporal}, or others),
 due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
-distributed algorithms (e.g., \cite{ongaro2014search,ailijiang2019wpaxos}).
+distributed algorithms \cite{ongaro2014search,ailijiang2019wpaxos}.
+\subsubsection{Nominalization}
+Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
+This naming generally resembles
+the \emph{satisfaction} operator of 
+\emph{hybrid logic}~\cite{blackburn1995hybrid,areces2001hybrid}: $@_\iota P$ which evaluates the truth of $P$ at the named (Kripke model) state $\iota$. For this reason we refer to the general idea of naming circumstances explicitly as \emph{nominalization},
+even though the examples we discuss are not necessarily actually hybrid logics.
 
-
-\paragraph{Nominalization}
 An example utilization of state naming explicitly on the assertion appears in program logics such as Iris~\cite{jung2018iris}, which enables encoding of usage protocols (e.g. state transition system) resembling typestate~\cite{strom1986typestate,garcia2014foundations} as specifications. Protocol assertions are \emph{annotated with the name of the last (abstract) state at which the protocol is ensured}.
 An example more familiar to the systems community is Halpern et al.'s history of adapting modal logics of
-knowledge to deal with distributed systems~\cite{halpern1990knowledge,halpern1989modelling,halpern2017reasoning,halpern1990knowledge}.
+knowledge to deal with distributed systems~\cite{halpern1990knowledge,halpern1989modelling,halpern2017reasoning}.
 In most of that line of work, $\mathcal{K}_a(P)$ indicates that the node $a$ in the system \emph{knows} or \emph{possesses knowledge of} $P$
 (for example, a Raft node may ``know'' a lower bound on the commit index).
 Alternatively, a modality $@_i(P)$ may represent that $P$ is true of/at the specific node $i$~\cite{gordon2019modal} (e.g., that node $i$ has stored a certain
@@ -1481,58 +1384,43 @@ These permit capturing specific concepts relevant to the correctness (and reason
 involving facts about specific named entities in the system.
 \\
 
-In each of these cases, the fact that these facts are described using modalities means, for example, that if a
+In each of these cases, the fact that these facts are described using modalities with the core modal property $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$ means, for example, that if a
 process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
 no extra work is required to conclude that the node knows it is greater than 3 (i.e., that $\mathcal{K}_p(\mathsf{commitIndex} > 3)$),
 because this follows from standard properties of modal operators as described above.
 In contrast, if verification instead used a custom assertion $\mathsf{minCommitIndex}(5)$ to represent the former knowledge,
 one would need to separately provide custom reasoning to conclude $\mathsf{minCommitIndex}(3)$.
+\section{Contingency Decomposition of a System}
 
-
-%\paragraph{Implementing the Logic of Impredicativity} Modal operators such as \emph{later} modality speculating over the fact that modal assertion holds at some state later in the execution are used in the logical machinery of program logics to handle the impredicative terms in the logic. Interestingly, similar reasoning principles using \emph{later} modality are also used in the verification of programs against store-buffers ~\cite{} which also requires speculation over the state in which stored writes appear in the memory.
-%
-%\paragraph{Persistent Weakest-Precondition} We already gave a rough encoding of Hoare Triple in terms of weakest-precondition, but a thorough version of our definition for the program logics of resources would be 
-%\[
-%\Box (\textsf{P} \; -\ast \;\textsf{wp}\; e \; \{Q\})
-%\]
-%decorated with a necessity modality ensures that the weakest-precondition assertion 
-%$
-%    \textsf{P} \; -\ast \;\textsf{wp}\; e \; \{Q\}
-%$
-%inside the necessity modality is always valid by the exclusive ownership of the weakest-precondition; as a consequence, the whole specification 
-%$
-%\Box (\textsf{P} \; -\ast \;\textsf{wp}\; e \; \{Q\})
-%$ can be used multiple times -- i.e., a \emph{duplicable resource}.
-
-\section{Logical Decomposition of a System into its Constituents \emph{Contingently}}
+\subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
 \begin{table*}[h]
 \centering
 \caption{Modal Decomposition of Program-Logics.}
 \label{table:decomposition}
  %$\{\Diamond (P) \}$ write  $\{ P\}_{n}$
- %$\{\overset{ICut^{n}}{\hookrightarrow} (P) \}$ return $\{ P\}_{n} $
-\begin{tabular}{@{}cSSSp{5cm}@{}}
-\toprule
-& Resource Context & Resource Elements  &  Nominalization & Resource Context Steps \\ \midrule
-Post-Crash Modality ~\cite{tejthesis, perennialgit,tejperennial19} & $\Diamond \; P $  & $  \ell \mapsto_{n}^{\overline{\gamma}} v $ & Strong &  Crash Recovery   \\ 
+%$\{\overset{ICut^{n}}{\hookrightarrow} (P) \}$ return $\{ P\}_{n} $
+\begin{tabular}{@{}clllp{3.25cm}@{}}
+  \toprule
+& {\scriptsize Resource Context} & {\scriptsize Resource Elements}  &  {\scriptsize Nominalization} & {\scriptsize Context Steps} \\ \midrule
+\scriptsize Post-Crash Modality ~\cite{tejthesis, perennialgit,tejperennial19} & \scriptsize $\Diamond \; P $  & \scriptsize $  \ell \mapsto_{n}^{\overline{\gamma}} v $ & \scriptsize Strong &  \scriptsize Crash Recovery    \\ 
 %GC-Modality &      & \multicolumn{2}{c}{\multirow{2}{*}{Because why not}} & 8                                   & & ~\cite{}\\
-NextGen Modality~\cite{larsnextgen25} &  $\overset{t}{\hookrightarrow} \; P$  & Own (t(a))  & Strong & Determined Based on the Model$^{*}$   \\
-StackRegion  Modality$^{*}$  ~\cite{larsnextgen25} & $\overset{ICut^{n}}{\hookrightarrow} \; P$      & $\fbox{n} \; \ell \mapsto v$                                 & Strong & Alloc and Return to/from stack\\
-Memory-Fence  Modality ~\cite{fsl,fsl++,derekrustbelt20} & $\triangle_{\pi}$ and $\triangledown_{\pi}$      & $\ell \mapsto v$                                 & Weak & Fence Acquire and Release  \\
-Address-Space Modality ~\cite{kuru2024modalabstractionsvirtualizingmemory} & [r]P     &  $\ell \mapsto v$ & Weak                         & Address-Space Switch  \\ 
-Ref-Count Modality ~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ & Weak  & Allocating, Dropping and Sharing a Reference \\ \bottomrule
+\scriptsize NextGen Modality~\cite{larsnextgen25} &  \scriptsize $\overset{t}{\hookrightarrow} \; P$  &\scriptsize  Own (t(a))  & \scriptsize Strong & \scriptsize Determined Based on the Model$^{*}$   \\
+\scriptsize StackRegion  Modality$^{*}$  ~\cite{larsnextgen25} & \scriptsize $\overset{ICut^{n}}{\hookrightarrow} \; P$      & \scriptsize $\fbox{n} \; \ell \mapsto v$                                 & \scriptsize Strong & \scriptsize Alloc and Return to/from stack\\
+\scriptsize Memory-Fence  Modality ~\cite{fsl,fsl++,derekrustbelt20} & \scriptsize $\triangle_{\pi}$ and $\triangledown_{\pi}$      & \scriptsize $\ell \mapsto v$                                 & \scriptsize Weak & \scriptsize Fence Acquire and Release  \\
+\scriptsize Address-Space Modality ~\cite{kuru2024modalabstractionsvirtualizingmemory} & \scriptsize [r]P     &  \scriptsize $\ell \mapsto v$ & \scriptsize Weak                         & \scriptsize Address-Space Switch  \\ 
+\scriptsize Ref-Count Modality ~\cite{amalreal2024}&\scriptsize @$_{\ell}$ P    & \scriptsize $\ell_1 \mapsto v$ & \scriptsize Weak  & \scriptsize Allocating, Dropping and Sharing a Reference \\ \bottomrule
 \end{tabular}
 
-*The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25}).
+{\scriptsize *The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
 %and the $\Diamond$ Figure for Post-Crash Modality uses notationis taken from NextGen Modality paper ~\cite{larsnextgen25}.
 \end{table*}
 
-In this section, we explain how we can systematically propose new modal abstractions for different types of systems.
+Lots of existing program logics for system verifications have a common structure, which maps to modalities with a couple extra dimensions of design.
 We summarize our discussion of these logics in Table \ref{table:decomposition}.
 We discuss, based on examples, common aspects of how we intuitively think about correctness of systems code in many contexts,
 articulate those pieces, and call out the commonalities across a range of systems.
-
+\subsection{Resource}
 Consider first the address-space abstraction in an OS kernel. An address-space of a process is a \textsf{container} of \textsf{virtual} addresses referencing data in memory. One would expect to have \textit{points-to} assertion from separation logic to specify \textit{ownership} of a memory reference pointing to some data. But that ownership is relative to a specific
 address space --- a specific container. We tend to think directly about what is true \emph{in an address space},
 with the simplest piece being an association between a virtual address and the data it points to.
@@ -1550,22 +1438,30 @@ A resource context is an abstraction, context, or container of resource elements
 \end{definition}
 We discuss a range of examples for each of these in turn.
 
-\subsection{Resource Elements}
-Table \ref{table:decomposition} gives additional examples of systems and their corresponding resource elements,
-though none of the work in that table analyzes itself according to the structure we are giving.
-When reasoning about stack frame contents, the resource element would be a stack-memory points-to assertion ( $\fbox{n} \; \ell \mapsto v$)
-indicating that a certain offset into stack region $n$ holds value $v$.
+Table \ref{table:decomposition} gives additional examples of systems and their corresponding resource elements and contexts where these elements reside, though none of the work in that table analyzes itself according to the structure we are giving.
+
+Except for Post-Crash-Modality, one can think of the resource contexts in the first column in Table \ref{table:decomposition} as containers for the corresponding resource elements in the second column.
+
+\paragraph{Stack Regions} When reasoning about stack frame contents, the resource element would be a stack-memory points-to assertion ( $\fbox{n} \; \ell \mapsto v$)
+indicating that a certain offset into stack region $n$ holds value $v$. 
 %which is an instance of ownership assertion ($\textsf{Own(t(a))}$) for which a well-behaved transformation ($\textsf{t}$), e.g. $\textsf{ICut}^{n}$ algebra quantifying over valid stack region ids. 
-For virtual memory management, a \textit{virtual-points-to} ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space is natural.
-When considering weak memory models, we also want points-to information (address-value mappings).
-When dealing with reference-counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address .
-A generalization of separation logic to deal with arbitrary transformations (the \emph{NextGen} modality) 
+\paragraph{Virtual Memory} For virtual memory management, a \textit{virtual-points-to} ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space is natural. A process's address space with the root address \textsf{r} is an abstraction that is treated as a container for virtual address mappings, $\ell \mapsto v$;
+
+\paragraph{Weak-Memory} When considering weak memory models, we also want points-to information (address-value mappings).
+
+\paragraph{Reference Counting} When dealing with reference-counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
+
+\paragraph{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
 %that can be jumped from a shared memory referenced whose reference count is at least 1 are also example resource elements from memory management task at different abstraction levels. 
 The resource element of Post-Crash Modality is not obvious in Table \ref{table:decomposition}, and needs a bit of explanation. Perennial, based on the Iris logic, has both disk-points-to assertions $d[\textsf{p}] \mapsto_{n} v$ (for a specific disk $d$) and in-memory points-to assertions $\ell \mapsto_{n}^{\overline{\gamma}}$. Perennial crash-recovery logic book-keeps resource names (can be thought of as logical variables) $\overline{\gamma}$ to identify 
 which assertions (resource elements) remain valid after a crash --- these assertions
 are only usable while the names in $\overline{\gamma}$ are valid, and a crash resets
-them, discarding assumptions about volatile state.
+them, discarding assumptions about volatile state. A subtlety of the notion of a resource context is that, unlike the earlier examples, the context does not need to be a literal data structure. It can instead be (various forms of) a set of executions, as in the Post-Crash and NextGen modalities.
+The Post-Crash modality $\diamond$ expresses that the assertion $P$ will be true after a crash discards
+all unstable storage (i.e., RAM).
+This was the inspiration for the NextGen modality, which is in fact a framework for defining ``after-$t$'' modalities, where $t$ is an transformation of the global state.\footnote{The transformations are subject to some
+technical constraints that are unrelated to our point here.}
 %whose capability is considered to be relevant to be kept in the crash invariant $\fbox{C}_n$, and to be used when a crash occurs.\Colin{Ismail, not sure about last line above. Can you better explain gamma?}
 %regions of state (including auxiliary/ghost state) which persist after a crash (anything not identified 
 
@@ -1577,16 +1473,12 @@ them, discarding assumptions about volatile state.
 %\end{remark}
 %\Colin{This in particular would benefit from an earlier intuition discussion}
 
-\subsection{Resource Contexts}
-Except for Post-Crash-Modality, one can think of the resource contexts in the first column in Table \ref{table:decomposition} as containers for the corresponding resource elements in the second column. For our example, a process's address space with the root address \textsf{r} is an abstraction that is treated as a container for virtual address mappings, $\ell \mapsto v$; likewise, a shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
-\looseness=-1
-
-A subtlety of the notion of a resource context is that, unlike the earlier examples, the context does not need to be a literal data structure. It can instead be (various forms of) a set of executions, as in the Post-Crash and NextGen modalities.
-The Post-Crash modality $\diamond$ expresses that the assertion $P$ will be true after a crash discards
-all unstable storage (i.e., RAM).
-This was the inspiration for the NextGen modality, which is in fact a framework for defining ``after-$t$'' modalities, where $t$ is an transformation of the global state.\footnote{The transformations are subject to some
-technical constraints that are unrelated to our point here.}
-
+%\section{Resource Contexts}
+%
+%\looseness=-1
+%
+%
+%
 %\begin{definition}[Transforming Resource Elements]
 %    Any resource element that is parameterized w.r.t to a parameter such as resource \emph{names} $\overline{\gamma}$ in Post-Crash Modality is subject to the change, and this change has to be acknowledged in the resource context.
 %\end{definition}
@@ -1595,26 +1487,25 @@ technical constraints that are unrelated to our point here.}
 %This, in fact, inspires NextGen Modality to encode resource-element transform relation as a resource algebra, and make the resource element generalized w.r.t. a \emph{well-behaved} transformations defined by the rules of resource algebra. 
 %\paragraph{Dynamically Naming Resources} Names are global and each resource element has a name. Unlike others in Table \ref{table:decomposition} whose resources are fixed (inspired by Iris, each points-to relation has a hidden name  $\gamma$), Post-Condition Modality resource element is parameterized by the underlying resources' names. Unlike fixed %naming, dynamic naming in which resource elements are parameterized by the resource names, the knowledge of which resource name is transforming because an
 %any other resource elements named with the ones th
-
-\subsection{Resource Ambiance}
-While the central aspects of using a modality to capture contextual reasoning are the elements and contexts, there is \emph{sometimes} more to it.
-Sometimes there are multiple modes of execution (e.g., crashing, running in a particular address space),
-so not only state descriptions but also rules of the program logic itself must be decorated with
-a \emph{resource ambiance}:
-\begin{definition}[Resource Ambiance]
-Resource ambiance is a dependency of the logic's description of program behaviour on
-a particular mode of execution tied to the modality.
-%\emph{general form of contingent} status of resource elements of the same type against their resource context. The crucial aspect is to understand how \emph{identifiable} both the context and its elements should be: \emph{nominalization} of the context and its elements in the ambient logic, e.g., how should stack-points-to relations together with the StackRegion Modality should be \emph{referred} in a Hoare triple for Return step in the ambient separation logic.
-\end{definition}
-In formal presentations, this typically shows up with modified Hoare triples $\{P\}\;C\;\{Q\}_A$,
-where $P$, $C$, and $Q$ are the precondition, code, and postcondition that code satisfies assuming that precondition (as before) and $A$ is essentially a marker of how the reasoning about the program interacts with the modality --- such as a post-crash assertion, or an indication of what address space the verification is assuming.
-This means the proof rules for deciding how program operations affect knowledge of program state
-can depend on, restrict, or manipulate the context assumptions of reasoning about program behaviour, not just
-descriptions of program state at some moment in time.
-Not all use cases for modal assertions require an ambiance, only those where the modality corresponds to modes of execution.
-
+%\section{Resource Ambiance}
+%While the central aspects of using a modality to capture contextual reasoning are the elements and contexts, there is \emph{sometimes} more to it.
+%Sometimes there are multiple modes of execution (e.g., crashing, running in a particular address space),
+%so not only state descriptions but also rules of the program logic itself must be decorated with
+%a \emph{resource ambiance}:
+%\begin{definition}[Resource Ambiance]
+%Resource ambiance is a dependency of the logic's description of program behaviour on
+%a particular mode of execution tied to the modality.
+%\emph{general form of contingent} status of resource elements of the same type against their resource context. The crucial aspect is to understand how \emph{identifiable} both the context and its elements should be: \emph{nominalization} of the contex%t and its elements in the ambient logic, e.g., how should stack-points-to relations together with the StackRegion Modality should be \emph{referred} in a Hoare triple for Return step in the ambient separation logic.
+%\end{definition}
+%In formal presentations, this typically shows up with modified Hoare triples $\{P\}\;C\;\{Q\}_A$,
+%where $P$, $C$, and $Q$ are the precondition, code, and postcondition that code satisfies assuming that precondition (as before) and $A$ is essentially a marker of how the reasoning about the program interacts with the modality --- such as a post-crash assertion, or an indication of what address space the verification is assuming.
+%This means the proof rules for deciding how program operations affect knowledge of program state
+%can depend on, restrict, or manipulate the context assumptions of reasoning about program behaviour, not just
+%descriptions of program state at some moment in time.
+%Not all use cases for modal assertions require an ambiance, only those where the modality corresponds to modes of execution.
+%
 \subsection{Nominalization}
-Finally, another design point is the question of whether or not resource elements must explicitly track
+Finally, another design point is the question of whether or not resource element assertions must explicitly track
 their corresponding context, or if they implicitly pick up their context from where they are used.
 
 \emph{Strong nominalization} is the case where resource elements must explicitly include
@@ -1635,7 +1526,7 @@ frames does not change its meaning.
 
 By contrast, weakly nominalized elements are more concise, but then make talking about multiple 
 contexts together marginally more complex: changing which modality an assertion is used with drastically changes its meaning. In the case of the Ref-Count modality, $@_\ell(\ell_1\mapsto v)$
-says that $\ell$ points to a reference count wrapping $\ell_1$, while placing the $\ell_q\mapsto v$ under a jump modality for a different location entails talking about a different region of memory.
+says that $\ell$ points to a reference count wrapping $\ell_1$, while placing the $\ell_1\mapsto v$ under a jump modality for a different location entails talking about a different region of memory.
 
 In general, use cases where code frequently manipulates small parts of multiple contexts together
 should prefer strong nominalization, while use cases where usually larger portions of a single context
@@ -1676,49 +1567,16 @@ are at issue should prefer weak nominalization.
 %Although it is almost always the case that when a modality is defined, classical proof rules such as introduction and elimination are also defined and proven. However, an interesting perspective emerges when we realize that, in fact, the proof rule for switching address spaces resembles an introduction (also elimination) rule for adding resource elements into an address-space modality's resource context.
 %\Colin{So far I like how this is shaping up as a kind of ``design recipe'' for approaching this style of verification!}
 
-\subsection{Making It Work}
-While the choice of resource elements, contexts, ambiance, and nominalization to capture
-the setting and contextually-relevant pieces of information help lay out the 
-shape of specifications based on how we would like to think about them, there are a few more steps
-beyond designing the specifications.
-
-It is necessary to work out how proof rules interact with the modalities --- which program
-operations or hardware primitives update machine state in a way that interacts with the modality?
-This could be all or some, depending on the use case.
-
-It is also necessary to implement the approach. This design has been most thoroughly explored
-with logics embedded in proof assistants (everything in Table \ref{table:decomposition} uses \textsf{Coq}), in which case a framework like \textsc{Iris}~\cite{jung2018iris} (used for all of our examples) will require proofs that each rule interacting with the modality is sound, but in exchange
-for that work and a few supplementary definitions, modal assertions can work naturally with existing tools for the logic~\cite{krebbers2018mosel}.
-However, it is also suitable for use with automated techniques, for example by writing
-new axioms corresponding to proof rules~\cite{gordon2019modal}, though better automation may require more work.
-
-
-
-%\section{Related Work}
-%\label{sec:relatedwork}
-%We discussed
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-We have argued that modalities should be a go-to design when working out how to specify different kinds of systems code based on recent successes, and articulated an informal design process that seems to 
-map out the degrees of variation present among those designs.
-It also captures (a slightly more organized version of) our own thought processes while
-coming up with designs for specifying distributed systems~\cite{gordon2019modal}, virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). So not only are the modalities useful
+We have argued the essential patterns that help to choose the modalities when working out how to specify different kinds of systems code based on recent successes.
+It also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). So not only are the modalities useful
 for conducting proofs, the pieces we have identified seem to be an effective way of working out
 a specific modality for a specific use-case.
 
-
-%%
-%% The acknowledgments section is defined using the "acks" environment
-%% (and NOT an unnumbered section). This ensures the proper
-%% identification of the section in the article metadata, and the
-%% consistent spelling of the heading.
-%\begin{acks}
-%To Robert, for the bagels and explaining CMYK and color spaces.
-%\end{acks}
-
-
+As our main conclusion and future work, we think that these essential patterns in the designs of modal abstractions discussed constitute the fundamentals of \emph{verification patterns} when working out how to specify different kinds of systems code.
 \bibliographystyle{splncs04}
 \bibliography{software}
 \newpage
