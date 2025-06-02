@@ -1331,7 +1331,7 @@ and it makes sense to specify the systems software directly in terms of those ab
 Accessing virtualized resources via translation is a common way to virtualize notions of location (e.g.,
 virtual memory addresses, inodes or object IDs instead of disk addresses~\cite{bonwick2003zettabyte,hitz1994file,Rosenblum1992LFS,rodeh2013btrfs}).
 %Accessing the hardware resources in the presence of sharing means having more resource references (references to the virtualized resources) to access the \emph{mapped} resources that are physical and potentially fewer. 
-B-trees~\cite{}, page tables~\cite{}, and related structures both behave like maps, when the corresponding physical resources exist as such
+B-trees, page tables, and related structures both behave like maps, when the corresponding physical resources exist as such
 just in a different location.
 Control over the lookup process (e.g, handling the case of a missing translation entry) allows for additional flexibility,
 such as filling holes in sparse files, or demand paging (both from disk or lazily populating anonymous initially-zeroed mappings).
