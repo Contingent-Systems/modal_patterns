@@ -1204,7 +1204,7 @@ sn & \textsf{struct name}   & &  i,j & \mathsf{nat (indices)}  \\
 Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %%%Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
 %
-\authorrunning{I. Kuru et al.}
+\authorrunning{Kuru and Gordon}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
@@ -1228,6 +1228,18 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
   we justify our perspective by discussing prior systems that have used modalities for systems verification
   successfully, arguing that they fit into the verification design pattern we articulate,
   and explaining how this approach might apply to other systems verification challenges.
+
+  \todo[inline]{Colin says: how about this framing instead of the second paragraph above:}
+  In this paper we examine how modalities have emerged as a common structure in formal verification
+  of low-level software, and explain how many recent examples naturally share 
+  common structure in the relationship between the modalities and software features they are used
+  to reason about.
+  We explain how the concept of a \emph{resource context} (a class of system resources
+  to reason about) naturally corresponds to families of modal operators indexed by
+  system data, and how this naturally leads to using modal assertions to describe
+  \emph{resource elements} (data in the relevant context).
+  We also describe extensions of this idea to ongoing work in formal verification
+  of filesystems code.
 \end{abstract}
 
 %%
@@ -1288,13 +1300,38 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %% information and builds the first part of the formatted document.
 %\maketitle
 \section{Introduction}\label{sec:intro}
+\todo[inline]{Colin says: These comments aren't the only places things need to change, but they're
+specific places I have suggestions.
+One thing to keep in mind is that the CfP lists two kinds of papers:
+short papers are for "original research or case studies, maybe in the incubation phase,"
+while long papers are for "original research, case studies, or surveys."
+This is clearly in the survey category, so we (a) should take advantage of the extra space to
+explain things clearly (15 pages, plus 2 pages for bibliography), and (b) lean into the survey nature explicitly.
+}
 Low-level systems exhibit certain patterns in their designs, especially when interacting with computing resources. Exploiting certain patterns while designing software has been an important field of study. In this regard, we think that certain properties of modalities enable us to understand and do the verification challenges that show certain patterns.
+\todo[inline]{I think one of the biggest things we can do to reframe this is to explain the broader vision
+here before jumping into contributions.
+This is an audience that knows dynamic logic and modal logic more broadly, but perhaps not everyone is familiar
+with hybrid logic, and many will not be familiar with systems concepts.
+This is the place to provide high-level intuition about the domain we're surveying, tailored for this audience.
+I'd talk about dynamic logic in general, but then highlight the need for reasoning specific to certain
+compute resources to produce manageable specifications and proofs.
+Think big picture: why is this space interesting to logicians?
+}
+
 \subsection{Contributions to Identifying the Verification Patterns via Modal Abstractions}
 We argue how modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
+
 \paragraph{Identifying System Verification Challenges} We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
 \paragraph{Introducing the Concept of \emph{Resource}} Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
-\paragraph{Introducing the Concept of \emph{Nominals}} Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
-\paragraph{Taxonomy of the Current Modal Approaches in System Verification} Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis, perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
+\paragraph{Introducing the Concept of \emph{Nominals}}
+\todo[inline]{Colin says: I'd reframe the way nominals are introduced. This discussion is good,
+but is a "systems-first" explanation. At least some of this audience will already know
+what classic nominals are, so need to be shown naming specific resources as an application
+of what they already know. (And some readers will need a very short intro/refresher.)
+}
+Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
+\paragraph{Taxonomy of the Current Modal Approaches in System Verification} Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
 
 \section{Definitions}
 Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
@@ -1309,6 +1346,9 @@ Although they differ in the functionality they offer, low-level systems exhibit 
   To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
   \subsection{Resources in Systems Software}
   \label{sec:systemsoft}
+  \todo[inline]{this section is already nice for introducing the ideas and what you mean by "systems software."
+  This section mostly needs a little more background on systems concepts like virtual memory, or what it means
+  to virtualize locations of blocks on disk}
 Systems software, in general, interfaces with an underlying computing architecture such that any software system at any higher level in the software stack can (at least indirectly) utilize the resources of the machine.
 The last layer of software before the hardware is naturally critical to the correctness of an overall system,
 as essentially all software built on top of it assumes its correctness.
@@ -1345,6 +1385,11 @@ they are semantically --- logically --- partial maps, worth treating as such in 
 %%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
 %%\Colin{Not sure what you want here?}
 
+\todo[inline]{Colin says: the nominals section needs another shift for the new audience:
+You don't need to define modalities here, but do need to give initially the classic notion of nominal
+(name for a Kripke world) before bridging the gap to using the concept of naming
+for something a little different.
+}
 \subsection{Nominals}
 \label{sec:modalbackground}
 
@@ -1391,32 +1436,37 @@ because this follows from standard properties of modal operators as described ab
 In contrast, if verification instead used a custom assertion $\mathsf{minCommitIndex}(5)$ to represent the former knowledge,
 one would need to separately provide custom reasoning to conclude $\mathsf{minCommitIndex}(3)$.
 \section{Contingency Decomposition of a System}
+\todo[inline]{Colin says: I don't think this section needs to change much,
+but it should be read carefully with the new audience in mind,
+possibly giving more details on what systems concepts each system is dealing with, for a non-systems audience.}
 
 \subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
+\todo[inline]{Colin says: I dropped the strong/weak nominalization column for space and readability;
+it can be explicit in the text, or maybe we can mark the system names with daggers or similar to indicate.}
 \begin{table*}[h]
 \centering
 \caption{Modal Decomposition of Program-Logics.}
 \label{table:decomposition}
  %$\{\Diamond (P) \}$ write  $\{ P\}_{n}$
 %$\{\overset{ICut^{n}}{\hookrightarrow} (P) \}$ return $\{ P\}_{n} $
-\begin{tabular}{@{}clllp{3.25cm}@{}}
+\begin{tabular}{@{}lcccp{4cm}@{}}
   \toprule
-& {\scriptsize Resource Context} & {\scriptsize Resource Elements}  &  {\scriptsize Nominalization} & {\scriptsize Context Steps} \\ \midrule
-\scriptsize Post-Crash Modality ~\cite{tejthesis, perennialgit,tejperennial19} & \scriptsize $\Diamond \; P $  & \scriptsize $  \ell \mapsto_{n}^{\overline{\gamma}} v $ & \scriptsize Strong &  \scriptsize Crash Recovery    \\ 
+{\scriptsize Modality}& {\scriptsize Context} & {\scriptsize Elements}  &  {\scriptsize Nominalization} & {\scriptsize Context Steps} \\ \midrule
+\scriptsize Post-Crash~\cite{tejthesis,perennialgit,tejperennial19} & \scriptsize $\Diamond \; P $  & \scriptsize $  \ell \mapsto_{n}^{\overline{\gamma}} v $ & \scriptsize Strong &  \scriptsize Crash Recovery    \\ 
 %GC-Modality &      & \multicolumn{2}{c}{\multirow{2}{*}{Because why not}} & 8                                   & & ~\cite{}\\
-\scriptsize NextGen Modality~\cite{larsnextgen25} &  \scriptsize $\overset{t}{\hookrightarrow} \; P$  &\scriptsize  Own (t(a))  & \scriptsize Strong & \scriptsize Determined Based on the Model$^{*}$   \\
-\scriptsize StackRegion  Modality$^{*}$  ~\cite{larsnextgen25} & \scriptsize $\overset{ICut^{n}}{\hookrightarrow} \; P$      & \scriptsize $\fbox{n} \; \ell \mapsto v$                                 & \scriptsize Strong & \scriptsize Alloc and Return to/from stack\\
-\scriptsize Memory-Fence  Modality ~\cite{fsl,fsl++,derekrustbelt20} & \scriptsize $\triangle_{\pi}$ and $\triangledown_{\pi}$      & \scriptsize $\ell \mapsto v$                                 & \scriptsize Weak & \scriptsize Fence Acquire and Release  \\
-\scriptsize Address-Space Modality ~\cite{kuru2024modalabstractionsvirtualizingmemory} & \scriptsize [r]P     &  \scriptsize $\ell \mapsto v$ & \scriptsize Weak                         & \scriptsize Address-Space Switch  \\ 
-\scriptsize Ref-Count Modality ~\cite{amalreal2024}&\scriptsize @$_{\ell}$ P    & \scriptsize $\ell_1 \mapsto v$ & \scriptsize Weak  & \scriptsize Allocating, Dropping and Sharing a Reference \\ \bottomrule
+\scriptsize NextGen~\cite{larsnextgen25} &  \scriptsize $\overset{t}{\hookrightarrow} \; P$  &\scriptsize  Own (t(a))  & \scriptsize Strong & \scriptsize Determined Based on the Model$^{*}$   \\
+\scriptsize StackRegion$^{*}$  ~\cite{larsnextgen25} & \scriptsize $\overset{ICut^{n}}{\hookrightarrow} \; P$      & \scriptsize $\fbox{n} \; \ell \mapsto v$                                 & \scriptsize Strong & \scriptsize Alloc and Return to/from stack\\
+\scriptsize Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} & \scriptsize $\triangle_{\pi}$ and $\triangledown_{\pi}$      & \scriptsize $\ell \mapsto v$                                 & \scriptsize Weak & \scriptsize Fence Acquire and Release  \\
+\scriptsize Address-Space~\cite{kuru2024modalabstractionsvirtualizingmemory} & \scriptsize [r]P     &  \scriptsize $\ell \mapsto v$ & \scriptsize Weak                         & \scriptsize Address-Space Switch  \\ 
+\scriptsize Ref-Count~\cite{amalreal2024}&\scriptsize @$_{\ell}$ P    & \scriptsize $\ell_1 \mapsto v$ & \scriptsize Weak  & \scriptsize Allocating, Dropping and Sharing a Reference \\ \bottomrule
 \end{tabular}
 
 {\scriptsize *The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
 %and the $\Diamond$ Figure for Post-Crash Modality uses notationis taken from NextGen Modality paper ~\cite{larsnextgen25}.
 \end{table*}
 
-Lots of existing program logics for system verifications have a common structure, which maps to modalities with a couple extra dimensions of design.
+Many existing program logics for system verifications have a common structure, which maps to modalities with a couple extra dimensions of design.
 We summarize our discussion of these logics in Table \ref{table:decomposition}.
 We discuss, based on examples, common aspects of how we intuitively think about correctness of systems code in many contexts,
 articulate those pieces, and call out the commonalities across a range of systems.
@@ -1570,7 +1620,7 @@ are at issue should prefer weak nominalization.
 
 \section{Conclusion}
 \label{sec:conclusion}
-
+\todo[inline]{this definitely needs adjusting for both audience and emphasis on this being a survey}
 We have argued the essential patterns that help to choose the modalities when working out how to specify different kinds of systems code based on recent successes.
 It also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). So not only are the modalities useful
 for conducting proofs, the pieces we have identified seem to be an effective way of working out
