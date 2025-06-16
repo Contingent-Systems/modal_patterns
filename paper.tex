@@ -112,7 +112,7 @@
 {\rotatebox[origin=c]{90}{$\begin{array}{@{}c@{}}{}#4\end{array}$}}
 {#5}
 }
-
+\newcommand{\sepimp}{\mathrel{-\mkern-6mu*}}
 \newcommand{\NULL}{\texttt{NULL}}
 \newcommand{\NEW}{\texttt{new}}
 \newcommand{\SKIP}{\texttt{skip}}
@@ -1390,21 +1390,21 @@ Another complicating factor is that portions of page tables can be shared, i.e.,
 These dove-tail with functionality in the OS scheduler, which since it is responsible for dealing with multiple address spaces, must keep track of which virtual addresses are valid (and in what way) in which address spaces, where some virtual addresses are valid in only a single address space (e.g., a code address for a particular usermode process), while others are valid in all address spaces (e.g., kernel data structure pointers). The VMM must maintain some of these assumptions on behalf of the rest of the kernel, for example by guaranteeing that a certain range of virtual addresses (corresponding to the kernel's code and data) are valid in every address space.
 
 \paragraph{Virtualization of Disk-Blocks in Filesystems} Likewise, 
-\paragraph{Consistency of Disk Layout} ...
-\paragraph{Memory Reclamation in Client Code}...
-\paragraph{Consistency of Reclaimed Memory}...
+\paragraph{Consistency of Disk Layout} \todo{}
+\paragraph{Memory Reclamation in Client Code}\todo{iso:speak about Amal's stuff}
+\paragraph{Consistency of Reclaimed Memory}\todo{iso: speak about the operator for which the hybrid logic stuff is usefull }
 
-  \section{Resources in Systems Software}
-  \label{sec:systemsoft}
-   In this section, we argue the position that \emph{modalities}  
-  should be a go-to approach when specifying and verifying low-level systems code.
-  We explain how the concept of a \emph{resource context} helps guide the design of new modalities
-  for verification of systems code, and
-  we justify our perspective by discussing prior systems that have used modalities for systems verification
-  successfully, arguing that they fit into the verification design pattern we articulate,
-  and explaining how this approach might apply to other systems verification challenges.
+\section{Resources in Systems Software}
+\label{sec:systemsoft}
+In this section, we argue the position that \emph{modalities}  
+should be a go-to approach when specifying and verifying low-level systems code.
+We explain how the concept of a \emph{resource context} helps guide the design of new modalities
+for verification of systems code, and
+we justify our perspective by discussing prior systems that have used modalities for systems verification
+successfully, arguing that they fit into the verification design pattern we articulate,
+and explaining how this approach might apply to other systems verification challenges.
 
-  To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
+To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
   
 \subsection{Virtualization}
 One of the most common forms of abstraction provided by systems software is \emph{virtualization},
@@ -1437,28 +1437,27 @@ You don't need to define modalities here, but do need to give initially the clas
 (name for a Kripke world) before bridging the gap to using the concept of naming
 for something a little different.
 }
-\subsection{Nominals}
+\subsection{Hybrid Logic Dynamic Logic and Nominals in Program Logics}
 \label{sec:modalbackground}
 
 
-\paragraph{Recapping Modal Operators in Program Specifications: Systems Perspective}
+\paragraph{Dynamic Logic's Satisfaction Operator for Program Logics}
 We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
 Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
 A closely related variant of multimodal logic is \emph{dynamic logic}~\cite{pratt1976semantical}, a logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
 This same idea is used to encode Hoare triples in the Iris program logic~\cite{krebbers2017essence}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
 A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
-We build on ideas from \textit{hybrid logic}~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid}. Hybrid logics are a class of modal logics that add two primary new concepts to a logic. Nominals $\loc \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. We adapt these ideas to assertions of the form $\varphi @[l]\sigma$\colinsays{I still think this syntax is weird; why phi on the left? -- Iso: no answer :) right:) I will change it.} asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
+\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\loc \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. We adapt these ideas to assertions of the form $@[l]\varphi$asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
 In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
-This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
-We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
-
-\paragraph{Shallow Modalities in Iris}
+%This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
+%We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
+\paragraph{Shallow Modalities in Iris Separation Logic}
 \label{sec:modal_in_iris}
-Classically modal operators are given direct semantics in terms of an underlying model, which for \iris would be a collection of \textsc{CMRA}s; this is the case for \iris's one built-in modality for step-indexing~\cite{krebbers2017essence}. However in general, many modalities can be given proof-theoretic semantics directly within a logic. This is the case for \iris's weakest precondition modality (which is defined within the \iris logic itself), as well as for a wide range of other modalities in the literature~\cite{restall2002introduction}. These modalities are typically multi-modal, with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ is typically replaced with substructural implication $\sepimp$. 
+Classically modal operators are given direct semantics in terms of an underlying model, which for \textsf{Iris} would be a collection of \textsc{CMRA}s; this is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{krebbers2017essence}. However in general, many modalities can be given proof-theoretic semantics directly within a logic. This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} logic itself), as well as for a wide range of other modalities in the literature~\cite{restall2002introduction}. These modalities are typically multi-modal, with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ is typically replaced with substructural implication $\sepimp$. 
 
-This definition also reveals a subtlety about the denotation of assertions $\phi$ --- they are effectively \emph{predicates} of some kind, functions from some possible world into some logical algebra such as a BI-algebra~\cite{ohearn1999bunched}. Taking this interpretation literally gives rise to a convenient way to embed new modalities in \iris in a way well-suited to our use cases. If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the \emph{pointwise lifting} of the algebra. We will exploit this repeatedly, lifting the BI-algebra structure from \iris itself to \iris predicates used as assertions within our own modalities. 
-Connecting this to \iris's typeclasses for interactive proofs~\cite{krebbers-17} then permits working within the embedded logic as in \iris.
+This definition also reveals a subtlety about the denotation of assertions $\phi$ --- they are effectively \emph{predicates} of some kind, functions from some possible world into some logical algebra such as a BI-algebra~\cite{ohearn1999bunched}. Taking this interpretation literally gives rise to a convenient way to embed new modalities in \textsf{Iris} in a way well-suited to our use cases. If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the \emph{pointwise lifting} of the algebra. We will exploit this repeatedly, lifting the BI-algebra structure from \textsf{Iris} itself to \textsf{Iris} predicates used as assertions within our own modalities. 
+Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{krebbers-17} then permits working within the embedded logic as in \textsf{Iris}.
 
 In addition, the modal definitions themselves may represent ownership of resources in a substructural setting~\cite{restall1993modalities,dovsen1992modal,kamide2002kripke}. This will allow our modalities to simultaneously represent ownership of certain resources used for interpreting the modality itself, as well as whatever resource ownership is implied by the modal argument.
 \paragraph{Temporal Operators}
