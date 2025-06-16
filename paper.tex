@@ -1184,7 +1184,7 @@ sn & \textsf{struct name}   & &  i,j & \mathsf{nat (indices)}  \\
 %  basicstyle=\ttfamily,
 %  breaklines=true}
 \usepackage{lipsum} % for dummy text
-
+\usepackage{comment}
 
 \renewcommand{\and}{\\}
 
@@ -1230,6 +1230,7 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
   and explaining how this approach might apply to other systems verification challenges.
 
   \todo[inline]{Colin says: how about this framing instead of the second paragraph above:}
+  \begin{comment}
   In this paper we examine how modalities have emerged as a common structure in formal verification
   of low-level software, and explain how many recent examples naturally share 
   common structure in the relationship between the modalities and software features they are used
@@ -1240,6 +1241,7 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
   \emph{resource elements} (data in the relevant context).
   We also describe extensions of this idea to ongoing work in formal verification
   of filesystems code.
+  \end{comment}
 \end{abstract}
 
 %%
@@ -1333,19 +1335,8 @@ of what they already know. (And some readers will need a very short intro/refres
 Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
 \paragraph{Taxonomy of the Current Modal Approaches in System Verification} Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
 
-\section{Definitions}
+\section{Background on Low-Level Systems}
 Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
-  In this section, we argue the position that \emph{modalities}  
-  should be a go-to approach when specifying and verifying low-level systems code.
-  We explain how the concept of a \emph{resource context} helps guide the design of new modalities
-  for verification of systems code, and
-  we justify our perspective by discussing prior systems that have used modalities for systems verification
-  successfully, arguing that they fit into the verification design pattern we articulate,
-  and explaining how this approach might apply to other systems verification challenges.
-
-  To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
-  \subsection{Resources in Systems Software}
-  \label{sec:systemsoft}
   \todo[inline]{this section is already nice for introducing the ideas and what you mean by "systems software."
   This section mostly needs a little more background on systems concepts like virtual memory, or what it means
   to virtualize locations of blocks on disk}
@@ -1358,8 +1349,64 @@ And because hardware is complex and highly diverse, the implementation of those 
 of the software stack is typically intricate and naturally error-prone, despite how critical its correctness is.
 Typically systems software has, as a primary focus, the task of \emph{abstracting} from hardware details to simplify 
 the construction of higher layers of the stack.
+\subsection{Virtualization in Systems Software}
+\label{sec:background}
+\paragraph{Virtualization of Memory Locations}
+\label{sec:backgroundonmachinemodel}
+\todo{change the text}
+Memory addresses seen by programs running on modern computers are \emph{virtualized}: the address observed by a running program generally will not correspond directly to the physical location in memory, and may not even correspond to a physical location that \emph{exists} in the machine. Instead, these \emph{virtual} addresses are translated to \emph{physical} addresses that correspond directly to locations in RAM. On most modern architectures, this translation is performed through cooperation of the hardware and OS kernel: while executing an instruction that dereferences a (virtual) address, the CPU's \emph{memory management unit} (\textsc{MMU}) implements an architecture-specific process of \emph{address translation}, resulting in a physical address used to access the cache\footnote{Technically, for performance reasons most caches are indexed with parts of the virtual address, but tagged with the physical data addresses, so cache lookups and address translations can proceed in parallel.} and/or memory-bus.
 
-\subsubsection{Virtualization}
+\begin{figure}
+    \includegraphics[width=\columnwidth]{pagetables2.png}
+    \caption{x86-64 page table lookups.}
+    \label{fig:pagetables}
+\end{figure}
+
+On the x86-64 architecture, the input to the \textsc{MMU}'s address translation is a sparse hierarchical set of tables calle d \emph{page tables} (referring to pages of memory). As Figure \ref{fig:pagetables} shows, address translation proceeds by repeatedly taking designated slices of the virtual address and indexing into a table. On x86-64, standard configurations use 4 levels of page tables, labelled levels 4 through 1, with lookups in the level 1 page table resulting in the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.\footnote{Technically levels 1--3 have designated names originating when there were fewer levels. We omit those names to avoid confusion, and for greater consistency with the recent addition of a 5th level on the most recent processors, where levels 4 and 5 are simply known by their numbers.}  Because address translation traverses a series of tables, the translation process or algorithm is sometimes referred to as a \emph{page-table walk}. While Figure \ref{fig:pagetables} and most of our details are specific to the x86-64 architecture, ARMv8 (a.k.a.\ \texttt{aarch64}), RISC-V, and PowerPC use similar hierarchical page tables for address translation.
+
+The entries of each table are 64 bits wide, but each points to a physical address aligned to 4KB (4096 byte) boundaries, which leaves 12 bits to spare to control a validity bit (called the \emph{present} bit), a read-write bit (which permits write access through the entry if and only if it is set), and a range of additional bits which can be used to control caching, write-through, and more. This paper will only consider the present bit (0), the read-write bit (1), and the accessed bit (5), which is set to 1 by the hardware every time an entry is used, allowing the OS to determine which pieces of memory are used or unused.
+
+The page tables mapping virtual addresses to physical addresses are managed by the OS. Typically each process has its on virtul-to-physical mappings represented by its own page table, which the OS registers with the CPU by storing it in a specific register (\texttt{cr3}) as part of switching to a new process. Using different mappings, which map only disjoint portions of physical memory (with some exceptions in the next section) is how the OS ensures memory isolation between processes.
+
+If an instruction is executed that accesses a virtual address that either has no mapping, or does not have a mapping permitting the kind of access that was performed (e.g., the instruction was a memory write, but the relevant address range was marked read-only in the relevant page table entry), the hardware triggers a \emph{page fault}, transferring control to a \emph{page fault handler} registered with the hardware by the OS, allowing it to take corrective action (described in the next section).
+
+\paragraph{Virtual Memory Managers}
+\label{sec:backgroundonvmm}
+\todo{change the text}
+Most OS kernels have a component called a \emph{Virtual Memory Manager} (VMM)\footnote{Not to be confused with Virtual Machine Monitor. In this paper we focus on non-virtualized scenarios, but hardware virtualization extensions for both x86-64 and ARM make use of an additional set of page tables translating what a \emph{guest} considers to be its (virutalized) physical memory to actual physical memory. Our contributions should offer value in this scenario as well.}
+which is responsible for setting up page table mappings and for taking action when a page fault occurs. Often, a page fault indicates a bug in a program --- for example, a null pointer dereference crashes a program not because the hardware designates it an error, but because most OSes refuse to map the first 4K worth of virtual addresses, so dereferencing \texttt{NULL} results in a page fault. In such cases, the OS will terminate the program.
+
+In other cases the OS uses page faults to implement specialized functionality and optimizations. A key example of this is (confusingly) called \emph{paging}: saving room in physical RAM by waiting until memory addresses for code are accessed before copying them to RAM (saving process startup time); or copying memory that has not recently been accessed to disk (i.e., in a \emph{swap} file or partition) and marking those page table entries invalid so a future page fault will give the OS the chance to copy the relevant data back into memory when the program tries to access it again.
+
+The key pieces of functionality a VMM must implement itself, or have available in another OS component (depending on design), are
+adding a new page mapping (whether the mapped page contains zeros, file data, or swap data), and removing an existing page mapping.
+While this initially sounds like relatively modest functionality whose implementation may be complicated by hardware subtleties, a number of more serious complexities must be handled.
+
+For one, virtual addresses may \emph{alias} when more than one is mapped to the same physical memory. This can occur when a process requests it (e.g., via \texttt{mmap} or \texttt{shm\_open} on UNIX-style kernels). It also occurs automatically in most general-purpose kernels: while for normal programs the OS uses the MMU to isolate and abstract physical memory, the kernel's own functionality is often easier to implement if the kernel can directly access memory given its physical address, for example when interacting with hardware devices. For this reason, most kernels contain an \emph{identity map} of all physical memory in a machine. In some cases this is a literal identity map, where for every virtual address $p$, interpreting $p$ as a virtual address instead will map back to $p$ as a physical address. In other cases there is an offset involved, where to access physical address $p$ the kernel can access virtual address $p+\mathit{offset}$. This identity map saves the kernel the performance cost of having to continually add and remove transient mappings simply to briefly access a specific physical memory region. But this coexists with additional virtual addresses (those used by most kernel code and data structures), in a form of virtual address aliasing. Note that virtual address aliasing is both prevalent in general-purpose kernels, and violates the core assumption of most memory models assumed by verified compilers like CompCert, which assume no virtual address aliasing.
+
+Another complicating factor is that portions of page tables can be shared, i.e., trees of page tables can overlap. One common way this used to happen was for one subtree of page tables to map the kernel if linked in appropriately to a higher-level page table, and then to reuse that kernel mapping portion in every process's page tables. This was mostly phased out in the wake of Spectre
+%\mytodo{Colin finish}
+
+These dove-tail with functionality in the OS scheduler, which since it is responsible for dealing with multiple address spaces, must keep track of which virtual addresses are valid (and in what way) in which address spaces, where some virtual addresses are valid in only a single address space (e.g., a code address for a particular usermode process), while others are valid in all address spaces (e.g., kernel data structure pointers). The VMM must maintain some of these assumptions on behalf of the rest of the kernel, for example by guaranteeing that a certain range of virtual addresses (corresponding to the kernel's code and data) are valid in every address space.
+
+\paragraph{Virtualization of Disk-Blocks in Filesystems} Likewise, 
+\paragraph{Consistency of Disk Layout} ...
+\paragraph{Memory Reclamation in Client Code}...
+\paragraph{Consistency of Reclaimed Memory}...
+
+  \section{Resources in Systems Software}
+  \label{sec:systemsoft}
+   In this section, we argue the position that \emph{modalities}  
+  should be a go-to approach when specifying and verifying low-level systems code.
+  We explain how the concept of a \emph{resource context} helps guide the design of new modalities
+  for verification of systems code, and
+  we justify our perspective by discussing prior systems that have used modalities for systems verification
+  successfully, arguing that they fit into the verification design pattern we articulate,
+  and explaining how this approach might apply to other systems verification challenges.
+
+  To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
+  
+\subsection{Virtualization}
 One of the most common forms of abstraction provided by systems software is \emph{virtualization},
 which abstracts the relationship between conceptual and physical computing resources. 
 Operating System (OS) kernels virtualize memory locations and quantity (via virtual memory and paging~\cite{Denning1970VM}).
@@ -1394,19 +1441,26 @@ for something a little different.
 \label{sec:modalbackground}
 
 
-\subsubsection{Recapping Modal Operators in Program Specifications: Systems Perspective}
-The value of modal operators in program specifications is that they permit describing something that is true
-within some context(s), without needing to fully describe the context itself. Yet unlike shorthands,
-abbreviations, or general definitions, modal operators interact with the logic in systematic --- rather than ad hoc --- ways.
+\paragraph{Recapping Modal Operators in Program Specifications: Systems Perspective}
+We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
+Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
+A closely related variant of multimodal logic is \emph{dynamic logic}~\cite{pratt1976semantical}, a logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
+This same idea is used to encode Hoare triples in the Iris program logic~\cite{krebbers2017essence}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
+A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
-For example, most modal operators $M$ have the property that if $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$.
-Many modal operators distribute over conjunction, so $M(P\wedge Q)\Rightarrow (M(P) \wedge M(Q))$.
-So when a program state or behaviour can be captured by a modality, this interacts nicely with the rest of the logic
-in ways that simplify both specifications and proofs. Here we give a few examples of how this is true in
-classic work; the next section argues that this is \emph{particularly} true for systems software, because
-the concepts and reasoning that arise in low-level software are naturally captured by modalities.
+We build on ideas from \textit{hybrid logic}~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid}. Hybrid logics are a class of modal logics that add two primary new concepts to a logic. Nominals $\loc \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. We adapt these ideas to assertions of the form $\varphi @[l]\sigma$\colinsays{I still think this syntax is weird; why phi on the left? -- Iso: no answer :) right:) I will change it.} asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
+In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
+This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
+We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
 
-Although we focus on understanding the modal patterns in the program logics themselves for verifying the client programs (Section \ref{sec:definitions}), not in the logical machinery they implement, we think that it sheds light on how the modal operator utilized in the machinery of the program logics shows resemblance and can be lifted to the task of client verification. 
+\paragraph{Shallow Modalities in Iris}
+\label{sec:modal_in_iris}
+Classically modal operators are given direct semantics in terms of an underlying model, which for \iris would be a collection of \textsc{CMRA}s; this is the case for \iris's one built-in modality for step-indexing~\cite{krebbers2017essence}. However in general, many modalities can be given proof-theoretic semantics directly within a logic. This is the case for \iris's weakest precondition modality (which is defined within the \iris logic itself), as well as for a wide range of other modalities in the literature~\cite{restall2002introduction}. These modalities are typically multi-modal, with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ is typically replaced with substructural implication $\sepimp$. 
+
+This definition also reveals a subtlety about the denotation of assertions $\phi$ --- they are effectively \emph{predicates} of some kind, functions from some possible world into some logical algebra such as a BI-algebra~\cite{ohearn1999bunched}. Taking this interpretation literally gives rise to a convenient way to embed new modalities in \iris in a way well-suited to our use cases. If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the \emph{pointwise lifting} of the algebra. We will exploit this repeatedly, lifting the BI-algebra structure from \iris itself to \iris predicates used as assertions within our own modalities. 
+Connecting this to \iris's typeclasses for interactive proofs~\cite{krebbers-17} then permits working within the embedded logic as in \iris.
+
+In addition, the modal definitions themselves may represent ownership of resources in a substructural setting~\cite{restall1993modalities,dovsen1992modal,kamide2002kripke}. This will allow our modalities to simultaneously represent ownership of certain resources used for interpreting the modality itself, as well as whatever resource ownership is implied by the modal argument.
 \paragraph{Temporal Operators}
 The best known class of modal logics in the systems community is undoubtedly temporal logics (whether \textsc{LTL}~\cite{pnueli1977temporal}, \textsc{CTL}~\cite{emerson1982using}, \textsc{TLA}~\cite{lamport1994temporal}, or others),
 due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
