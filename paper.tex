@@ -1312,41 +1312,8 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
 %\maketitle
-\section{Introduction}\label{sec:intro}
-\todo[inline]{Colin says: These comments aren't the only places things need to change, but they're
-specific places I have suggestions.
-One thing to keep in mind is that the CfP lists two kinds of papers:
-short papers are for "original research or case studies, maybe in the incubation phase,"
-while long papers are for "original research, case studies, or surveys."
-This is clearly in the survey category, so we (a) should take advantage of the extra space to
-explain things clearly (15 pages, plus 2 pages for bibliography), and (b) lean into the survey nature explicitly.
-}
-Low-level systems exhibit certain patterns in their designs, especially when interacting with computing resources. Exploiting certain patterns while designing software has been an important field of study. In this regard, we think that certain properties of modalities enable us to understand and do the verification challenges that show certain patterns.
-\todo[inline]{I think one of the biggest things we can do to reframe this is to explain the broader vision
-here before jumping into contributions.
-This is an audience that knows dynamic logic and modal logic more broadly, but perhaps not everyone is familiar
-with hybrid logic, and many will not be familiar with systems concepts.
-This is the place to provide high-level intuition about the domain we're surveying, tailored for this audience.
-I'd talk about dynamic logic in general, but then highlight the need for reasoning specific to certain
-compute resources to produce manageable specifications and proofs.
-Think big picture: why is this space interesting to logicians?
-}
 
-\subsection{Contributions to Identifying the Verification Patterns via Modal Abstractions}
-We argue how modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
-
-\paragraph{Identifying System Verification Challenges} We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
-\paragraph{Introducing the Concept of \emph{Resource}} Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
-\paragraph{Introducing the Concept of \emph{Nominals}}
-\todo[inline]{Colin says: I'd reframe the way nominals are introduced. This discussion is good,
-but is a "systems-first" explanation. At least some of this audience will already know
-what classic nominals are, so need to be shown naming specific resources as an application
-of what they already know. (And some readers will need a very short intro/refresher.)
-}
-Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
-\paragraph{Taxonomy of the Current Modal Approaches in System Verification} Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
-
-\section{Background on Low-Level Systems}
+\section{Introduction}
 Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
   \todo[inline]{this section is already nice for introducing the ideas and what you mean by "systems software."
   This section mostly needs a little more background on systems concepts like virtual memory, or what it means
@@ -1360,6 +1327,50 @@ And because hardware is complex and highly diverse, the implementation of those 
 of the software stack is typically intricate and naturally error-prone, despite how critical its correctness is.
 Typically systems software has, as a primary focus, the task of \emph{abstracting} from hardware details to simplify 
 the construction of higher layers of the stack.
+\subsection{Hybrid Logic Dynamic Logic and Nominals in Program Logics}
+\label{sec:modalbackground}
+
+
+\paragraph{Dynamic Logic's Satisfaction Operator for Program Logics}
+We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
+Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
+A closely related variant of multimodal logic is \emph{dynamic logic}~\cite{pratt1976semantical}, a logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
+This same idea is used to encode Hoare triples in the Iris program logic~\cite{krebbers2017essence}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
+A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
+
+\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\loc \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. We adapt these ideas to assertions of the form $@[l]\varphi$asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
+In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
+%This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
+%We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
+\paragraph{Temporal Operators}
+The best known class of modal logics in the systems community is undoubtedly temporal logics (whether \textsc{LTL}~\cite{pnueli1977temporal}, \textsc{CTL}~\cite{emerson1982using}, \textsc{TLA}~\cite{lamport1994temporal}, or others),
+due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
+distributed algorithms \cite{ongaro2014search,ailijiang2019wpaxos}.
+\paragraph{Nominalization}
+Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
+This naming generally resembles
+the \emph{satisfaction} operator of 
+\emph{hybrid logic}~\cite{blackburn1995hybrid,areces2001hybrid}: $@_\iota P$ which evaluates the truth of $P$ at the named (Kripke model) state $\iota$. For this reason we refer to the general idea of naming circumstances explicitly as \emph{nominalization},
+even though the examples we discuss are not necessarily actually hybrid logics.
+
+An example utilization of state naming explicitly on the assertion appears in program logics such as Iris~\cite{jung2018iris}, which enables encoding of usage protocols (e.g. state transition system) resembling typestate~\cite{strom1986typestate,garcia2014foundations} as specifications. Protocol assertions are \emph{annotated with the name of the last (abstract) state at which the protocol is ensured}.
+An example more familiar to the systems community is Halpern et al.'s history of adapting modal logics of
+knowledge to deal with distributed systems~\cite{halpern1990knowledge,halpern1989modelling,halpern2017reasoning}.
+In most of that line of work, $\mathcal{K}_a(P)$ indicates that the node $a$ in the system \emph{knows} or \emph{possesses knowledge of} $P$
+(for example, a Raft node may ``know'' a lower bound on the commit index).
+Alternatively, a modality $@_i(P)$ may represent that $P$ is true of/at the specific node $i$~\cite{gordon2019modal} (e.g., that node $i$ has stored a certain
+piece of data to reliable storage).
+These permit capturing specific concepts relevant to the correctness (and reasoning about correctness) of a certain class of systems,
+involving facts about specific named entities in the system.
+\\
+
+In each of these cases, the fact that these facts are described using modalities with the core modal property $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$ means, for example, that if a
+process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
+no extra work is required to conclude that the node knows it is greater than 3 (i.e., that $\mathcal{K}_p(\mathsf{commitIndex} > 3)$),
+because this follows from standard properties of modal operators as described above.
+In contrast, if verification instead used a custom assertion $\mathsf{minCommitIndex}(5)$ to represent the former knowledge,
+one would need to separately provide custom reasoning to conclude $\mathsf{minCommitIndex}(3)$.
+
 \subsection{Virtualization in Systems Software}
 \label{sec:background}
 \paragraph{Virtualization of Memory Locations}
@@ -1408,7 +1419,43 @@ The OS scheduler, since it is responsible for dealing with multiple address spac
 
 \subsection{Speculative Observation in Systems Software}
 \label{sec:speculativeobservation}
+\section{Introduction}\label{sec:intro}
+\todo[inline]{Colin says: These comments aren't the only places things need to change, but they're
+specific places I have suggestions.
+One thing to keep in mind is that the CfP lists two kinds of papers:
+short papers are for "original research or case studies, maybe in the incubation phase,"
+while long papers are for "original research, case studies, or surveys."
+This is clearly in the survey category, so we (a) should take advantage of the extra space to
+explain things clearly (15 pages, plus 2 pages for bibliography), and (b) lean into the survey nature explicitly.
+}
 
+\todo[inline]{I think one of the biggest things we can do to reframe this is to explain the broader vision
+here before jumping into contributions.
+This is an audience that knows dynamic logic and modal logic more broadly, but perhaps not everyone is familiar
+with hybrid logic, and many will not be familiar with systems concepts.
+This is the place to provide high-level intuition about the domain we're surveying, tailored for this audience.
+I'd talk about dynamic logic in general, but then highlight the need for reasoning specific to certain
+compute resources to produce manageable specifications and proofs.
+Think big picture: why is this space interesting to logicians?
+}
+
+\subsection{Conclusion \& Contributions}
+
+\paragraph{Conclusion} Low-level systems exhibit certain patterns in their designs, especially when interacting with computing resources. Exploiting certain patterns while designing software has been an important field of study. In this regard, we think that certain properties of modalities enable us to understand and do the verification challenges that show certain patterns.
+
+\paragraph{Contributions} We argue how modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
+\begin{itemize}
+\item \textbf{Identifying System Verification Challenges}: We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
+\item \textbf{Introducing the Concept of \emph{Resource}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
+\item \textbf{Introducing the Concept of \emph{Nominals}}:
+\todo[inline]{Colin says: I'd reframe the way nominals are introduced. This discussion is good,
+but is a "systems-first" explanation. At least some of this audience will already know
+what classic nominals are, so need to be shown naming specific resources as an application
+of what they already know. (And some readers will need a very short intro/refresher.)
+}
+Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
+\item \textbf{Taxonomy of the Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
+\end{itemize}
 \section{Resources in Systems Software}
 \label{sec:systemsoft}
 In this section, we argue the position that \emph{modalities}  
@@ -1453,49 +1500,12 @@ You don't need to define modalities here, but do need to give initially the clas
 (name for a Kripke world) before bridging the gap to using the concept of naming
 for something a little different.
 }
-\subsection{Hybrid Logic Dynamic Logic and Nominals in Program Logics}
-\label{sec:modalbackground}
 
 
-\paragraph{Dynamic Logic's Satisfaction Operator for Program Logics}
-We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
-Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
-A closely related variant of multimodal logic is \emph{dynamic logic}~\cite{pratt1976semantical}, a logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
-This same idea is used to encode Hoare triples in the Iris program logic~\cite{krebbers2017essence}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
-A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
-
-\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\loc \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. We adapt these ideas to assertions of the form $@[l]\varphi$asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
-In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
-%This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
-%We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
-\paragraph{Temporal Operators}
-The best known class of modal logics in the systems community is undoubtedly temporal logics (whether \textsc{LTL}~\cite{pnueli1977temporal}, \textsc{CTL}~\cite{emerson1982using}, \textsc{TLA}~\cite{lamport1994temporal}, or others),
-due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
-distributed algorithms \cite{ongaro2014search,ailijiang2019wpaxos}.
-\paragraph{Nominalization}
-Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
-This naming generally resembles
-the \emph{satisfaction} operator of 
-\emph{hybrid logic}~\cite{blackburn1995hybrid,areces2001hybrid}: $@_\iota P$ which evaluates the truth of $P$ at the named (Kripke model) state $\iota$. For this reason we refer to the general idea of naming circumstances explicitly as \emph{nominalization},
-even though the examples we discuss are not necessarily actually hybrid logics.
-
-An example utilization of state naming explicitly on the assertion appears in program logics such as Iris~\cite{jung2018iris}, which enables encoding of usage protocols (e.g. state transition system) resembling typestate~\cite{strom1986typestate,garcia2014foundations} as specifications. Protocol assertions are \emph{annotated with the name of the last (abstract) state at which the protocol is ensured}.
-An example more familiar to the systems community is Halpern et al.'s history of adapting modal logics of
-knowledge to deal with distributed systems~\cite{halpern1990knowledge,halpern1989modelling,halpern2017reasoning}.
-In most of that line of work, $\mathcal{K}_a(P)$ indicates that the node $a$ in the system \emph{knows} or \emph{possesses knowledge of} $P$
-(for example, a Raft node may ``know'' a lower bound on the commit index).
-Alternatively, a modality $@_i(P)$ may represent that $P$ is true of/at the specific node $i$~\cite{gordon2019modal} (e.g., that node $i$ has stored a certain
-piece of data to reliable storage).
-These permit capturing specific concepts relevant to the correctness (and reasoning about correctness) of a certain class of systems,
-involving facts about specific named entities in the system.
-\\
-
-In each of these cases, the fact that these facts are described using modalities with the core modal property $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$ means, for example, that if a
-process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
-no extra work is required to conclude that the node knows it is greater than 3 (i.e., that $\mathcal{K}_p(\mathsf{commitIndex} > 3)$),
-because this follows from standard properties of modal operators as described above.
-In contrast, if verification instead used a custom assertion $\mathsf{minCommitIndex}(5)$ to represent the former knowledge,
-one would need to separately provide custom reasoning to conclude $\mathsf{minCommitIndex}(3)$.
+\section{Contingency Decomposition of a System}
+\todo[inline]{Colin says: I don't think this section needs to change much,
+but it should be read carefully with the new audience in mind,
+possibly giving more details on what systems concepts each system is dealing with, for a non-systems audience.}
 \paragraph{Shallow Modalities in Iris Separation Logic}
 \label{sec:modal_in_iris}
 Classically modal operators are given direct semantics in terms of an underlying model, which for \textsf{Iris} would be a collection of \textsc{CMRA}s; this is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{krebbers2017essence}. However in general, many modalities can be given proof-theoretic semantics directly within a logic. This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} logic itself), as well as for a wide range of other modalities in the literature~\cite{restall2002introduction}. These modalities are typically multi-modal, with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ is typically replaced with substructural implication $\sepimp$. 
@@ -1504,38 +1514,6 @@ This definition also reveals a subtlety about the denotation of assertions $\phi
 Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{krebbers-17} then permits working within the embedded logic as in \textsf{Iris}.
 
 In addition, the modal definitions themselves may represent ownership of resources in a substructural setting~\cite{restall1993modalities,dovsen1992modal,kamide2002kripke}. This will allow our modalities to simultaneously represent ownership of certain resources used for interpreting the modality itself, as well as whatever resource ownership is implied by the modal argument.
-\paragraph{Modal Abstractions for Recursive Trees Structure with Nominals}
-\label{sec:overviewnode}
-
-To reason about states of trees and subtrees in particular, we work with a modality for stating an assertion that is true \emph{of all nodes within a tree}, identifying the tree by a root note. We refer to the resources that provide the context of these modal assertions as the \emph{modal context}; for a recursively defined tree like those in \textsf{Modfs}, these contexts are recursively defined in terms of the tree structure.
-
-%We define the modal context as the resources (e.g. a btree node tree, free page id list) which are accessed under some relation defined within the modal definition (e.g. being children of a cursor node). The choice of modal context can be structurally dependent on the semantics, in our case \textsc{CoW} semantics.
-
-Write amplification traverses the overall tree depth-first, transforming the tree from the bottom up, one full subtree at a time. Each time a node is split, it results in disconnecting some nodes from the next snapshot, sharing other nodes, and linking some newly-allocated nodes into the new snapshot, as in Figure \ref{fig:cow_index_tree_update}. Nodes are split (or deemed not to require splitting) one at a time, and considered only after all child nodes have been amplified. Concepually this means the amplification code's proof must track the fact that at any point in time, there are regions of the tree where each node has already been amplified (e.g., $\phi_{\textsf{amplified}}$ definitely holds for that node), and regions where nodes may or may not require amplification, and this will not be known until those nodes are visited (i.e., some basic validity $\phi_{\textsf{valid}}$ is known to hold, but not the stronger $\phi_{\textsf{amplified}}$).
-
-%\setlength\intextsep{0pt}
-\begin{wrapfigure}{r}{0.25\textwidth}
-  \centering  \includegraphics[width=0.25\textwidth]{entail.png}
-  \caption{Understanding the level of $\varphi$ satisfaction in the \textsc{CoW} tree of modal nodes}
-   \label{fig:nodeentail} 
-\end{wrapfigure}
-We use a modality similar to $\text{\faSitemap}@[\ell]\phi$ to indicate that $\phi$ is true of the tree node rooted at $\ell$, as well as at \emph{all reachable children} of that node.
-This means that establishing a particular $\phi$ throughout a tree must be done in a bottom-up manner (see Figure \ref{fig:nodeentail}).
-Capturing this modally, rather than with more typical ad-hoc hand-crafted invariants, offers advantages in a number of proof steps, in addition to concisely capturing intuitive reasoning about subtrees with all nodes satisfying a particular property. One basic example is that while the actual disk sync code requires the full filesystem tree to be in an amplified state (hence write amplification), most of the filesystem works with more general trees. Since $\phi_{\textsf{amplified}}\vdash\phi_{\textsf{valid}}$, using our \faSitemap modality we can conclude $\text{\faSitemap}@[\ell]\phi_{\textsf{amplified}}\vdash\text{\faSitemap}@[\ell]\phi_{\textsf{valid}}$ by an analogue of Axiom K.
-There are also other places in the code where a subtree satisfying a stronger assertion at all nodes must be linked into a larger tree satisfying only a weaker assertion overall: predicate representing the valid tree as the tree of nodes which are backed by resources allocated pages, i.e. $\phi_{\textsf{valid}}$, is weaker than the predicate representing the tree of nodes being currently amplified in the current snapshot. Again, the same reasoning principle makes this straightforward. As alluded to earlier, our $\phi_{\textsf{amplified}}$ and company are in fact \emph{predicates} parameterized by a choice of node, though by lifing \textsf{Iris}'s BI structure they can use all of the standard separation logic connectives. The rest of this subsection develops this modality in full detail.
-%\colinsaysinl{I cut some text here about the three-way split (commented out) that I wasn't sure how to use, but maybe I deleted something important?}
-%To put it concretely, as shown in Figure \ref{fig:cow_index_tree.JPG}, \textsc{CoW} semantics determine what we can claim on the structure of the filesystem indexing tree:
-%\begin{itemize}
-%\item The bottom-up direction splits the tree into the two half at the cursor node: 1. the bottom part accessible from the cursor node and per-node-amplification is reflected in case needed 2. the upper part on which amplifcation has not reflected yet. 
-%\item Horizontally, amplifcation path splits the bottom part of the tree into three different contexts: untouched tree nodes, nodes on the amplification path, and the ones generated as part of node splitting. 
-%\end{itemize}
-%Based on these two observations, in fact, bottom-up amplification determines the choice of modal context by giving the boundries of \textit{any claimable knowledge} (e.g. $\varphi_{\textsf{amplified}}$, $\varphi_{\textsf{untouched}}$): a subtree bounded by the cursor node.
-
-
-\section{Contingency Decomposition of a System}
-\todo[inline]{Colin says: I don't think this section needs to change much,
-but it should be read carefully with the new audience in mind,
-possibly giving more details on what systems concepts each system is dealing with, for a non-systems audience.}
 
 \subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
@@ -1651,6 +1629,33 @@ technical constraints that are unrelated to our point here.}
 %descriptions of program state at some moment in time.
 %Not all use cases for modal assertions require an ambiance, only those where the modality corresponds to modes of execution.
 %
+\paragraph{Modal Abstractions for Recursive Trees Structure with Nominals}
+\label{sec:overviewnode}
+
+To reason about states of trees and subtrees in particular, we work with a modality for stating an assertion that is true \emph{of all nodes within a tree}, identifying the tree by a root note. We refer to the resources that provide the context of these modal assertions as the \emph{modal context}; for a recursively defined tree like those in \textsf{Modfs}, these contexts are recursively defined in terms of the tree structure.
+
+%We define the modal context as the resources (e.g. a btree node tree, free page id list) which are accessed under some relation defined within the modal definition (e.g. being children of a cursor node). The choice of modal context can be structurally dependent on the semantics, in our case \textsc{CoW} semantics.
+
+Write amplification traverses the overall tree depth-first, transforming the tree from the bottom up, one full subtree at a time. Each time a node is split, it results in disconnecting some nodes from the next snapshot, sharing other nodes, and linking some newly-allocated nodes into the new snapshot, as in Figure \ref{fig:cow_index_tree_update}. Nodes are split (or deemed not to require splitting) one at a time, and considered only after all child nodes have been amplified. Concepually this means the amplification code's proof must track the fact that at any point in time, there are regions of the tree where each node has already been amplified (e.g., $\phi_{\textsf{amplified}}$ definitely holds for that node), and regions where nodes may or may not require amplification, and this will not be known until those nodes are visited (i.e., some basic validity $\phi_{\textsf{valid}}$ is known to hold, but not the stronger $\phi_{\textsf{amplified}}$).
+
+%\setlength\intextsep{0pt}
+\begin{wrapfigure}{r}{0.25\textwidth}
+  \centering  \includegraphics[width=0.25\textwidth]{entail.png}
+  \caption{Understanding the level of $\varphi$ satisfaction in the \textsc{CoW} tree of modal nodes}
+   \label{fig:nodeentail} 
+\end{wrapfigure}
+We use a modality similar to $\text{\faSitemap}@[\ell]\phi$ to indicate that $\phi$ is true of the tree node rooted at $\ell$, as well as at \emph{all reachable children} of that node.
+This means that establishing a particular $\phi$ throughout a tree must be done in a bottom-up manner (see Figure \ref{fig:nodeentail}).
+Capturing this modally, rather than with more typical ad-hoc hand-crafted invariants, offers advantages in a number of proof steps, in addition to concisely capturing intuitive reasoning about subtrees with all nodes satisfying a particular property. One basic example is that while the actual disk sync code requires the full filesystem tree to be in an amplified state (hence write amplification), most of the filesystem works with more general trees. Since $\phi_{\textsf{amplified}}\vdash\phi_{\textsf{valid}}$, using our \faSitemap modality we can conclude $\text{\faSitemap}@[\ell]\phi_{\textsf{amplified}}\vdash\text{\faSitemap}@[\ell]\phi_{\textsf{valid}}$ by an analogue of Axiom K.
+There are also other places in the code where a subtree satisfying a stronger assertion at all nodes must be linked into a larger tree satisfying only a weaker assertion overall: predicate representing the valid tree as the tree of nodes which are backed by resources allocated pages, i.e. $\phi_{\textsf{valid}}$, is weaker than the predicate representing the tree of nodes being currently amplified in the current snapshot. Again, the same reasoning principle makes this straightforward. As alluded to earlier, our $\phi_{\textsf{amplified}}$ and company are in fact \emph{predicates} parameterized by a choice of node, though by lifing \textsf{Iris}'s BI structure they can use all of the standard separation logic connectives. The rest of this subsection develops this modality in full detail.
+%\colinsaysinl{I cut some text here about the three-way split (commented out) that I wasn't sure how to use, but maybe I deleted something important?}
+%To put it concretely, as shown in Figure \ref{fig:cow_index_tree.JPG}, \textsc{CoW} semantics determine what we can claim on the structure of the filesystem indexing tree:
+%\begin{itemize}
+%\item The bottom-up direction splits the tree into the two half at the cursor node: 1. the bottom part accessible from the cursor node and per-node-amplification is reflected in case needed 2. the upper part on which amplifcation has not reflected yet. 
+%\item Horizontally, amplifcation path splits the bottom part of the tree into three different contexts: untouched tree nodes, nodes on the amplification path, and the ones generated as part of node splitting. 
+%\end{itemize}
+%Based on these two observations, in fact, bottom-up amplification determines the choice of modal context by giving the boundries of \textit{any claimable knowledge} (e.g. $\varphi_{\textsf{amplified}}$, $\varphi_{\textsf{untouched}}$): a subtree bounded by the cursor node.
+
 \subsection{Nominalization}
 Finally, another design point is the question of whether or not resource element assertions must explicitly track
 their corresponding context, or if they implicitly pick up their context from where they are used.
