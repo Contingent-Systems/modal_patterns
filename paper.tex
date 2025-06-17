@@ -1373,6 +1373,23 @@ one would need to separately provide custom reasoning to conclude $\mathsf{minCo
 
 \subsection{Virtualization in Systems Software}
 \label{sec:background}
+One of the most common forms of abstraction provided by systems software is \emph{virtualization},
+which abstracts the relationship between conceptual and physical computing resources. 
+Operating System (OS) kernels virtualize memory locations and quantity (via virtual memory and paging~\cite{Denning1970VM}).
+Distributed language runtimes may virtualize addresses, even when processes may migrate across machines~\cite{jul1988fine}.
+Filesystems virtualize locations on disk~\cite{rodeh2013btrfs,hitz1994file,Rosenblum1992LFS,bonwick2003zettabyte}.
+Programs built on top of the corresponding systems software layer work logically at the level of these virtualized resources,
+and it makes sense to specify the systems software directly in terms of those abstractions.
+\paragraph{Access by Translation}
+Accessing virtualized resources via translation is a common way to virtualize notions of location (e.g.,
+virtual memory addresses, inodes or object IDs instead of disk addresses~\cite{bonwick2003zettabyte,hitz1994file,Rosenblum1992LFS,rodeh2013btrfs}).
+%Accessing the hardware resources in the presence of sharing means having more resource references (references to the virtualized resources) to access the \emph{mapped} resources that are physical and potentially fewer. 
+B-trees, page tables, and related structures both behave like maps, when the corresponding physical resources exist as such
+just in a different location.
+Control over the lookup process (e.g, handling the case of a missing translation entry) allows for additional flexibility,
+such as filling holes in sparse files, or demand paging (both from disk or lazily populating anonymous initially-zeroed mappings).
+Although the realization of these maps may differ from a system to system based on the context (and sometimes hardware details),
+they are semantically --- logically --- partial maps, worth treating as such in verification.
 \paragraph{Virtualization of Memory Locations}
 \label{sec:backgroundonmachinemodel}
 \todo{change the text}
@@ -1437,17 +1454,18 @@ As an example, Figure \ref{fig:cow_index} shows that an update to the file $\tex
 
 After this process, traversing the filesystem from either the old or new root yields consistent views of the filesystem at different points in time, each commonly referred to as a \emph{snapshot}.
 These snapshots overlap on the unmodified portions of the filesystem (the left-most grid section), with the reclaimed the chunks (the middle gray section) becoming available for reuse once the new snapshot becomes the official current state of the filesystem.\footnote{Many of these filesystems permit keeping archived snapshots of the filesystem state, e.g., a snapshot of the system every hour up to a certain number of days, to support user data recovery. In these cases only disk regions that are not still in use by an archived snapshot are reclaimed.}. This permits the filesystem to atomically switch between consistent on-disk states, by updating the oldest so-called \emph{super} chunk at a fixed location on disk.\footnote{Filesystems must take care to ensure that possibly-flaky hardware truly does perform an atomic update.} Super chunks, as we see in Figure \ref{fig:cow_index} as ($\textsf{Super}_0$ and $\textsf{Super}_1$), are the first two blocks of the disk dedicated to keep the state of the file system which is composed of some meta-data on the filesystem, and most importantly to the root chunk of the file system index-tree. Therefore, in case of a crash during the update to the \textsf{file "foo"}, we can reboot the file system from the previous persisted root, \textsf{root chunk}, via reading the $\textsf{Super}_0$. This means the whole disk consistency checks are unnecessary when recovering from a crash~\cite{bonwick2003zettabyte,hitz1994file}; recovery is immediate, as opposed to requiring hours or days~\cite{henson2006reducing,agrawal2009speedy} (or longer~\cite{henson2006chunkfs}) for recovering a large volume’s consistency from logs. 
-An important additional subtlety with this kind of filesystem is \emph{when} blocks in the reclaimed region can actually be reused: only \emph{after} the snapshot that made those blocks ``free'' has been completely written to disk. Allowing reuse before this could result in in-place updates: part of the new snapshot could attempt to store data in space used by the prior snapshot, allowing inconsistent on-disk structures. This means the filesystem must carefully track not only what blocks are reclaimed, but \emph{when} they are safe to reuse, making the \textsf{Freelist} component of \textsf{Modfs} and other \textsf{Roqc} filesystems non-trivial.
-With their intricate semantics and critical place in modern systems, formal verification of functional correctness for storage systems (including filesystems and other kinds of storage) have drawn much attention~\cite{ntzik-gardner-15,ntzik2018concurrent,chen-crash-16}\todo{lots more cites}. Unlike our \textsc{CoW} filesystem \textsf{ModFs} which allocates new chunks and rewrites all the nodes from leaf to root on the write-amplification path, some filesystems allows in-place updates to handle the heavy workloads more efficiently in principle. Unlike \textsc{CoW} filesystems, filesystems with in-place updates need to implement some form of \emph{journalling} to ensure that a crash partway through an in-place update can be rolled back (using an undo journal that records the original contents before modification) or completed (using a write-ahead journal that first writes new data in unused space before \emph{also} updating in place).\footnote{\textsf{CoW} filesystems can be viewed as a twist on write-ahead journals that uses the journal as the actual data once written to a fresh location, thereby reclaiming the original location. This results in a performance and complexity trade-off: journalling writes twice for every updated block and requires recovery logic to roll back or re-execute the log, while \textsf{CoW} techniques write each update only once and require slightly more intricate allocation strategies to compact fragmentation.}
+An important additional subtlety with this kind of filesystem is \emph{when} blocks in the reclaimed region can actually be reused: only \emph{after} the snapshot that made those blocks ``free'' has been completely written to disk. Allowing reuse before this could result in in-place updates: part of the new snapshot could attempt to store data in space used by the prior snapshot, allowing inconsistent on-disk structures. 
 \begin{figure}
     \includegraphics[width=\columnwidth]{journalling.png}
     \caption{A Filesystem Utilizing \emph{Journalling} for Consistent Disk-Layout ~\cite{chajed2021gojournal}}
     \label{fig:journal}
 \end{figure}
 
-\paragraph{Different Models in Ensuring Disk Consistency of Filesystems}In-place updating filesystems with journalling components have been specified and verified with an extended Hoare Logic to specify not only the pre/post conditions of the operations successful operations in the filesystem, but also the crash condition~\cite{chen-crash-16,chen2017verifying}, with later work extending this for concurrent filesystem implementations~\cite{chajed2021gojournal}. \textsf{Perennial}~\cite{chajed2019verifying} extends the weakest precondition of the \textsf{Iris} separation logic~\cite{jung2018iris,krebbers2017essence} to allow asserting facts about disk state at crashes (the \emph{crash condition}) and apply this extension to a journalling filesystem \textsf{GoJournal}~\cite{chajed2021gojournal}. Unlike \textsf{GoJournal}, \textsf{ModFs} relies on \textsf{CoW} semantics for consistency, eliminating the need for recovery logic.
+\paragraph{Different Models in Ensuring Disk Consistency of Filesystems}
+With their intricate semantics and critical place in modern systems, formal verification of functional correctness for storage systems (including filesystems and other kinds of storage) have drawn much attention~\cite{ntzik-gardner-15,ntzik2018concurrent,chen-crash-16}\todo{lots more cites}. Unlike our \textsc{CoW} filesystem \textsf{ModFs} which allocates new chunks and rewrites all the nodes from leaf to root on the write-amplification path, some filesystems allows in-place updates to handle the heavy workloads more efficiently in principle. Unlike \textsc{CoW} filesystems, filesystems with in-place updates need to implement some form of \emph{journalling} to ensure that a crash partway through an in-place update can be rolled back (using an undo journal that records the original contents before modification) or completed (using a write-ahead journal that first writes new data in unused space before \emph{also} updating in place).\footnote{\textsf{CoW} filesystems can be viewed as a twist on write-ahead journals that uses the journal as the actual data once written to a fresh location, thereby reclaiming the original location. This results in a performance and complexity trade-off: journalling writes twice for every updated block and requires recovery logic to roll back or re-execute the log, while \textsf{CoW} techniques write each update only once and require slightly more intricate allocation strategies to compact fragmentation.}
+
 Essentially, successfully writing the new superblock for a new snapshot is analagous to completing a valid journal entry, except it \emph{also} has the effect of updating the live filesystem data due to making the ``journal entries'' valid filesystem data and metadata blocks (an idea that goes back to early work on log-structured filesystems~\cite{Rosenblum1992LFS}).
-In fact, we can think of the atomicity of the recovery from the crash state conceptually equal to the single block disk write persisting the change from $\textsf{Super}_0$ to $\textsf{Super}_1$ in Figure \ref{fig:cow_index_tree_update}, therefore, considering \textsc{CoW} semantics, we do not need to consider the specification and proof of crash condition separately; instead a global never-violated invariant (not even temporarily broken) of the filesystem ensures the on-disk state is always consistent.
+In fact, we can think of the atomicity of the recovery from the crash state conceptually equal to the single block disk write persisting the change from $\textsf{Super}_0$ to $\textsf{Super}_1$ in Figure \ref{fig:cow_index}, therefore, considering \textsc{CoW} semantics, we do not need to consider the specification and proof of crash condition separately; instead a global never-violated invariant (not even temporarily broken) of the filesystem ensures the on-disk state is always consistent.
 \paragraph{Memory Reclamation in Client Code} In a typical configuration, allocating, deallocating and referencing memory locations for a client code leave the memory layout in a form of DAG (directed-asyclic-graph) with a unique root which resembles the first stack pointer referencing the allocated memory. To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cow_index}, from which a path is created for a stack pointer reference to the allocated memory. To reclaim the allocated memory location that is no longer being accessed, systems uses a well-known method called \emph{reference-counting} in which a new reference to the allocated memory increases the reference counter on it w.r.t a certain regime. 
 \paragraph{Consistency of Reclaimed Memory} A sound memory reclamation is based on the conditions where the unique is not \emph{shared}, and there is no \emph{reachability} from the root to any the references pointing to the allocated memory. Once the requirements are satisfied then the memory location can be reclaimed \emph{soundly} -- i.e., without violating any access through a reference to it.
 \paragraph{Buffering} Buffering is a technique used in variety of systems (filesystem page caching, write buffer in multi-processor architectures, translation-lookaside-buffers for translated addresses etc.) to delay the costly operation (committing file pages, flushing buffered writes from write-cache to memory etc.) making updates consistent.
@@ -1468,38 +1486,12 @@ of what they already know. (And some readers will need a very short intro/refres
 Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
 \item \textbf{Taxonomy of the Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
 \end{itemize}
-\section{Resources in Systems Software}
-\label{sec:systemsoft}
-In this section, we argue the position that \emph{modalities}  
-should be a go-to approach when specifying and verifying low-level systems code.
-We explain how the concept of a \emph{resource context} helps guide the design of new modalities
-for verification of systems code, and
-we justify our perspective by discussing prior systems that have used modalities for systems verification
-successfully, arguing that they fit into the verification design pattern we articulate,
-and explaining how this approach might apply to other systems verification challenges.
+%\section{Resources in Systems Software}
+%\label{sec:systemsoft}
 
-To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
-  
-\subsection{Virtualization}
-One of the most common forms of abstraction provided by systems software is \emph{virtualization},
-which abstracts the relationship between conceptual and physical computing resources. 
-Operating System (OS) kernels virtualize memory locations and quantity (via virtual memory and paging~\cite{Denning1970VM}).
-Distributed language runtimes may virtualize addresses, even when processes may migrate across machines~\cite{jul1988fine}.
-Filesystems virtualize locations on disk~\cite{rodeh2013btrfs,hitz1994file,Rosenblum1992LFS,bonwick2003zettabyte}.
-Programs built on top of the corresponding systems software layer work logically at the level of these virtualized resources,
-and it makes sense to specify the systems software directly in terms of those abstractions.
-\paragraph{Access by Translation}
-Accessing virtualized resources via translation is a common way to virtualize notions of location (e.g.,
-virtual memory addresses, inodes or object IDs instead of disk addresses~\cite{bonwick2003zettabyte,hitz1994file,Rosenblum1992LFS,rodeh2013btrfs}).
-%Accessing the hardware resources in the presence of sharing means having more resource references (references to the virtualized resources) to access the \emph{mapped} resources that are physical and potentially fewer. 
-B-trees, page tables, and related structures both behave like maps, when the corresponding physical resources exist as such
-just in a different location.
-Control over the lookup process (e.g, handling the case of a missing translation entry) allows for additional flexibility,
-such as filling holes in sparse files, or demand paging (both from disk or lazily populating anonymous initially-zeroed mappings).
-Although the realization of these maps may differ from a system to system based on the context (and sometimes hardware details),
-they are semantically --- logically --- partial maps, worth treating as such in verification. 
 
-\subsection{Speculation in Consistency} \todo{speak about the weak-mem modalities in here.}
+
+%\subsection{Speculation in Consistency} \todo{speak about the weak-mem modalities in here.}
 %\subsection{Sharing} Sharing is one of the fundamental reasons for kernels to {virtualize} resources,
 %for creating the illusion of exclusive access to virtualized versions of shared resources, including CPU time (via preemption).
 %An implementation of sharing relies on two concepts: \emph{indirection} and \emph{coordination}. Indirection is a method that allows the mapping of resources of one type into another. By doing so, it allows treating the limited resources (e.g. hardware resources such as physical memory) as if there are more than they actually are (e.g. via virtual memory addresses and paging). Consequently, virtualization for the sake of ensuring availability requires \emph{sharing} of the resources that exist in reality.
@@ -1514,6 +1506,16 @@ for something a little different.
 }
 
 \section{Contingency Decomposition of a System}
+In this section, we argue the position that \emph{modalities}  
+should be a go-to approach when specifying and verifying low-level systems code.
+We explain how the concept of a \emph{resource context} helps guide the design of new modalities
+for verification of systems code, and
+we justify our perspective by discussing prior systems that have used modalities for systems verification
+successfully, arguing that they fit into the verification design pattern we articulate,
+and explaining how this approach might apply to other systems verification challenges.
+
+To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
+  
 \todo[inline]{Colin says: I don't think this section needs to change much,
 but it should be read carefully with the new audience in mind,
 possibly giving more details on what systems concepts each system is dealing with, for a non-systems audience.}
@@ -1647,7 +1649,7 @@ To reason about states of trees and subtrees in particular, we work with a modal
 
 %We define the modal context as the resources (e.g. a btree node tree, free page id list) which are accessed under some relation defined within the modal definition (e.g. being children of a cursor node). The choice of modal context can be structurally dependent on the semantics, in our case \textsc{CoW} semantics.
 
-Write amplification traverses the overall tree depth-first, transforming the tree from the bottom up, one full subtree at a time. Each time a node is split, it results in disconnecting some nodes from the next snapshot, sharing other nodes, and linking some newly-allocated nodes into the new snapshot, as in Figure \ref{fig:cow_index_tree_update}. Nodes are split (or deemed not to require splitting) one at a time, and considered only after all child nodes have been amplified. Concepually this means the amplification code's proof must track the fact that at any point in time, there are regions of the tree where each node has already been amplified (e.g., $\phi_{\textsf{amplified}}$ definitely holds for that node), and regions where nodes may or may not require amplification, and this will not be known until those nodes are visited (i.e., some basic validity $\phi_{\textsf{valid}}$ is known to hold, but not the stronger $\phi_{\textsf{amplified}}$).
+Write amplification traverses the overall tree depth-first, transforming the tree from the bottom up, one full subtree at a time. Each time a node is split, it results in disconnecting some nodes from the next snapshot, sharing other nodes, and linking some newly-allocated nodes into the new snapshot, as in Figure \ref{fig:cow_index}. Nodes are split (or deemed not to require splitting) one at a time, and considered only after all child nodes have been amplified. Concepually this means the amplification code's proof must track the fact that at any point in time, there are regions of the tree where each node has already been amplified (e.g., $\phi_{\textsf{amplified}}$ definitely holds for that node), and regions where nodes may or may not require amplification, and this will not be known until those nodes are visited (i.e., some basic validity $\phi_{\textsf{valid}}$ is known to hold, but not the stronger $\phi_{\textsf{amplified}}$).
 
 %\setlength\intextsep{0pt}
 \begin{wrapfigure}{r}{0.25\textwidth}
@@ -1666,7 +1668,6 @@ There are also other places in the code where a subtree satisfying a stronger as
 %\item Horizontally, amplifcation path splits the bottom part of the tree into three different contexts: untouched tree nodes, nodes on the amplification path, and the ones generated as part of node splitting. 
 %\end{itemize}
 %Based on these two observations, in fact, bottom-up amplification determines the choice of modal context by giving the boundries of \textit{any claimable knowledge} (e.g. $\varphi_{\textsf{amplified}}$, $\varphi_{\textsf{untouched}}$): a subtree bounded by the cursor node.
-
 \subsection{Nominals for Systems Resource Contexts}
 Finally, another design point is the question of whether or not resource element assertions must explicitly track
 their corresponding context, or if they implicitly pick up their context from where they are used.
