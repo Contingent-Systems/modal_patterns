@@ -1231,7 +1231,7 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %\input{chapters/squeezing.tex}
 \begin{abstract}
  Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
-
+\begin{comment}
   In this paper, we argue the position that \emph{modalities}, in the sense of modal logic, 
   should be a go-to approach when specifying and verifying low-level systems code.
   We explain how the concept of a \emph{resource context} helps guide the design of new modalities
@@ -1239,9 +1239,9 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
   we justify our perspective by discussing prior systems that have used modalities for systems verification
   successfully, arguing that they fit into the verification design pattern we articulate,
   and explaining how this approach might apply to other systems verification challenges.
-
+\end{comment}
   \todo[inline]{Colin says: how about this framing instead of the second paragraph above:}
-  \begin{comment}
+  
   In this paper we examine how modalities have emerged as a common structure in formal verification
   of low-level software, and explain how many recent examples naturally share 
   common structure in the relationship between the modalities and software features they are used
@@ -1252,8 +1252,8 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
   \emph{resource elements} (data in the relevant context).
   We also describe extensions of this idea to ongoing work in formal verification
   of filesystems code.
-  \end{comment}
   \todo[inline,color=cyan]{Ismail, why did you comment out my suggestion and keep the original?}
+  \todo[inline,color=pink]{Sorry, I thought I did the other way}
 \end{abstract}
 
 %%
@@ -1378,7 +1378,8 @@ This same idea is used to encode Hoare triples in the Iris program logic~\cite{k
 A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
 \paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\l \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
-We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.\todo{seems out of place?}
+%We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
+\todo{seems out of place?} \todo[inline,color=pink]{addressed}
 In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
 %This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
 %We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
@@ -1447,7 +1448,7 @@ Memory addresses seen by programs running on modern computers are \emph{virtuali
 It has phrasing like ``In this paper...''
 That's actually a major issue, self-plagiarism of another peer-reviewed piece of work can get
 you into a lot of trouble.
-}
+}\todo{inline,color=pink}{I am well-aware what counts as as (including self-plagiarism). These were annotated with todos including cautions for changing the text.}
 On the x86-64 architecture, the input to the \textsc{MMU}'s address translation is a sparse hierarchical set of tables called \emph{page tables} (referring to pages of memory). As Figure \ref{fig:pagetables} shows, address translation proceeds by repeatedly taking designated slices of the virtual address and indexing into a table. On x86-64, standard configurations use 4 levels of page tables, labelled levels 4 through 1, with lookups in the level 1 page table resulting in the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.\footnote{Technically levels 1--3 have designated names originating when there were fewer levels. We omit those names to avoid confusion, and for greater consistency with the recent addition of a 5th level on the most recent processors, where levels 4 and 5 are simply known by their numbers.}  Because address translation traverses a series of tables, the translation process or algorithm is sometimes referred to as a \emph{page-table walk}. While Figure \ref{fig:pagetables} and most of our details are specific to the x86-64 architecture, ARMv8 (a.k.a.\ \texttt{aarch64}), RISC-V, and PowerPC use similar hierarchical page tables for address translation.
 
 The entries of each table are 64 bits wide, but each points to a physical address aligned to 4KB (4096 byte) boundaries, which leaves 12 bits to spare to control a validity bit (called the \emph{present} bit), a read-write bit (which permits write access through the entry if and only if it is set), and a range of additional bits which can be used to control caching, write-through, and more. This paper will only consider the present bit (0), the read-write bit (1), and the accessed bit (5), which is set to 1 by the hardware every time an entry is used, allowing the OS to determine which pieces of memory are used or unused.
