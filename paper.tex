@@ -1253,6 +1253,7 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
   We also describe extensions of this idea to ongoing work in formal verification
   of filesystems code.
   \end{comment}
+  \todo[inline,color=cyan]{Ismail, why did you comment out my suggestion and keep the original?}
 \end{abstract}
 
 %%
@@ -1315,10 +1316,7 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 
 \section{Introduction}
 Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
-  \todo[inline]{this section is already nice for introducing the ideas and what you mean by "systems software."
-  This section mostly needs a little more background on systems concepts like virtual memory, or what it means
-  to virtualize locations of blocks on disk}
-Systems software, in general, interfaces with an underlying computing architecture such that any software system at any higher level in the software stack can (at least indirectly) utilize the resources of the machine.
+Systems software, in general, interfaces with an underlying computing substrate such that any software system at any higher level in the software stack can (at least indirectly) utilize the resources of the machine.
 The last layer of software before the hardware is naturally critical to the correctness of an overall system,
 as essentially all software built on top of it assumes its correctness.
 %Assuming verified hardware, this makes the correctness of the system software critical to the rest of the software stack. 
@@ -1327,6 +1325,47 @@ And because hardware is complex and highly diverse, the implementation of those 
 of the software stack is typically intricate and naturally error-prone, despite how critical its correctness is.
 Typically systems software has, as a primary focus, the task of \emph{abstracting} from hardware details to simplify 
 the construction of higher layers of the stack.
+
+% \subsection{Conclusion \& Contributions}
+% \paragraph{Conclusion} 
+Low-level systems software exhibits certain patterns in their designs, especially when interacting with computing resources. 
+Exploiting certain patterns while designing software has been an important field of study.
+This survey examines these common patterns in systems software, and their relationships
+to modalities. We believe that certain properties of modalities enable us to understand and 
+address the verification challenges of these systems by tailoring specification and proof
+to the same patterns used to design the systems.
+
+\paragraph{Contributions} We argue that modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
+\begin{itemize}
+\item \textbf{Identifying System Verification Challenges}: We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
+\item \textbf{Introducing the Concept of \emph{Resource}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
+\item \textbf{Introducing the Concept of \emph{Nominals for System Resources}}:
+Nominalization enables identifying a resource in a context. 
+For example, a transaction is a context of resources of in-memory updated disk blocks. i
+The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, 
+in case of a crash while persisting updated disk-blocks, the filesystem can rollback the 
+\emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. 
+To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction 
+identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in 
+an address space (resource context), which can be uniquely identified with a root address (the nominal) 
+of its page-table tree, are \emph{agnostic} to the address space that they are in. 
+However, they can only be accessed (be valid) in the address space to which they are agnostic. 
+However, then an address space switch happens, the virtual memory references of the previous address 
+space must be made inaccessible. To be able to do so, although virtual memory references do not hold any 
+piece of information related to their address space, we still have to associate them. 
+We call this kind of unilateral nominalization -- \emph{weak nominalization}.
+\todo[inline,color=cyan]{I left this paragraph alone, mostly, but it's too detailed for the new intro section position here}
+\item \textbf{Taxonomy of Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, reasoning about weak memory models and storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
+\end{itemize}
+
+
+\section{Background on Modal Logics for Programs, and Low-Level Systems Software}
+
+This section briefly recalls related concepts from modal logic of particular relevance
+to our taxonomy, which should be familiar but benefit from fixing notation (Section \ref{sec:modalbackground}),
+and enough general background on the systems software concepts organized by our taxonomy
+for the connections to modalities to be clear (Section \ref{sec:background}).
+
 \subsection{Hybrid Logic Dynamic Logic and Nominals in Program Logics}
 \label{sec:modalbackground}
 
@@ -1338,7 +1377,8 @@ A closely related variant of multimodal logic is \emph{dynamic logic}~\cite{prat
 This same idea is used to encode Hoare triples in the Iris program logic~\cite{krebbers2017essence}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
 A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
-\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\loc \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. We adapt these ideas to assertions of the form $@[l]\varphi$asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
+\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\l \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
+We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.\todo{seems out of place?}
 In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
 %This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
 %We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
@@ -1354,7 +1394,8 @@ the \emph{satisfaction} operator of
 even though the examples we discuss are not necessarily actually hybrid logics.
 
 An example utilization of state naming explicitly on the assertion appears in program logics such as Iris~\cite{jung2018iris}, which enables encoding of usage protocols (e.g. state transition system) resembling typestate~\cite{strom1986typestate,garcia2014foundations} as specifications. Protocol assertions are \emph{annotated with the name of the last (abstract) state at which the protocol is ensured}.
-An example more familiar to the systems community is Halpern et al.'s history of adapting modal logics of
+One classic application of this idea to systems is 
+Halpern et al.'s work adapting modal logics of
 knowledge to deal with distributed systems~\cite{halpern1990knowledge,halpern1989modelling,halpern2017reasoning}.
 In most of that line of work, $\mathcal{K}_a(P)$ indicates that the node $a$ in the system \emph{knows} or \emph{possesses knowledge of} $P$
 (for example, a Raft node may ``know'' a lower bound on the commit index).
@@ -1388,7 +1429,7 @@ B-trees, page tables, and related structures both behave like maps, when the cor
 just in a different location.
 Control over the lookup process (e.g, handling the case of a missing translation entry) allows for additional flexibility,
 such as filling holes in sparse files, or demand paging (both from disk or lazily populating anonymous initially-zeroed mappings).
-Although the realization of these maps may differ from a system to system based on the context (and sometimes hardware details),
+Although the realization of these maps may differ from system to system based on the context (and sometimes hardware details),
 they are semantically --- logically --- partial maps, worth treating as such in verification.
 \paragraph{Virtualization of Memory Locations}
 \label{sec:backgroundonmachinemodel}
@@ -1401,7 +1442,13 @@ Memory addresses seen by programs running on modern computers are \emph{virtuali
     \label{fig:pagetables}
 \end{figure}
 
-On the x86-64 architecture, the input to the \textsc{MMU}'s address translation is a sparse hierarchical set of tables calle d \emph{page tables} (referring to pages of memory). As Figure \ref{fig:pagetables} shows, address translation proceeds by repeatedly taking designated slices of the virtual address and indexing into a table. On x86-64, standard configurations use 4 levels of page tables, labelled levels 4 through 1, with lookups in the level 1 page table resulting in the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.\footnote{Technically levels 1--3 have designated names originating when there were fewer levels. We omit those names to avoid confusion, and for greater consistency with the recent addition of a 5th level on the most recent processors, where levels 4 and 5 are simply known by their numbers.}  Because address translation traverses a series of tables, the translation process or algorithm is sometimes referred to as a \emph{page-table walk}. While Figure \ref{fig:pagetables} and most of our details are specific to the x86-64 architecture, ARMv8 (a.k.a.\ \texttt{aarch64}), RISC-V, and PowerPC use similar hierarchical page tables for address translation.
+
+\todo[inline,color=cyan]{Ismail, is this text copy-pasted from the VMM paper? 
+It has phrasing like ``In this paper...''
+That's actually a major issue, self-plagiarism of another peer-reviewed piece of work can get
+you into a lot of trouble.
+}
+On the x86-64 architecture, the input to the \textsc{MMU}'s address translation is a sparse hierarchical set of tables called \emph{page tables} (referring to pages of memory). As Figure \ref{fig:pagetables} shows, address translation proceeds by repeatedly taking designated slices of the virtual address and indexing into a table. On x86-64, standard configurations use 4 levels of page tables, labelled levels 4 through 1, with lookups in the level 1 page table resulting in the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.\footnote{Technically levels 1--3 have designated names originating when there were fewer levels. We omit those names to avoid confusion, and for greater consistency with the recent addition of a 5th level on the most recent processors, where levels 4 and 5 are simply known by their numbers.}  Because address translation traverses a series of tables, the translation process or algorithm is sometimes referred to as a \emph{page-table walk}. While Figure \ref{fig:pagetables} and most of our details are specific to the x86-64 architecture, ARMv8 (a.k.a.\ \texttt{aarch64}), RISC-V, and PowerPC use similar hierarchical page tables for address translation.
 
 The entries of each table are 64 bits wide, but each points to a physical address aligned to 4KB (4096 byte) boundaries, which leaves 12 bits to spare to control a validity bit (called the \emph{present} bit), a read-write bit (which permits write access through the entry if and only if it is set), and a range of additional bits which can be used to control caching, write-through, and more. This paper will only consider the present bit (0), the read-write bit (1), and the accessed bit (5), which is set to 1 by the hardware every time an entry is used, allowing the OS to determine which pieces of memory are used or unused.
 
@@ -1446,7 +1493,7 @@ The OS scheduler, since it is responsible for dealing with multiple address spac
 Semantically, in \textsf{ModFS} (as in other \textsf{CoW} filesystems~\cite{young1992episode,bonwick2003zettabyte,rodeh2013btrfs,Rosenblum1992LFS,hitz1994file}) any update to file data or metadata is realized on  unused disk locations by treating the tree as a persistent data structure. 
 As an example, Figure \ref{fig:cow_index} shows that an update to the file $\textsf{"foo"}$ at $\textsf{"offset"}$ ends up with locating the related disk chunk (a set of blocks) in the gray region, copying it to newly allocated disk chunks (dotted chunks on the right side of the bold long-dash-point line of the middle layer withing dotted section), and performing the update on these newly-allocated disk blocks. This requires further updates to those metadata blocks which previously referred to the old block locations to instead reference the newly-allocated blocks. This must be repeated until the allocation/update of the new chunks percolates up to the root (including the root), through a process called \textsf{\textit{write-amplification}}.
 
-\begin{figure}
+\begin{figure}[t]
     \includegraphics[width=0.75\columnwidth]{cow_index.png}
     \caption{A Filesystem called \textsf{Modfs} Indexing its Physical Pages for File Pages with CoW (copy-on-write) Tree}
     \label{fig:cowindex}
@@ -1462,6 +1509,8 @@ An important additional subtlety with this kind of filesystem is \emph{when} blo
 \end{figure}
 
 \paragraph{Different Models in Ensuring Disk Consistency of Filesystems}
+\todo[inline,color=cyan]{This looks like it's verbatim copy-pasted from the ModFS draft; if this exact text
+it used in this publication, it means we'd need to completely rewrite the relevant text in that draft.}
 With their intricate semantics and critical place in modern systems, formal verification of functional correctness for storage systems (including filesystems and other kinds of storage) have drawn much attention~\cite{ntzik-gardner-15,ntzik2018concurrent,chen-crash-16}\todo{lots more cites}. Unlike our \textsc{CoW} filesystem \textsf{ModFs} which allocates new chunks and rewrites all the nodes from leaf to root on the write-amplification path, some filesystems allows in-place updates to handle the heavy workloads more efficiently in principle. Unlike \textsc{CoW} filesystems, filesystems with in-place updates need to implement some form of \emph{journalling} to ensure that a crash partway through an in-place update can be rolled back (using an undo journal that records the original contents before modification as abstarcted in Figure \ref{fig:journal}) or completed (using a write-ahead journal that first writes new data in unused space before \emph{also} updating in place).\footnote{\textsf{CoW} filesystems can be viewed as a twist on write-ahead journals that uses the journal as the actual data once written to a fresh location, thereby reclaiming the original location. This results in a performance and complexity trade-off: journalling writes twice for every updated block and requires recovery logic to roll back or re-execute the log, while \textsf{CoW} techniques write each update only once and require slightly more intricate allocation strategies to compact fragmentation.}
 
 Essentially, successfully writing the new superblock for a new snapshot is analagous to completing a valid journal entry, except it \emph{also} has the effect of updating the live filesystem data due to making the ``journal entries'' valid filesystem data and metadata blocks (an idea that goes back to early work on log-structured filesystems~\cite{Rosenblum1992LFS}).
@@ -1470,22 +1519,7 @@ In fact, we can think of the atomicity of the recovery from the crash state conc
 \paragraph{Consistency of Reclaimed Memory} A sound memory reclamation is based on the conditions where the unique is not \emph{shared}, and there is no \emph{reachability} from the root to any the references pointing to the allocated memory. Once the requirements are satisfied then the memory location can be reclaimed \emph{soundly} -- i.e., without violating any access through a reference to it.
 \paragraph{Buffering} Buffering is a technique used in variety of systems (filesystem page caching, write buffer in multi-processor architectures, translation-lookaside-buffers for translated addresses etc.) to delay the costly operation (committing file pages, flushing buffered writes from write-cache to memory etc.) making updates consistent.
 \paragraph{Consistency of Reads of Buffered Writes} Consistency of reads of any value potentially buffered depends on the semantics of the operation making them \emph{observable}. A typical architecture such as Intel-x86 considers the \emph{flush} of buffered writes \emph{non-deterministically} -- i.e., at any time at any number of buffered writes. On the other hand, a typical filesystem can follow a certain policy to commit the in-memory file pages to the disk.   
-\subsection{Conclusion \& Contributions}
-\paragraph{Conclusion} Low-level systems exhibit certain patterns in their designs, especially when interacting with computing resources. Exploiting certain patterns while designing software has been an important field of study. In this regard, we think that certain properties of modalities enable us to understand and do the verification challenges that show certain patterns.
 
-\paragraph{Contributions} We argue how modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
-\begin{itemize}
-\item \textbf{Identifying System Verification Challenges}: We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
-\item \textbf{Introducing the Concept of \emph{Resource}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
-\item \textbf{Introducing the Concept of \emph{Nominals}}:
-\todo[inline]{Colin says: I'd reframe the way nominals are introduced. This discussion is good,
-but is a "systems-first" explanation. At least some of this audience will already know
-what classic nominals are, so need to be shown naming specific resources as an application
-of what they already know. (And some readers will need a very short intro/refresher.)
-}
-Nominalization enables identifying a resource in a context. For example, a transaction is a context of resources of in-memory updated disk blocks. The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, in case of a crash while persisting updated disk-blocks, the filesystem can rollback the \emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. To be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction identifier -- \emph{strong nominalization}. In another example, virtual memory references (resources) in an address space (resource context), which can be uniquely identified with a root address (the nominal) of its page-table tree, are \emph{agnostic} to the address space that they are in. However, they can only be accessed (be valid) in the address space to which they are agnostic. However, then an address space switch happens, the virtual memory references of the previous address space must be made inaccessible. To be able to do so, although virtual memory references do not hold any piece of information related to their address space, we still have to associate them. We call this kind of unilateral nominalization -- \emph{weak nominalization}.
-\item \textbf{Taxonomy of the Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, weak memory verification, storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
-\end{itemize}
 %\section{Resources in Systems Software}
 %\label{sec:systemsoft}
 
@@ -1514,13 +1548,14 @@ we justify our perspective by discussing prior systems that have used modalities
 successfully, arguing that they fit into the verification design pattern we articulate,
 and explaining how this approach might apply to other systems verification challenges.
 
-To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again,casting them in a certain way to bring out the relevance of our philosophy.
+To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
   
 \todo[inline]{Colin says: I don't think this section needs to change much,
 but it should be read carefully with the new audience in mind,
 possibly giving more details on what systems concepts each system is dealing with, for a non-systems audience.}
 \paragraph{Shallow Modalities in Iris Separation Logic}
 \label{sec:modal_in_iris}
+\todo[inline,color=cyan]{this also seems taken from the VMM work}
 Classically modal operators are given direct semantics in terms of an underlying model, which for \textsf{Iris} would be a collection of \textsc{CMRA}s; this is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{krebbers2017essence}. However in general, many modalities can be given proof-theoretic semantics directly within a logic. This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} logic itself), as well as for a wide range of other modalities in the literature~\cite{restall2002introduction}. These modalities are typically multi-modal, with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ is typically replaced with substructural implication $\sepimp$. 
 
 This definition also reveals a subtlety about the denotation of assertions $\phi$ --- they are effectively \emph{predicates} of some kind, functions from some possible world into some logical algebra such as a BI-algebra~\cite{ohearn1999bunched}. Taking this interpretation literally gives rise to a convenient way to embed new modalities in \textsf{Iris} in a way well-suited to our use cases. If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the \emph{pointwise lifting} of the algebra. We will exploit this repeatedly, lifting the BI-algebra structure from \textsf{Iris} itself to \textsf{Iris} predicates used as assertions within our own modalities. 
@@ -1530,9 +1565,7 @@ In addition, the modal definitions themselves may represent ownership of resourc
 
 \subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
-\todo[inline]{Colin says: I dropped the strong/weak nominalization column for space and readability;
-it can be explicit in the text, or maybe we can mark the system names with daggers or similar to indicate.}
-\begin{table*}[h]
+\begin{table*}[t]
 \centering
 \caption{Modal Decomposition of Program-Logics.}
 \label{table:decomposition}
