@@ -1435,8 +1435,8 @@ they are semantically --- logically --- partial maps, worth treating as such in 
 \paragraph{Virtualization of Memory Locations}
 \label{sec:backgroundonmachinemodel}
 \todo{change the text}
-Memory addresses seen by programs running on modern computers are \emph{virtualized}: the address observed by a running program generally will not correspond directly to the physical location in memory, and may not even correspond to a physical location that \emph{exists} in the machine. Instead, these \emph{virtual} addresses are translated to \emph{physical} addresses that correspond directly to locations in RAM. On most modern architectures, this translation is performed through cooperation of the hardware and OS kernel: while executing an instruction that dereferences a (virtual) address, the CPU's \emph{memory management unit} (\textsc{MMU}) implements an architecture-specific process of \emph{address translation}, resulting in a physical address used to access the cache\footnote{Technically, for performance reasons most caches are indexed with parts of the virtual address, but tagged with the physical data addresses, so cache lookups and address translations can proceed in parallel.} and/or memory-bus.
-
+\todo[inline,color=pink]{Based on the note I took above, I changed the text}
+A typical general purpose computers make the memory resources in RAM as \emph{virtually} available. In other words, a program asking for a memory unit from an operating system kernel is served with a memory address that is \emph{virtualized} such that it may be \emph{mapped to} a physical RAM location or not. As our informal definition suggests, the common technique for \emph{virtualization} of memory locations in OS kernels relies \emph{translating}(\emph{mapping}) virtual addresses into physical ones. The conceptual address-translation map is implemented with processor's(CPU) page-table trees as showin in Figure \ref{fig:pagetables2.png}.
 \begin{figure}
     \includegraphics[width=\columnwidth]{pagetables2.png}
     \caption{x86-64 page table lookups.}
