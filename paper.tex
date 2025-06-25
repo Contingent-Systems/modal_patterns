@@ -1581,7 +1581,7 @@ state established in the event of a hardware failure immediately after that oper
 
 \subsubsection{Reference-Counting Memory Reclamation}
 In a typical configuration, allocating, deallocating and referencing memory locations for client code 
-leaves the memory layout in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory.
+leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive decent tree allows non-duplication on the reference counts for the identical memory objects.
 % To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
 % \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, 
 % from which a path is created for a stack pointer reference to the allocated memory. 
