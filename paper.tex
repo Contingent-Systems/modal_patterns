@@ -1207,23 +1207,23 @@ sn & \textsf{struct name}   & &  i,j & \mathsf{nat (indices)}  \\
 %\bibliography{references/paper}
 \begin{document}
 %
-\title{Modal Verification Patterns for Systems}
+\title{Survey: Modal Verification Patterns for Systems}
 %
 %\titlerunning{RCU Types}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Ismail Kuru \orcidID{0000-0002-5796-2150} \and
-Colin S. Gordon \orcidID{0000-0002-9012-4490}}
+%\author{Ismail Kuru \orcidID{0000-0002-5796-2150} \and
+%Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %%%Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
 %
-\authorrunning{Kuru and Gordon}
+%\authorrunning{Kuru and Gordon}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
-\institute{Drexel University \\ %\and
+%\institute{Drexel University \\ %\and
 %%%Springer Heidelberg, Tiergartenstr. 17, 69121 Heidelberg, Germany
-\email{\{ik335,csgordon\}@drexel.edu}}%\\
+%\email{\{ik335,csgordon\}@drexel.edu}}%\\
 %%%\url{http://www.springer.com/gp/computer-science/lncs} \and
 %%%ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
 %%%\email{\{abc,lncs\}@uni-heidelberg.de}}
@@ -1815,14 +1815,7 @@ use the StackRegion modality to talk about two different stack frames simultaneo
 which accesses multiple stack frames: $\fbox{n} \; \ell \mapsto v \ast \fbox{n+1} \; \ell' \mapsto v'$.
 Using a given strongly nominalized assertion element under different modalities for different
 frames does not change its meaning. Likewise,  weak-memory specific modalities existentially quantify over other views, related to the ``current'' view (the one where
-the current thread's assertions are evaluated), and evaluate a resource (an thread-local view of an address-value mapping) with respect to those other views. Although it looks like the pattern we see in the VMM case,
-It is \emph{not}, however, an instance of hybrid logic, which is specifically demarcated by an assertion language where
-\emph{assertions}, not their semantics, choose and name the evaluation points for modal assertions.
-A hybrid extension of the aforementioned logics would include assertions which named specific views at which to evaluate
-$P$, in the syntax of the assertion (e.g., $\Delta_\pi^v(P):=\lambda\_\ldotp (P\;v)$) rather than the 
-$\Delta_\pi(P):= \lambda v\ldotp (\exists v_{rel}\ldotp \ownGhost{\pi}{\mathsf{RelV}(v_{rel})\;v} \ast (P\;v_{rel})))$ actually used.
-Note the hybrid version takes the place to evaluate $P$ as a parameter, and therefore allows the \emph{derived} (modal) logic to explicitly
-reason in terms of evaluation points, rather than hiding all points of evaluation in the internal definitions of modalities.
+the current thread's assertions are evaluated), and evaluate a resource (an thread-local view of an address-value mapping) with respect to those other views.
 
 By contrast, weakly nominalized elements are more concise, but then make talking about multiple 
 contexts together marginally more complex: changing which modality an assertion is used with drastically changes its meaning. In the case of the Ref-Count modality, $@_\ell(\ell_1\mapsto v)$
