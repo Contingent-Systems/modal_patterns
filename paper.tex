@@ -67,6 +67,7 @@
 \usepackage{afterpage}
 \usepackage{fontawesome}
 \usepackage[utf8]{inputenc}
+\usepackage{rotating}
 
 %%sequeezeeee
 \addtolength{\textfloatsep}{-10pt}
@@ -1685,7 +1686,7 @@ This allows modalities to simultaneously represent ownership of certain resource
 
 \subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
-\begin{table*}[t]
+\begin{sidewaystable*}[t]
 \centering
 \caption{Modal Decomposition of Program-Logics.}
 \label{table:decomposition}
@@ -1693,19 +1694,19 @@ This allows modalities to simultaneously represent ownership of certain resource
 %$\{\overset{ICut^{n}}{\hookrightarrow} (P) \}$ return $\{ P\}_{n} $
 \begin{tabular}{@{}lcccp{4cm}@{}}
   \toprule
-{\scriptsize Modality}& {\scriptsize Context} & {\scriptsize Elements}  &  {\scriptsize Nominalization} & {\scriptsize Context Steps} \\ \midrule
-\scriptsize Post-Crash~\cite{tejthesis,perennialgit,tejperennial19} & \scriptsize $\Diamond \; P $  & \scriptsize $  \ell \mapsto_{n}^{\overline{\gamma}} v $ & \scriptsize Strong &  \scriptsize Crash Recovery    \\ 
+{ Modality}& { Context} & { Elements}  &  { Nominalization} & { Context Steps} \\ \midrule
+ Post-Crash~\cite{tejthesis,perennialgit,tejperennial19} &  $\Diamond \; P $  &  $  \ell \mapsto_{n}^{\overline{\gamma}} v $ &  Strong &   Crash Recovery    \\ 
 %GC-Modality &      & \multicolumn{2}{c}{\multirow{2}{*}{Because why not}} & 8                                   & & ~\cite{}\\
-\scriptsize NextGen~\cite{larsnextgen25} &  \scriptsize $\overset{t}{\hookrightarrow} \; P$  &\scriptsize  Own (t(a))  & \scriptsize Strong & \scriptsize Determined Based on the Model$^{*}$   \\
-\scriptsize StackRegion$^{*}$  ~\cite{larsnextgen25} & \scriptsize $\overset{ICut^{n}}{\hookrightarrow} \; P$      & \scriptsize $\fbox{n} \; \ell \mapsto v$                                 & \scriptsize Strong & \scriptsize Alloc and Return to/from stack\\
-\scriptsize Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} & \scriptsize $\triangle_{\pi}$ and $\triangledown_{\pi}$      & \scriptsize $\ell \mapsto v$                                 & \scriptsize Weak & \scriptsize Fence Acquire and Release  \\
-\scriptsize Address-Space~\cite{kuru2024modalabstractionsvirtualizingmemory} & \scriptsize [r]P     &  \scriptsize $\ell \mapsto v$ & \scriptsize Weak                         & \scriptsize Address-Space Switch  \\ 
-\scriptsize Ref-Count~\cite{amalreal2024}&\scriptsize @$_{\ell}$ P    & \scriptsize $\ell_1 \mapsto v$ & \scriptsize Weak  & \scriptsize Allocating, Dropping and Sharing a Reference \\ \bottomrule
+ NextGen~\cite{larsnextgen25} &   $\overset{t}{\hookrightarrow} \; P$  &  Own (t(a))  &  Strong &  Determined Based on the Model$^{*}$   \\
+ StackRegion$^{*}$  ~\cite{larsnextgen25} &  $\overset{ICut^{n}}{\hookrightarrow} \; P$      &  $\fbox{n} \; \ell \mapsto v$                                 &  Strong &  Alloc and Return to/from stack\\
+ Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} &  $\triangle_{\pi}$ and $\triangledown_{\pi}$      &  $\ell \mapsto v$                                 &  Weak &  Fence Acquire and Release  \\
+ Address-Space~\cite{kuru2024modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address-Space Switch  \\ 
+ Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\ \bottomrule
 \end{tabular}
 
 {\scriptsize *The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
 %and the $\Diamond$ Figure for Post-Crash Modality uses notationis taken from NextGen Modality paper ~\cite{larsnextgen25}.
-\end{table*}
+\end{sidewaystable*}
 
 Many existing program logics for system verifications have a common structure, which maps to modalities with a couple extra dimensions of design.
 We summarize our discussion of these logics in Table \ref{table:decomposition}.
@@ -1888,13 +1889,22 @@ are at issue should prefer weak nominalization.
 
 \section{Conclusion}
 \label{sec:conclusion}
-\todo[inline]{this definitely needs adjusting for both audience and emphasis on this being a survey}
-We have argued the essential patterns that help to choose the modalities when working out how to specify different kinds of systems code based on recent successes.
-It also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). So not only are the modalities useful
-for conducting proofs, the pieces we have identified seem to be an effective way of working out
-a specific modality for a specific use-case.
+% \todo[inline]{this definitely needs adjusting for both audience and emphasis on this being a survey}
+We have argued that there is a systematic pattern emerging in the use of modalities in the verification of low-level systems software,
+and explained how a range of modern work fits into this pattern.
+% We have argued the essential patterns that help to choose the modalities when working out how to specify different kinds of systems code based on recent successes.
+While we have focused our attention on public verification work carried out in Iris,
+it also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, 
+% virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, 
+and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). 
+So not only are the modalities observably present, but they are demonstrably useful
+for conducting proofs of systems software.
+%  the pieces we have identified seem to be an effective way of working out
+% a specific modality for a specific use-case.
+We believe that these essential patterns in the designs of modal abstractions for systems verification constitute a fundamental
+concept
+when working out how to specify different kinds of systems code.
 
-As our main conclusion and future work, we think that these essential patterns in the designs of modal abstractions discussed constitute the fundamentals of \emph{verification patterns} when working out how to specify different kinds of systems code.
 \bibliographystyle{splncs04}
 \bibliography{software}
 \newpage
