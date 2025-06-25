@@ -1462,7 +1462,7 @@ such as filling holes in sparse files, or demand paging (both from disk or lazil
 Although the realization of these maps may differ from system to system based on the context (and sometimes hardware details),
 they are semantically --- logically --- partial maps, worth treating as such in verification.
 
-\paragraph{Virtualization of Memory Locations}
+\subsubsection{Virtualization of Memory Locations}
 \label{sec:backgroundonmachinemodel}
 A typical general purpose computer virtualizes  memory resources in RAM.
 A program asking for a memory unit from an operating system kernel is served with a memory address that is \emph{virtualized}
@@ -1484,21 +1484,46 @@ The traversal ends in the level 1 page table with the final lookup to the actual
     \label{fig:pagetables}
 \end{figure}
 
+A page table tree is referred to as a (virtual) \emph{address space}, as it presents an abstraction
+of how different memory addresses could be related in space.
+This functionality is used by operating systems to present fictional collocation or separation of resources:
+a range of logically (virtually) contiguous memory addresses may be translated to a range of physically disparate locations
+in actual memory.
+The address space then acts as a kind of container for virtualized memory resources tied to that container.
 
-\todo[inline,color=cyan]{Ismail, is this text copy-pasted from the VMM paper? 
-It has phrasing like ``In this paper...''
-That's actually a major issue, self-plagiarism of another peer-reviewed piece of work can get
-you into a lot of trouble.
-}\todo[inline,color=pink]{I am well-aware what counts as plagiarism (including self-plagiarism). These were annotated with todos including cautions for changing the text.}
-\paragraph{Virtual Memory Managers(VMM) with Multiple Address-Spaces}
-\label{sec:backgroundonvmm}
-\todo{change the text}
-An intuition for the abstraction that \emph{contains} a page-table tree is called an \emph{address-space} of a process whose virtual addresses to physical addresses. A typical OS manages multiple processes at once . Each process is identified by an \emph{unique root address} of its page-table tree. As part of switching to a new process, i.e., loading the address-space mappings as the current view of the memory, the CPU stores the unique root address of the page-table tree in a specific register (\texttt{cr3}) as shown in Figure \ref{fig:pagetables}. Using different mappings, which map only disjoint portions of physical memory (with some exceptions in the next section) is how the OS ensures memory isolation between processes. Virtual memory managers are the modules in OS kernels handling this kind of tasks. The treat address-spaces as containers of virtual addresses so that they can bookkeep which which virtual addresses are valid (and in what way) in which address spaces.
-\paragraph{Virtualized Resources in Filesystems}
-Another important computer resource computer resource that is \emph{virtualized} for access is disk blocks. Filesystems are computer programs that serve to other programs for their disk resource need. 
-Similar to how VMMs using page-table trees to fabricate more memory addresses than what actually exists, filesystems uses indexing maps for fabricating more \emph{virtual disk-page} addresses which are conventionally called \emph{disk-pages} to be distinguished from physical \emph{disk-block} addresses.
-\paragraph{Overview of Policies in Filesystems}
-Filesystems do not only handle the address-translation from a disk-page to a disk-block but also need to handle the different \emph{modes} of computing in which addressing disk resources occur at different consistency modes: a disk block persisted on the disk and a disk-page which may not be persisted on the disk yet. To handle the consistency of the disk resources in the existence of different modes of execution, filesystems employ different policies when indexing the disk resource. Which data-structure is going to be used to implement address-traslation from disk-pages to disk-blocks? What is going to be the \emph{update-policy} to the indexing map implementing address-translation which defines the \emph{consistency-policy} for the disk resources? Different filesystem implementations give different answers to these questions. One example answer to updating policy is copy-on-write (\textsf{CoW}). A (\textsf{CoW}) filesystem performs updates by copying modified data to \emph{new and unused} locations on disk rather than updating \emph{in-place}, ensuring that in the absence of physical storage corruption, there is \emph{always} a fully consistent filesystem on disk, removing the need for recovery from journals in the case of a crash, which can be very expensive for large volumes.
+
+% \paragraph{Virtual Memory Managers(VMM) with Multiple Address-Spaces}
+% \label{sec:backgroundonvmm}
+% \todo{change the text}
+% An intuition for the abstraction that \emph{contains} a page-table tree is called an \emph{address-space} of a process whose virtual addresses to physical addresses. 
+A typical OS manages multiple address spaces at once.
+Each program is associated with a unique page table tree, which is stored in a specific hardware register (\texttt{cr3} in Figure \ref{fig:pagetables}). 
+Using different mappings, which map only disjoint portions of physical memory in the map's codomain, 
+is how the OS ensures memory isolation between processes. 
+
+
+\subsubsection{Virtualized Resources in Filesystems}
+Another important computer resource computer resource that is \emph{virtualized} for access is disk blocks. 
+Filesystems are software components that abstract disk access on behalf of normal programs
+Similar to how VMMs using page-table trees to fabricate more memory addresses than what actually exists, 
+filesystems uses indexing maps for fabricating more \emph{virtual disk-page} addresses which are conventionally called \emph{disk-pages} 
+to be distinguished from physical \emph{disk-block} addresses.
+When a regular program accesses a file, it requests a specific logical offset from the start of that file's contents.
+As with virtual memory, the filesystem may map adjacent logical blocks of a single file to physically disparate parts of the disk (or even
+to different disks), though this translation mapping is implemented entirely in software (as opposed to the hardware cooperation that exists
+for memory virtualization).
+
+% \paragraph{Overview of Policies in Filesystems}
+Filesystems not only handle the address-translation from a disk-page to a disk-block but also need to handle different
+\emph{modes} of computing where to find disk resources: a disk block may live on a disk in stable storage,
+or the most up-to-date version of a block may live only in memory (for the filesystem to write to disk at a later time, batched for efficiency).
+To handle the consistency of the disk resources in the existence of different modes of execution, filesystems employ different policies when indexing the disk resource.
+Which data-structure is going to be used to implement address-translation from disk-pages to disk-blocks? 
+What is going to be the \emph{update-policy} to the indexing map implementing address-translation which defines the \emph{consistency-policy} for the disk resources? 
+Different filesystem implementations give different answers to these questions. 
+
+% One example answer to updating policy is copy-on-write (\textsf{CoW}). A (\textsf{CoW}) filesystem performs updates by copying modified data to \emph{new and unused} locations on disk rather than updating \emph{in-place}, ensuring that in the absence of physical storage corruption, there is \emph{always} a fully consistent filesystem on disk, removing the need for recovery from journals in the case of a crash, which can be very expensive for large volumes.
+
 %\textsf{ModFS} is implemented in \textsc{Go}~\cite{donovan2015go}, using the FUSE~\cite{fuse} interface to run a filesystem in usermode. \textsf{ModFS}'s code is translated to \textsf{Roqc} using the \textsf{Goose}~\cite{chajed2019verifying,chajed2021gojournal} tool, which translates a significant subset of \textsf{Go} to \textsf{Roqc} to permit formal verification of \textsc{Go} code using \textsf{Iris}~\cite{jung2018iris}. \textsf{Goose} generates code in an extension of \textsf{Iris}'s \textsf{HeapLang} with libraries for disk manipulation and \textsc{Go} primitive types (e.g., maps) as shown in Figure \ref{fig:modfslayout}.
 
 %On the left part of Figure \ref{fig:modfslayout}, we see the shaded region -- \textsf{ModFs} storage layer-- under the yellow layer --- the \textsf{ModFs} system call layer. 
@@ -1512,39 +1537,99 @@ Filesystems do not only handle the address-translation from a disk-page to a dis
 %\textsf{ModFs} is a \textsf{CoW} file system where the mapping of the logical locations, e.g., file pages indexed by file offsets, to disk locations by employing a \textsf{CoW} tree \cite{Astrahan1976SystemR,shadowclone} structure. In Figure \ref{fig:cow_index_tree}, we see that accessing and updating the $\textsf{page}_n$ of file \textsf{"foo"} referred by the file offset $\textsf{offset}$ 
 %\[ \textsf{write}(\textit{foo},\textsf{offset})\]
 %requires locating the corresponding physical disk block of the in-memory $\textsf{page}_n$ whose mapping is establised the \textit{copy-on-write} index tree (in the middle layer). Like Btrfs ~\cite{}, \textsf{ModFs} indexes all filesystem objects (e.g. files and directories) as a nested trees, and to map a logical page to a physical page, the file system first locates the root of the nested index-tree belonging to \textsf{"foo"}.
-\paragraph{An Example to a Policy for Updating Disk Index Tree}
-\todo[inline,color=cyan]{This gets too detailed, and is talking about the details of ModFS itself. 
-If we're casting this
-as a survey, we probably don't want to talk about ModFS except in passing (like towards the end of the paper), but want to focus on things that are at least publicly available.
-This level of detail is also way more than later parts of the paper require for understanding --- generally
-we only want a background section to cover enough for the later parts of the paper to make sense. Any
-extra depth just ends up burning reader patience.}
-Semantically, in \textsf{ModFS}~\cite{} (as in other \textsf{CoW} filesystems~\cite{young1992episode,bonwick2003zettabyte,rodeh2013btrfs,Rosenblum1992LFS,hitz1994file}) any update to file data or metadata is realized on  unused disk locations by treating the tree as a persistent data structure. 
-As an example, Figure \ref{fig:cowindex} shows that an update to the file $\textsf{"foo"}$ at $\textsf{"offset"}$ ends up with locating the related disk chunk(multiple disk-pages) in the gray region, copying it to newly allocated disk chunks (dotted chunks on the right side of the bold long-dash-point line of the middle layer withing dotted section), and performing the update on these newly-allocated disk blocks. This requires further updates to those metadata blocks which previously referred to the old block locations to instead reference the newly-allocated blocks. This must be repeated until the allocation/update of the new chunks percolates up to the root (including the root), through a process called \textsf{\textit{write-amplification}}.
 
-\begin{figure}[t]
-    \includegraphics[width=0.75\columnwidth]{cow_index.png}
-    \caption{A Filesystem called \textsf{Modfs} Indexing its Physical Pages for File Pages with CoW (copy-on-write) Tree}
-    \label{fig:cowindex}
-\end{figure}
-\paragraph{Examples to Different Policies on Navigating on Consistent Views of Disk}
-Like VMMs navigating between different address-spaces, a \textsf{CoW} filesystem switches from either the old to the new root yields consistent views of the filesystem at different points in time, each commonly referred to as a \emph{snapshot}. A \textsf{CoW} filesystems treat the snapshot abstraction as VMMs treat the address-space abstraction, container of the relevant resources. Like VMMs loading a process's memory mappings to be the current view of the memory by setting the control register to show the unique root address of the page-table tree of the process, the filesystem to atomically switch between consistent on-disk states, by updating the oldest so-called \emph{super} chunk at a fixed location on disk. Super chunks, as we see in Figure \ref{fig:cowindex} as ($\textsf{Super}_0$ and $\textsf{Super}_1$), are the first two blocks of the disk dedicated to keep the state of the file system which is composed of some meta-data on the filesystem, and most importantly to the root chunk of the filesystem index tree. 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{journalling.png}
-    \caption{A Filesystem Utilizing \emph{Journalling} for Consistent Disk-Layout ~\cite{chajed2021gojournal}}
-    \label{fig:journal}
-\end{figure}
-\todo[inline,color=cyan]{This looks like it's verbatim copy-pasted from the ModFS draft; if this exact text
-  it used in this publication, it means we'd need to completely rewrite the relevant text in that draft.}
-Therefore, in case of a crash during the update to the \textsf{file "foo"}, we can reboot the file system from the previous persisted root, \textsf{root chunk}, via reading the $\textsf{Super}_0$. This means the whole disk consistency checks are unnecessary when recovering from a crash~\cite{bonwick2003zettabyte,hitz1994file}; recovery is immediate, as opposed to requiring hours or days~\cite{henson2006reducing,agrawal2009speedy} (or longer~\cite{henson2006chunkfs}) for recovering a large volume’s consistency from logs. 
-An important additional subtlety with this kind of filesystem is \emph{when} blocks in the reclaimed region can actually be reused: only \emph{after} the snapshot that made those blocks ``free'' has been completely written to disk. Allowing reuse before this could result in in-place updates: part of the new snapshot could attempt to store data in space used by the prior snapshot, allowing inconsistent on-disk structures.
+% \paragraph{An Example to a Policy for Updating Disk Index Tree}
+% \todo[inline,color=cyan]{This gets too detailed, and is talking about the details of ModFS itself. 
+% If we're casting this
+% as a survey, we probably don't want to talk about ModFS except in passing (like towards the end of the paper), but want to focus on things that are at least publicly available.
+% This level of detail is also way more than later parts of the paper require for understanding --- generally
+% we only want a background section to cover enough for the later parts of the paper to make sense. Any
+% extra depth just ends up burning reader patience.}
+% Semantically, in \textsf{ModFS}~\cite{} (as in other \textsf{CoW} filesystems~\cite{young1992episode,bonwick2003zettabyte,rodeh2013btrfs,Rosenblum1992LFS,hitz1994file}) any update to file data or metadata is realized on  unused disk locations by treating the tree as a persistent data structure. 
+% As an example, Figure \ref{fig:cowindex} shows that an update to the file $\textsf{"foo"}$ at $\textsf{"offset"}$ ends up with locating the related disk chunk(multiple disk-pages) in the gray region, copying it to newly allocated disk chunks (dotted chunks on the right side of the bold long-dash-point line of the middle layer withing dotted section), and performing the update on these newly-allocated disk blocks. This requires further updates to those metadata blocks which previously referred to the old block locations to instead reference the newly-allocated blocks. This must be repeated until the allocation/update of the new chunks percolates up to the root (including the root), through a process called \textsf{\textit{write-amplification}}.
 
-On the other hand, filesystems with in-place updates need to implement some form of \emph{journalling} to ensure that a crash partway through an in-place update can be rolled back using an undo journal that records the original contents before modification as abstacted in Figure \ref{fig:journal} or completed using a write-ahead journal that first writes new data in unused space before \emph{also} updating in place. In other words, unlike our ability to distinguish all resources (disk-pages and dis-kblocks) either being consistent under a snapshot or not in filesystems with \textsf{CoW}, with in-place updates, journalling mechanism does not allow such a claim. In other words, as we see in Figure \ref{fig:journal}, unlike \textsf{CoW}'s uniform persistency claim over disk resources under a snapshot as a resource container, elaborative bookkeeping mechanism of journalling leaves the filesystem treat disk resources in one of the resource groups in non-uniform fashion: disk-pages loaded into memory, updated disk-page not logged yet, updated and being logged or already logged disk-pages. Being able to treat the resources in a uniform fashion determines wwhether we need to consider the specification and proof of crash condition separately; instead a global never-violated invariant (not even temporarily broken) of the filesystem ensures the on-disk state is always consistent.
+% \begin{figure}[t]
+%     \includegraphics[width=0.75\columnwidth]{cow_index.png}
+%     \caption{A Filesystem called \textsf{Modfs} Indexing its Physical Pages for File Pages with CoW (copy-on-write) Tree}
+%     \label{fig:cowindex}
+% \end{figure}
+% \paragraph{Examples to Different Policies on Navigating on Consistent Views of Disk}
+% Like VMMs navigating between different address-spaces, a \textsf{CoW} filesystem switches from either the old to the new root yields consistent views of the filesystem at different points in time, each commonly referred to as a \emph{snapshot}. A \textsf{CoW} filesystems treat the snapshot abstraction as VMMs treat the address-space abstraction, container of the relevant resources. Like VMMs loading a process's memory mappings to be the current view of the memory by setting the control register to show the unique root address of the page-table tree of the process, the filesystem to atomically switch between consistent on-disk states, by updating the oldest so-called \emph{super} chunk at a fixed location on disk. Super chunks, as we see in Figure \ref{fig:cowindex} as ($\textsf{Super}_0$ and $\textsf{Super}_1$), are the first two blocks of the disk dedicated to keep the state of the file system which is composed of some meta-data on the filesystem, and most importantly to the root chunk of the filesystem index tree. 
+% \begin{figure}
+%     \includegraphics[width=\columnwidth]{journalling.png}
+%     \caption{A Filesystem Utilizing \emph{Journalling} for Consistent Disk-Layout ~\cite{chajed2021gojournal}}
+%     \label{fig:journal}
+% \end{figure}
+% \todo[inline,color=cyan]{This looks like it's verbatim copy-pasted from the ModFS draft; if this exact text
+%   it used in this publication, it means we'd need to completely rewrite the relevant text in that draft.}
+% Therefore, in case of a crash during the update to the \textsf{file "foo"}, we can reboot the file system from the previous persisted root, \textsf{root chunk}, via reading the $\textsf{Super}_0$. This means the whole disk consistency checks are unnecessary when recovering from a crash~\cite{bonwick2003zettabyte,hitz1994file}; recovery is immediate, as opposed to requiring hours or days~\cite{henson2006reducing,agrawal2009speedy} (or longer~\cite{henson2006chunkfs}) for recovering a large volume’s consistency from logs. 
+% An important additional subtlety with this kind of filesystem is \emph{when} blocks in the reclaimed region can actually be reused: only \emph{after} the snapshot that made those blocks ``free'' has been completely written to disk. Allowing reuse before this could result in in-place updates: part of the new snapshot could attempt to store data in space used by the prior snapshot, allowing inconsistent on-disk structures.
 
-\paragraph{Memory Reclamation in Client Code} In a typical configuration, allocating, deallocating and referencing memory locations for a client code leave the memory layout in a form of DAG (directed-asyclic-graph) with a unique root which resembles the first stack pointer referencing the allocated memory. To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, from which a path is created for a stack pointer reference to the allocated memory. To reclaim the allocated memory location that is no longer being accessed, systems uses a well-known method called \emph{reference-counting} in which a new reference to the allocated memory increases the reference counter on it w.r.t a certain regime. 
-\paragraph{Consistency of Reclaimed Memory} A sound memory reclamation is based on the conditions where the unique is not \emph{shared}, and there is no \emph{reachability} from the root to any the references pointing to the allocated memory. Once the requirements are satisfied then the memory location can be reclaimed \emph{soundly} -- i.e., without violating any access through a reference to it.
-\paragraph{Buffering} Buffering is a technique used in variety of systems (filesystem page caching, write buffer in multi-processor architectures, translation-lookaside-buffers for translated addresses etc.) to delay the costly operation (committing file pages, flushing buffered writes from write-cache to memory etc.) making updates consistent.
-\paragraph{Consistency of Reads of Buffered Writes} Consistency of reads of any value potentially buffered depends on the semantics of the operation making them \emph{observable}. A typical architecture such as Intel-x86 considers the \emph{flush} of buffered writes \emph{non-deterministically} -- i.e., at any time at any number of buffered writes. On the other hand, a typical filesystem can follow a certain policy to commit the in-memory file pages to the disk.   
+While exceptions exist~\cite{bonwick2003zettabyte,rodeh2013btrfs,Rosenblum1992LFS,hitz1994file},
+most filesystems will continue to store a given block of a given file in the same physical disk block for as long as the file exists.
+These filesystems with in-place updates need to implement some form of \emph{journalling}~\cite{hagmann1987reimplementing,chutani1992episode} to ensure that a crash partway through an in-place update
+can be rolled back using an undo journal that records the original contents before in-place modification (so original contents could be restored after a crash) 
+or completed using a write-ahead journal that first writes new data in unused space before \emph{also} updating in place (so the journal entries could be re-applied after a crash). 
+% \hrule
+% In other words, unlike our ability to distinguish all resources (disk-pages and dis-kblocks) either being consistent under a snapshot or not in filesystems with \textsf{CoW}, with in-place updates, journalling mechanism does not allow such a claim. In other words, as we see in Figure \ref{fig:journal}, unlike \textsf{CoW}'s uniform persistency claim over disk resources under a snapshot as a resource container, elaborative bookkeeping mechanism of journalling leaves the filesystem treat disk resources in one of the resource groups in non-uniform fashion: disk-pages loaded into memory, updated disk-page not logged yet, updated and being logged or already logged disk-pages. Being able to treat the resources in a uniform fashion determines wwhether we need to consider the specification and proof of crash condition separately; instead a global never-violated invariant (not even temporarily broken) of the filesystem ensures the on-disk state is always consistent.
+Because disk blocks associated with a file could now be in many states (on-disk, journaled but not updated in place, or both)
+the specification of these systems is complex. And because some states are only possible after a system failure,
+each line of filesystem code has two conceptual post-conditions: one for continued execution, and one for the stable
+state established in the event of a hardware failure immediately after that operation.
+
+\subsubsection{Reference-Counting Memory Reclamation}
+In a typical configuration, allocating, deallocating and referencing memory locations for client code 
+leaves the memory layout in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory.
+% To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
+% \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, 
+% from which a path is created for a stack pointer reference to the allocated memory. 
+\todo[inline,color=cyan]{
+Why is this a DAG? Normally programs can easily create cycles, so the DAG bit requires a little more explanation.
+Do we mean that it is ``often'' the case that it's a DAG?}
+
+It is safe to reclaim memory (for later reuse) when that memory allocation will no longer be used by the client program.
+Since that property itself is undecidable, sound heuristics are used instead.
+A common proxy for the program never accessing an allocation again is to check that there is no
+access path from data a program can trivially access (e.g., local variables stored on the stack)
+to a memory allocation --- that is, when the allocation is no longer \emph{reachable}.
+In that case the program \emph{cannot} access the memory again, so the memory location can be reclaimed \emph{soundly} ---
+i.e., without violating any access through a reference to it.
+
+To reclaim the allocated memory location that is no longer being accessed, many systems use a well-known method called \emph{reference-counting} in which 
+each memory allocation includes not only its data but also a counter of how many pointers to that memory exist in the rest of the program.
+Any time a new reference to the allocated memory is created, the  counter is incremented,
+and every time an existing reference is destroyed (by overwriting or dropping) the counter is decremented.\footnote{This may be done
+using library functions for a reference counting system, or the operations may be inserted by a compiler.}
+These reference counts are a sound (but incomplete) way to approximate reachability: if a decrement of a reference count
+decrements the count to 0, no other references to that memory exist in the program, and the memory can be reclaimed.
+
+Reasoning about the correctness of such code requires reasoning about these reachability relations and reference counts, relative to specific
+stack frames.
+
+
+% \paragraph{Buffering} Buffering is a technique used in variety of systems (filesystem page caching, write buffer in multi-processor architectures, 
+% translation-lookaside-buffers for translated addresses etc.) to delay the costly operation (committing file pages, flushing buffered writes from write-cache 
+% to memory etc.) making updates consistent.
+% \paragraph{Consistency of Reads of Buffered Writes} Consistency of reads of any value potentially buffered depends on the semantics of 
+% the operation making them \emph{observable}. A typical architecture such as Intel-x86 considers the \emph{flush} of buffered writes 
+% \emph{non-deterministically} --- i.e., at any time at any number of buffered writes. On the other hand, a typical filesystem can follow a certain 
+% policy to commit the in-memory file pages to the disk.   
+
+\subsubsection{Weak Memory Models}
+% I reworked this to be less general, and more about just weak memory, as thats all the survey section discusses.
+Multi-core and multi-processor systems do not directly write every memory update back to memory (or even a coherent hardware cache)
+individually, as this would be extremely slow. Instead, they effectively buffer reads and writes to and from memory
+locally within each CPU core\footnote{This is a layer below the better-known L1 cache, which is coherent across all CPUs in the system.}
+so that operations can be partially reordered and batched to improve performance. For most code --- where the different CPUs are doing
+independent work --- this is transparent to software. But fine-grained concurrent systems code which has multiple CPU cores
+simultaneously coordinating access to shared memory must reason about these (effective) bufferings and reorderings, whose details vary
+across CPU architectures.
+
+Most of this coordination comes through reasoning about what \emph{will be true after local operations are published to memory},
+or what \emph{will be true after remote operations become visible locally}. Each of these flavors of contingent reasoning
+depend on use of certain \emph{fence} or \emph{memory barrier} operations, which block execution of a CPU until either all incoming or outgoing
+memory transactions are complete.
+\todo[inline,color=cyan]{I feel like we need citations here}
 
 %\section{Resources in Systems Software}
 %\label{sec:systemsoft}
@@ -1737,26 +1822,27 @@ says that $\ell$ points to a reference count wrapping $\ell_1$, while placing th
 In general, use cases where code frequently manipulates small parts of multiple contexts together
 should prefer strong nominalization, while use cases where usually larger portions of a single context
 are at issue should prefer weak nominalization.
-\section{Universal Properties over Resource Contexts with Nominals:  An Filesystem Recursive Trees Structure}
-\label{sec:overviewnode}
-Up until now, we discuss the concept of resource and resource context related under a certain \emph{nominalization} scheme. These definitions establishes the foundation for local properties of modal patterns. In this section, we discuss how we would be discussing the universal properties over the modal context themselves through an filesystem tree example. By doing so, we are able to show how the local properties defined over a resource and its context can be interfaced and exposed universally through reasoning over resource contexts. 
 
-To reason about states of trees and subtrees in particular, we work with a modality for stating an assertion that is true \emph{of all nodes within a tree}, identifying the tree by a root note. We refer to the resources that provide the context of these modal assertions as the \emph{modal context}; for a recursively defined tree like those in \textsf{Modfs}, these contexts are recursively defined in terms of the tree structure.
+% \section{Universal Properties over Resource Contexts with Nominals:  An Filesystem Recursive Trees Structure}
+% \label{sec:overviewnode}
+% Up until now, we discuss the concept of resource and resource context related under a certain \emph{nominalization} scheme. These definitions establishes the foundation for local properties of modal patterns. In this section, we discuss how we would be discussing the universal properties over the modal context themselves through an filesystem tree example. By doing so, we are able to show how the local properties defined over a resource and its context can be interfaced and exposed universally through reasoning over resource contexts. 
 
-%We define the modal context as the resources (e.g. a btree node tree, free page id list) which are accessed under some relation defined within the modal definition (e.g. being children of a cursor node). The choice of modal context can be structurally dependent on the semantics, in our case \textsc{CoW} semantics.
+% To reason about states of trees and subtrees in particular, we work with a modality for stating an assertion that is true \emph{of all nodes within a tree}, identifying the tree by a root note. We refer to the resources that provide the context of these modal assertions as the \emph{modal context}; for a recursively defined tree like those in \textsf{Modfs}, these contexts are recursively defined in terms of the tree structure.
 
-Write amplification traverses the overall tree depth-first, transforming the tree from the bottom up, one full subtree at a time. Concepually this means the amplification code's proof must track the fact that at any point in time, there are regions of the tree where each node has already been amplified (e.g., $\phi_{\textsf{amplified}}$ definitely holds for that node), and regions where nodes may or may not require amplification, and this will not be known until those nodes are visited (i.e., some basic validity $\phi_{\textsf{valid}}$ is known to hold, but not the stronger $\phi_{\textsf{amplified}}$).
+% %We define the modal context as the resources (e.g. a btree node tree, free page id list) which are accessed under some relation defined within the modal definition (e.g. being children of a cursor node). The choice of modal context can be structurally dependent on the semantics, in our case \textsc{CoW} semantics.
 
-%\setlength\intextsep{0pt}
-\begin{wrapfigure}{r}{0.25\textwidth}
-  \centering  \includegraphics[width=0.25\textwidth]{entail.png}
-  \caption{Understanding the level of $\varphi$ satisfaction in the \textsc{CoW} tree of modal nodes}
-   \label{fig:nodeentail} 
-\end{wrapfigure}
-We use a modality similar to $\text{\faSitemap}@[\ell]\phi$ to indicate that $\phi$ is true of the tree node rooted at $\ell$, as well as at \emph{all reachable children} of that node.
-This means that establishing a particular $\phi$ throughout a tree must be done in a bottom-up manner (see Figure \ref{fig:nodeentail}).
-Capturing this modally, rather than with more typical ad-hoc hand-crafted invariants, offers advantages in a number of proof steps, in addition to concisely capturing intuitive reasoning about subtrees with all nodes satisfying a particular property. One basic example is that while the actual disk sync code requires the full filesystem tree to be in an amplified state (hence write amplification), most of the filesystem works with more general trees. Since $\phi_{\textsf{amplified}}\vdash\phi_{\textsf{valid}}$, using our \faSitemap modality we can conclude $\text{\faSitemap}@[\ell]\phi_{\textsf{amplified}}\vdash\text{\faSitemap}@[\ell]\phi_{\textsf{valid}}$ by an analogue of Axiom K.
-There are also other places in the code where a subtree satisfying a stronger assertion at all nodes must be linked into a larger tree satisfying only a weaker assertion overall: predicate representing the valid tree as the tree of nodes which are backed by resources allocated pages, i.e. $\phi_{\textsf{valid}}$, is weaker than the predicate representing the tree of nodes being currently amplified in the current snapshot. Again, the same reasoning principle makes this straightforward. As alluded to earlier, our $\phi_{\textsf{amplified}}$ and company are in fact \emph{predicates} parameterized by a choice of node, though by lifing \textsf{Iris}'s BI structure they can use all of the standard separation logic connectives. 
+% Write amplification traverses the overall tree depth-first, transforming the tree from the bottom up, one full subtree at a time. Concepually this means the amplification code's proof must track the fact that at any point in time, there are regions of the tree where each node has already been amplified (e.g., $\phi_{\textsf{amplified}}$ definitely holds for that node), and regions where nodes may or may not require amplification, and this will not be known until those nodes are visited (i.e., some basic validity $\phi_{\textsf{valid}}$ is known to hold, but not the stronger $\phi_{\textsf{amplified}}$).
+
+% %\setlength\intextsep{0pt}
+% \begin{wrapfigure}{r}{0.25\textwidth}
+%   \centering  \includegraphics[width=0.25\textwidth]{entail.png}
+%   \caption{Understanding the level of $\varphi$ satisfaction in the \textsc{CoW} tree of modal nodes}
+%    \label{fig:nodeentail} 
+% \end{wrapfigure}
+% We use a modality similar to $\text{\faSitemap}@[\ell]\phi$ to indicate that $\phi$ is true of the tree node rooted at $\ell$, as well as at \emph{all reachable children} of that node.
+% This means that establishing a particular $\phi$ throughout a tree must be done in a bottom-up manner (see Figure \ref{fig:nodeentail}).
+% Capturing this modally, rather than with more typical ad-hoc hand-crafted invariants, offers advantages in a number of proof steps, in addition to concisely capturing intuitive reasoning about subtrees with all nodes satisfying a particular property. One basic example is that while the actual disk sync code requires the full filesystem tree to be in an amplified state (hence write amplification), most of the filesystem works with more general trees. Since $\phi_{\textsf{amplified}}\vdash\phi_{\textsf{valid}}$, using our \faSitemap modality we can conclude $\text{\faSitemap}@[\ell]\phi_{\textsf{amplified}}\vdash\text{\faSitemap}@[\ell]\phi_{\textsf{valid}}$ by an analogue of Axiom K.
+% There are also other places in the code where a subtree satisfying a stronger assertion at all nodes must be linked into a larger tree satisfying only a weaker assertion overall: predicate representing the valid tree as the tree of nodes which are backed by resources allocated pages, i.e. $\phi_{\textsf{valid}}$, is weaker than the predicate representing the tree of nodes being currently amplified in the current snapshot. Again, the same reasoning principle makes this straightforward. As alluded to earlier, our $\phi_{\textsf{amplified}}$ and company are in fact \emph{predicates} parameterized by a choice of node, though by lifing \textsf{Iris}'s BI structure they can use all of the standard separation logic connectives. 
 %\colinsaysinl{I cut some text here about the three-way split (commented out) that I wasn't sure how to use, but maybe I deleted something important?}
 %To put it concretely, as shown in Figure \ref{fig:cow_index_tree.JPG}, \textsc{CoW} semantics determine what we can claim on the structure of the filesystem indexing tree:
 %\begin{itemize}
