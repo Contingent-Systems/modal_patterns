@@ -1620,17 +1620,16 @@ stack frames.
 % I reworked this to be less general, and more about just weak memory, as thats all the survey section discusses.
 Multi-core and multi-processor systems do not directly write every memory update back to memory (or even a coherent hardware cache)
 individually, as this would be extremely slow. Instead, they effectively buffer reads and writes to and from memory
-locally within each CPU core\footnote{This is a layer below the better-known L1 cache, which is coherent across all CPUs in the system.}
+locally within each CPU core~\cite{owens2009better}\footnote{This is a layer below the better-known L1 cache, which is coherent across all CPUs in the system.}
 so that operations can be partially reordered and batched to improve performance. For most code --- where the different CPUs are doing
 independent work --- this is transparent to software. But fine-grained concurrent systems code which has multiple CPU cores
 simultaneously coordinating access to shared memory must reason about these (effective) bufferings and reorderings, whose details vary
 across CPU architectures.
 
 Most of this coordination comes through reasoning about what \emph{will be true after local operations are published to memory},
-or what \emph{will be true after remote operations become visible locally}. Each of these flavors of contingent reasoning
+or what \emph{will be true after remote operations become visible locally}~\cite{sieczkowski2015separation,dang2022compass,fsl}. Each of these flavors of contingent reasoning
 depend on use of certain \emph{fence} or \emph{memory barrier} operations, which block execution of a CPU until either all incoming or outgoing
 memory transactions are complete.
-\todo[inline,color=cyan]{I feel like we need citations here}
 
 %\section{Resources in Systems Software}
 %\label{sec:systemsoft}
