@@ -1738,7 +1738,20 @@ indicating that a certain offset into stack region $n$ holds value $v$.
 %which is an instance of ownership assertion ($\textsf{Own(t(a))}$) for which a well-behaved transformation ($\textsf{t}$), e.g. $\textsf{ICut}^{n}$ algebra quantifying over valid stack region ids. 
 \paragraph{Virtual Memory} For virtual memory management, a \textit{virtual-points-to} ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space is natural. A process's address space with the root address \textsf{r} is an abstraction that is treated as a container for virtual address mappings, $\ell \mapsto v$;
 
-\paragraph{Weak-Memory} When considering weak memory models, we also want points-to information (address-value mappings).
+\paragraph{Weak-Memory} When considering weak memory models, we also want points-to information (address-value mappings) of thread-local views of events (an operationalization of the release-acquire + nonatomic
+portion of the repaired C11 memory model~\cite{lahav2017repairing}): there modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$
+represent that $P$ held before or will hold after certain memory fence operations by thread $\pi$.
+The definitions of those specific modalities existentially quantify over other views, related to the ``current'' view (the one where
+the current thread's assertions are evaluated), and evaluate $P$ with respect to those other views. This approach to parameterizing
+assertion semantics by a point of evaluation, and evaluating modalized assertions at other points, is what it means
+to have a modality at all.
+It is \emph{not}, however, an instance of hybrid logic, which is specifically demarcated by an assertion language where
+\emph{assertions}, not their semantics, choose and name the evaluation points for modal assertions.
+A hybrid extension of the aforementioned logics would include assertions which named specific views at which to evaluate
+$P$, in the syntax of the assertion (e.g., $\Delta_\pi^v(P):=\lambda\_\ldotp (P\;v)$) rather than the 
+$\Delta_\pi(P):= \lambda v\ldotp (\exists v_{rel}\ldotp \ownGhost{\pi}{\mathsf{RelV}(v_{rel})\;v} \ast (P\;v_{rel})))$ actually used.
+Note the hybrid version takes the place to evaluate $P$ as a parameter, and therefore allows the \emph{derived} (modal) logic to explicitly
+reason in terms of evaluation points, rather than hiding all points of evaluation in the internal definitions of modalities.
 
 \paragraph{Reference Counting} When dealing with reference-counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
 
