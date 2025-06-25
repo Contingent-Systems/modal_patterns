@@ -1404,14 +1404,14 @@ separation logic.
 % due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
 % distributed algorithms \cite{ongaro2014search,ailijiang2019wpaxos}.
 
-\todo[inline,color=cyan]{the hybrid logic paragraph above is good, but this first paragraph about nominalization repeats
-some of the same things. We should merge them.}
 \paragraph{Nominalization}
 Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
-This naming generally resembles
-the \emph{satisfaction} operator of 
-\emph{hybrid logic}~\cite{blackburn1995hybrid,areces2001hybrid}: $@_\iota P$ which evaluates the truth of $P$ at the named (Kripke model) state $\iota$. For this reason we refer to the general idea of naming circumstances explicitly as \emph{nominalization},
-even though the examples we discuss are not necessarily actually hybrid logics.
+% This naming generally resembles
+% the \emph{satisfaction} operator of 
+% \emph{hybrid logic}~\cite{blackburn1995hybrid,areces2001hybrid}: $@_\iota P$ which evaluates the truth of $P$ at the named (Kripke model) state $\iota$. 
+Because these named conditions strongly resemble the nominals of hybrid logic,
+we refer to the general idea of naming circumstances explicitly as \emph{nominalization},
+even though not all of the examples we discuss are actually hybrid logics.
 
 An example use of state naming explicitly in the assertion appears in program logics 
 with usage protocols (e.g. state transition systems resembling typestate~\cite{strom1986typestate,garcia2014foundations}, which ensure
