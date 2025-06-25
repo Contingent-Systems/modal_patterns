@@ -1207,7 +1207,7 @@ sn & \textsf{struct name}   & &  i,j & \mathsf{nat (indices)}  \\
 %\bibliography{references/paper}
 \begin{document}
 %
-\title{Survey: Modal Verification Patterns for Systems}
+\title{Modal Verification Patterns for Systems}
 %
 %\titlerunning{RCU Types}
 % If the paper title is too long for the running head, you can set
@@ -1585,9 +1585,9 @@ leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph
 % To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
 % \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, 
 % from which a path is created for a stack pointer reference to the allocated memory. 
-\todo[inline,color=cyan]{
-Why is this a DAG? Normally programs can easily create cycles, so the DAG bit requires a little more explanation.
-Do we mean that it is ``often'' the case that it's a DAG?}
+%\todo[inline,color=cyan]{
+%Why is this a DAG? Normally programs can easily create cycles, so the DAG bit requires a little more explanation.
+%Do we mean that it is ``often'' the case that it's a DAG?}
 
 It is safe to reclaim memory (for later reuse) when that memory allocation will no longer be used by the client program.
 Since that property itself is undecidable, sound heuristics are used instead.
