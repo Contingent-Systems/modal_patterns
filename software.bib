@@ -114,7 +114,7 @@
     issn = {0360-0300},
     pages = {153--189},
     numpages = {37},
-    url = {http://doi.acm.org/10.1145/356571.356573},
+    ignoreurl = {http://doi.acm.org/10.1145/356571.356573},
     doi = {10.1145/356571.356573},
     acmid = {356573},
     publisher = {ACM},
@@ -1212,7 +1212,7 @@
     location = {Monterey, California},
     pages = {18--37},
     numpages = {20},
-    url = {http://doi.acm.org/10.1145/2815400.2815402},
+    ignoreurl = {http://doi.acm.org/10.1145/2815400.2815402},
     doi = {10.1145/2815400.2815402},
     acmid = {2815402},
     publisher = {ACM},
@@ -1746,7 +1746,7 @@
     pages = {9:1--9:32},
     articleno = {9},
     numpages = {32},
-    url = {http://doi.acm.org/10.1145/2501620.2501623},
+    ignoreurl = {http://doi.acm.org/10.1145/2501620.2501623},
     doi = {10.1145/2501620.2501623},
     acmid = {2501623},
     publisher = {ACM},
@@ -1789,7 +1789,7 @@
     issn = {0734-2071},
     pages = {26--52},
     numpages = {27},
-    url = {http://doi.acm.org/10.1145/146941.146943},
+    ignoreurl = {http://doi.acm.org/10.1145/146941.146943},
     doi = {10.1145/146941.146943},
     acmid = {146943},
     publisher = {ACM},
@@ -1985,8 +1985,7 @@
 }
 
 @inproceedings{halpern1985guide,
-    title = {A guide to the modal logics of knowledge and belief: Preliminary
-             draft},
+    title = {A guide to the modal logics of knowledge and belief},
     author = {Halpern, Joseph Y and Moses, Yoram},
     booktitle = {Proceedings of the 9th international joint conference on
                  Artificial intelligence-Volume 1},
@@ -2001,7 +2000,7 @@
     publisher = {Cornell University Press},
 }
 @inproceedings{pratt1976semantical,
-    title = {Semantical consideration on floyo-hoare logic},
+    title = {Semantical consideration on {Floyd-Hoare} logic},
     author = {Pratt, Vaughan R},
     booktitle = {Foundations of Computer Science, 1976., 17th Annual Symposium
                  on},
@@ -9353,10 +9352,10 @@
     author = "Marko Doko and Viktor Vafeiadis",
     title = "A Program Logic for {C11} Memory Fences",
     booktitle = vmcai,
-    series = lncs,
-    volume = "9583",
-    pages = "413--430",
-    publisher = springer,
+    ignoreseries = lncs,
+    ignorevolume = "9583",
+    ignorepages = "413--430",
+    ignorepublisher = springer,
     month = jan,
     year = "2016",
     URL = "https://plv.mpi-sws.org/fsl/base/paper.pdf",
@@ -9366,10 +9365,10 @@
     author = "Marko Doko and Viktor Vafeiadis",
     title = "Tackling Real-Life Relaxed Concurrency with {FSL++}",
     booktitle = esop,
-    series = lncs,
-    volume = "10201",
-    pages = "448--475",
-    publisher = springer,
+    ignoreseries = lncs,
+    ignorevolume = "10201",
+    ignorepages = "448--475",
+    ignorepublisher = springer,
     month = apr,
     year = "2017",
     URL = "https://plv.mpi-sws.org/fsl/ARC/paper.pdf",
@@ -23038,7 +23037,7 @@
     isbn = {9781450368735},
     publisher = {Association for Computing Machinery},
     address = {New York, NY, USA},
-    url = {https://doi.org/10.1145/3341301.3359632},
+    ignoreurl = {https://doi.org/10.1145/3341301.3359632},
     doi = {10.1145/3341301.3359632},
     abstract = {This paper introduces Perennial, a framework for verifying
                 concurrent, crash-safe systems. Perennial extends the Iris
@@ -23136,12 +23135,12 @@
 }
 @inproceedings{fsl,
     author = {Doko, Marko and Vafeiadis, Viktor},
-    title = {A Program Logic for C11 Memory Fences},
+    title = {A Program Logic for {C11} Memory Fences},
     year = {2016},
-    isbn = {9783662491218},
-    publisher = {Springer-Verlag},
-    address = {Berlin, Heidelberg},
-    url = {https://doi.org/10.1007/978-3-662-49122-5_20},
+    ignoreisbn = {9783662491218},
+    ignorepublisher = {Springer-Verlag},
+    ignoreaddress = {Berlin, Heidelberg},
+    ignoreurl = {https://doi.org/10.1007/978-3-662-49122-5_20},
     doi = {10.1007/978-3-662-49122-5_20},
     abstract = {We describe a simple, but powerful, program logic for reasoning
                 about C11 relaxed accesses used in conjunction with release and
@@ -23153,21 +23152,20 @@
                 idiom and other similar programs. The soundness of FSL has been
                 established in Coq.},
     booktitle = {Proceedings of the 17th International Conference on
-                 Verification, Model Checking, and Abstract Interpretation -
-                 Volume 9583},
-    pages = {413–430},
-    numpages = {18},
+                 Verification, Model Checking, and Abstract Interpretation},
+    ignorepages = {413–430},
+    ignorenumpages = {18},
     location = {St. Petersburg, FL, USA},
-    series = {VMCAI 2016},
+    ignoreseries = {VMCAI 2016},
 }
 @inproceedings{fsl++,
     author = {Doko, Marko and Vafeiadis, Viktor},
     title = {Tackling Real-Life Relaxed Concurrency with FSL++},
     year = {2017},
-    isbn = {978-3-662-54433-4},
-    publisher = {Springer-Verlag},
-    address = {Berlin, Heidelberg},
-    url = {https://doi.org/10.1007/978-3-662-54434-1_17},
+    ignoreisbn = {978-3-662-54433-4},
+    ignorepublisher = {Springer-Verlag},
+    ignoreaddress = {Berlin, Heidelberg},
+    ignoreurl = {https://doi.org/10.1007/978-3-662-54434-1_17},
     doi = {10.1007/978-3-662-54434-1_17},
     abstract = {We extend fenced separation logic (FSL), a program logic for
                 reasoning about C11 relaxed access and memory fences. Our
@@ -23182,11 +23180,9 @@
                 its extensions, as well as the correctness proof of ARC have been
                 established in Coq.},
     booktitle = {Programming Languages and Systems: 26th European Symposium on
-                 Programming, ESOP 2017, Held as Part of the European Joint
-                 Conferences on Theory and Practice of Software, ETAPS 2017,
-                 Uppsala, Sweden, April 22–29, 2017, Proceedings},
-    pages = {448–475},
-    numpages = {28},
+                 Programming, ESOP 2017},
+    ignorepages = {448–475},
+    ignorenumpages = {28},
     location = {Uppsala, Sweden},
 }
 @article{derekrustbelt20,
@@ -23199,7 +23195,7 @@
     address = {New York, NY, USA},
     volume = {4},
     number = {POPL},
-    url = {https://doi.org/10.1145/3371102},
+    ignoreurl = {https://doi.org/10.1145/3371102},
     doi = {10.1145/3371102},
     abstract = {The Rust programming language supports safe systems programming
                 by means of a strong ownership-tracking type system. In their
@@ -23226,14 +23222,14 @@
 
 @article{amalreal2024,
     author = {Wagner, Andrew and Eisbach, Zachary and Ahmed, Amal},
-    title = {Realistic Realizability: Specifying ABIs You Can Count On},
+    title = {Realistic Realizability: Specifying {ABI}s You Can Count On},
     year = {2024},
     issue_date = {October 2024},
     publisher = {Association for Computing Machinery},
     address = {New York, NY, USA},
     volume = {8},
     number = {OOPSLA2},
-    url = {https://doi.org/10.1145/3689755},
+    ignoreurl = {https://doi.org/10.1145/3689755},
     doi = {10.1145/3689755},
     abstract = {The Application Binary Interface (ABI) for a language defines
                 the interoperability rules for its target platforms, including
@@ -23276,9 +23272,9 @@
              in Separation Logic},
     year = {2025},
     isbn = {9798400713477},
-    publisher = {Association for Computing Machinery},
-    address = {New York, NY, USA},
-    url = {https://doi.org/10.1145/3703595.3705876},
+    ignorepublisher = {Association for Computing Machinery},
+    ignoreaddress = {New York, NY, USA},
+    ignoreurl = {https://doi.org/10.1145/3703595.3705876},
     doi = {10.1145/3703595.3705876},
     abstract = {As separation logic is a logic of resources, the way in which
                 resources can soundly change and be updated is a fundamental
