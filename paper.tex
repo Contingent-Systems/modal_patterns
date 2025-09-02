@@ -1,1248 +1,187 @@
-%\documentclass[a4paper,UKenglish]{lipics-v2016}
-% For two-column layout for PPoPP, change 'acmsmall' to 'sigplan'.  Probably also turn on the
-% 'review' option, and the 'anonymous' option if it's DBR
-\documentclass[runningheads]{llncs}
-%This is a template for producing LIPIcs articles.
-%See lipics-manual.pdf for further information.
-%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
-%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
-% for section-numbered lemmas etc., use "numberwithinsect"
-\usepackage[export]{adjustbox}
+%%
+%% This is file `sample-sigconf-authordraft.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `all,proceedings,bibtex,authordraft')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf-authordraft.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For submission and review of your manuscript please change the
+%% command to \documentclass[manuscript, screen, review]{acmart}.
+%%
+%% When submitting camera ready or to TAPS, please change the command
+%% to \documentclass[sigconf]{acmart} or whichever template is required
+%% for your publication.
+%%
+%%
+\documentclass[sigconf,10pt]{acmart}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
 
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmlicensed}
+\copyrightyear{2018}
+\acmYear{2018}
+\acmDOI{XXXXXXX.XXXXXXX}
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[Conference acronym 'XX]{Make sure to enter the correct
+  conference title from your rights confirmation email}{June 03--05,
+  2018}{Woodstock, NY}
+%%
+%%  Uncomment \acmBooktitle if the title of the proceedings is different
+%%  from ``Proceedings of ...''!
+%%
+%%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
+%%  June 03--05, 2018, Woodstock, NY}
+\acmISBN{978-1-4503-XXXX-X/2018/06}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% For managing citations, it is recommended to use bibliography
+%% files in BibTeX format.
+%%
+%% You can then either use BibTeX with the ACM-Reference-Format style,
+%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
+%% support for advanced citation of software artefact from the
+%% biblatex-software package, also separately available on CTAN.
+%%
+%% Look at the sample-*-biblatex.tex files for templates showcasing
+%% the biblatex styles.
+%%
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+%\usepackage{todonotes}
 \usepackage{booktabs}
 \usepackage{multirow}
+\usepackage{rotating}
  \usepackage{proof}
- \usepackage{array}
- \usepackage{iris}
+\usepackage{array}
+\usepackage{iris}
 \newcolumntype{O}[1]{>{\raggedright\arraybackslash}m{#1}}
 \newcolumntype{P}[1]{>{\centering\arraybackslash}m{#1}}
 \newcolumntype{Q}[1]{>{\raggedleft\arraybackslash}m{#1}}
 \newcolumntype{S}{>{\centering\arraybackslash}m{2cm}}
-
-\usepackage{microtype}%if unwanted, comment out or use option "draft"
-%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
-%\usepackage{t1enc}
-%\usepackage[strings]{underscore}
-%%%%%\usepackage{geometry}
-\usepackage{wrapfig}
-\usepackage[rawfloats=true]{floatrow} 
-\restylefloat{figure}    
-\DeclareMathSizes{4}{4}{4}{4}
-\usepackage{varwidth}
-\usepackage{lmodern}
-\usepackage{amsfonts}
-\usepackage[fleqn]{amsmath}
-\usepackage[fleqn]{mathtools}
-\usepackage{amssymb}
-\usepackage{hyperref}
-\usepackage{proof}
-\usepackage{stmaryrd}
-\usepackage{xspace}
-\usepackage{listings}
-\usepackage{comment}
-\usepackage{longtable}
-\usepackage{float}
-\usepackage[section]{placeins}
-\usepackage[toc,page]{appendix}
-\usepackage[export]{adjustbox}
-\usepackage{amssymb}
-\usepackage{graphics,graphicx}
-\usepackage{mathpartir}
-\usepackage{array}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric}
-\usetikzlibrary{arrows.meta,arrows}
-\usetikzlibrary{positioning}
-\usetikzlibrary{calc, shapes, backgrounds}
-\usepackage{verbatim}
-\usepackage{tikz-qtree}
-\usepackage{pgfplots}
-\usepackage{caption,capt-of}
-\usepackage{color}
-\usepackage{soul}
-\setul{1ex}{0.8ex}
-\definecolor{orange}{rgb}{1,0.5,0}
-\setulcolor{orange}
-\usepackage{subcaption}
-\usepackage{lipsum}
-\usepackage{afterpage}
-\usepackage{fontawesome}
-\usepackage[utf8]{inputenc}
-\usepackage{rotating}
-
-%%sequeezeeee
-\addtolength{\textfloatsep}{-10pt}
-\addtolength{\dbltextfloatsep}{-10pt}
-
-\newcommand{\ptree}{\text{\faSitemap}@[\ell]}
-\newcommand{\mtree}{\varupphi\text{\faSitemap}@[\ell]^{\Pi}_{\pi}(\sigma)}
-\newcommand{\oprtree}[4]{#3\;\text{\faSitemap}@[\textsf{#1_{#2}}]^{\Pi}_{\pi}(#4)}
-
-\newcommand{\osubtree}[4]{#2\;\text{\faSitemap}@[\textsf{node}_{#1}]^{\Pi}_{\pi}(#3_#4)}
-\newcommand{\otree}[3]{#2\;\text{\faSitemap}@[\textsf{node}_{#1}]^{\Pi}_{\pi}(#3)}
-\newcommand{\oltree}[3]{#2\;\text{\faSitemap}@[#1]^{\Pi}_{\pi}(#3)}
-
-\newcommand{\defeq}{\mathbin{\stackrel{\text{def}}{=}}}
-% some stuff for prettier proof outlines
-\newcommand{\havoc}{\textsf{havoc}}
-\newcommand{\specline}[1]{{\color{blue}\left\{#1\right\}}}
-\newcommand{\assertion}[1]{\textsf{assert} {\color{red}\left\{#1\right\}}}
-\newcommand{\proofstepnr}[5][1pt/3pt]{\small \left.
-\begin{array}{l}
-\hdashline[#1]
-\ensuremath{\specline{#2}}\\
-\begin{array}{l}
-#3
-\end{array}\\
-
-\ensuremath{\specline{#5}}\\
-\hdashline[1pt/3pt]
-\end{array}
-\color{green}\right)\hspace{-6pt}{\color{green}-}
-\begin{array}{@{}l@{}}
-#4
-\end{array}
-}
-\newcommand{\proofoutstepnr}[5][1pt/3pt]{\small \left.
-\begin{array}{@{}l@{}}
-\hdashline[#1]
-\ensuremath{\specline{#2}}\\
-\begin{array}{@{\;\;\;}l}
-#3
-\end{array}\\
-\ensuremath{\specline{#5}}\\
-\hdashline[1pt/3pt]
-\end{array}
-\color{green}\right)\hspace{-6pt}{\color{green}-}
-\begin{array}{@{}l@{}}
-#4
-\end{array}
-}
-% \proofoutstep[dash stuff]{pre}{C}{rule}{post}
-\newcommand{\proofoutstep}[5][1pt/3pt]{
-\proofoutstepnr[#1]{#2}
-{#3}
-{\rotatebox[origin=c]{90}{$\begin{array}{@{}c@{}}{}#4\end{array}$}}
-{#5}
-}
-\newcommand{\sepimp}{\mathrel{-\mkern-6mu*}}
-\newcommand{\NULL}{\texttt{NULL}}
-\newcommand{\NEW}{\texttt{new}}
-\newcommand{\SKIP}{\texttt{skip}}
-\newcommand{\RESULT}{\texttt{result}}
-\newcommand{\class}{\texttt{class}}
-\newcommand{\where}{\texttt{where}}
-\newcommand{\readable}{\texttt{readable}}
-\newcommand{\writable}{\texttt{writable}}
-\newcommand{\isolated}{\texttt{isolated}}
-\newcommand{\immutable}{\texttt{immutable}}
-\newcommand{\consume}[1]{\texttt{consume}(#1)}
-\newcommand{\consumeiso}[1]{\mathsf{RemIso}(#1)}
-\newcommand{\INT}{\texttt{int}}
-\newcommand{\bool}{\texttt{bool}}
-\newcommand{\this}{\texttt{this}}
-\newcommand{\immutdecl}[1]{\mathsf{ImmutableDeclared}(#1)}
-\newcommand{\IsoOrImm}{\textsf{IsoOrImm}}
-\newcommand{\NonWrit}{\textsf{NoWrit}}
-\newcommand{\db}[1]{\llbracket#1\rrbracket}
-\newcommand{\nil}{\textsf{null}}
-\newcommand{\atom}{\textsf{atom} \mapsto \mstatename \mapsto \mstatename}
+% Useful macros from Isaac Oscar Gariano: a very simple library for author-specific change notations:
+%  After calling \newAuthor{<name>}{<colour>}
+% You can use \<name>{<text>} to add a comment
+% Or \<name>A{<text>} to  write stuff in your colour (to denote additional text)
+% Or \<name>B{<text>} is similar, but changes the background (to highlight stuff?)
+% I may add more commands later
+% (there's a 'changes' package with similar functionality, but it has a habit of breaking when you use it with  the Define environment)
+\newcommand\newAuthor[2]{%
+        \ExpandArgs{c}\newcommand{#1}[1]{\todo[color=#2!10, bordercolor=#2, inline]{\textbf{#1:}~##1}}
+	\ExpandArgs{c}\newcommand{#1A}[1]{\textcolor{#2}{##1}}
+        \ExpandArgs{c}\newcommand{#1B}[1]{\colorbox{#2!30}{\textcolor{black}{##1}}}}
+\newtheorem*{remark}{Remark}
 \newcommand{\loc}{\textsf{Loc}}
-\newcommand{\val}{\textsf{Val}}
-\newcommand{\mstatename}{\textsf{MState}}
-\newcommand{\superset}{\mathcal{P}}
-\newcommand{\mstatedecl}{\sigma \in \mstatename \overset{def}{=} s \times h \times l \times rt \times R \times B  \times F }
-\newcommand{\stack}{s \in \var \times \tid \rightharpoonup \loc}
-\newcommand{\heap}{h \in \loc \times \fname \rightharpoonup \val}
-\newcommand{\wlock}{l \in \tid \uplus \textsf{unlocked}}
-\newcommand{\rlock}{R \in \superset(\tid)}
-\newcommand{\fset}{F : \loc \mapsto \superset(\tid) }
-\newcommand{\atomeval}{\db{-}:\atom}
-\newcommand{\rcuwrite}{\textsf{RCUWrite} \text{ x.f as y in }\, \{ C \}}
-\newcommand{\rcuread}{\textsf{RCURead} \text{ x.f as y in }\, \{ C \}}
-  \newcommand{\desugarread}{ \rcuread \overset{\Delta}{=} \texttt{\textsf{ReadBegin}}; y = x.f;\{C'\}  ;\textsf{ReadEnd} }
-  \newcommand{\desugarwrite}{\rcuwrite \overset{\Delta}{=} \texttt{\textsf{WriteBegin}} ; y = x.f ; \{C'\}  ;\textsf{WriteEnd}}
-    \newcommand{\desugarsync}{\textsf{Sync} \overset{\Delta}{=} \texttt{\textsf{SyncStart};\textsf{SyncStop}}}
-  %\newcommand{\boundpath}{\bar f_{i}^{k} = \forall_{k \in \mathbb{N},i \in \fnameenum} \ldotp  \underbrace{f_{i}^{0} \ldots f_{i}^{k}}_\text{$\mid$ $f_{i}^{0}$ \ldots $f_{i}^{k}$ $\mid$ = k} }
-\newcommand{\subt}{\prec:}
-%typing rules
- \newcommand{\fname}{\textsf{FName}}
-\newcommand{\fmname}{\textsf{FMap}}
-\newcommand{\uiglobal}{\textsf{UIGlobal}}
-\newcommand{\udef}{\textsf{undef}}
-\newcommand{\unlinked}{\textsf{unlinked}}
-\newcommand{\fresh}{\textsf{fresh}}
-\newcommand{\var}{\textsf{Var}}
-\newcommand{\tid}{\textsf{TID}}
+\newcommand{\sepimp}{\mathrel{-\mkern-6mu*}}
+\newcommand{\blackdiamond}{\rotatebox[origin=c]{45}{$\vcenter{\hbox{$\scriptscriptstyle\blacksquare$}}$}}
 
-\newcommand{\fmapfieldemp}{\N_{f,\emptyset} = \N \setminus \{f \rightharpoonup \_ \}}
-\newcommand{\fmapname}{\N = \{ f_0|\ldots|f_n\rightharpoonup  \{y\} \mid f_{i} \in \fname \land \; 0\leq i\leq n  \land \; (y \in \var \lor y \in \{null\}) \}}
-\newcommand{\fmapextend}{  \N(f\rightharpoonup x \setminus y) = \N \setminus \{f \rightharpoonup x\} \cup \{f \rightharpoonup y\} }
-\newcommand{\fmapextendn}{  \N(\cup_{f\rightharpoonup y}) = \N \cup \{f \rightharpoonup y\} }
-\newcommand{\fmapdiff}{\N(\setminus_{f\rightharpoonup y}) = \N - \{f\rightharpoonup y\}}
-\newcommand{\fmapwithf}{\N([f\rightharpoonup  y]) = \N \text{   where  } f \rightharpoonup y \in \N }
-\newcommand{\fmapempty}{\N_{\emptyset} =  \{ \}}
-\newcommand{\codom}{\cod(\N)=\dom(\Gamma)}
-\newcommand{\cod}{\texttt{cod}}
-\newcommand{\dom}{\texttt{dom}}
-%\newcommand{\types}{\tau ::= \textsf{rcu} | \textsf{normal}}
+\newAuthor{Ismail}{blue}
+\newAuthor{Colin}{cyan}
 
-\newcommand{\rpth}{f \in \textsf{FName} 
-     \left\{\begin{array}{cl}
-     \epsilon &    \\
-     f  &  f \in \fname\\
-   f_1 | \ldots | f_n &\forall_{1 \leq i \leq n} \ldotp f_i \in \fname 
-     \end{array}\right\}
-     \quad \text{  where } \textsf{FType(f) = \textsf{RCU}}
-}
-\newcommand{\rextendswith}{\rho^{k}[i] \mapsto f_i \text{  where  } \forall_{0\leq i \leq k} \ldotp f_i \in \fname }
-\newcommand{\extendswith}{\rho[i] \mapsto \rho_{i}^{k} \text{  where  } \forall_{0\leq i \leq n} \ldotp \rho_i^{k} \in \textsf{RelativePath}}
-
-\newcommand{\pth}{\rho \in \textsf{Path}  \qquad \rho ::= \rho_1 \ldots\rho_n  \text{   where  } \forall_{0\leq i \leq n}\ldotp \rho_i \in \textsf{RelativePath} \text{ or } \rho_i \in \textsf{ConcretePath}}
-\newcommand{\cpath}{\forall_{0 \leq i \leq n} \ldotp f_i \in \mathsf{FName} \land l_i \in \textsf{Label} \land \exists_{k\geq0} \ldotp f_i^{l_i} = \overbrace{f_i\ldots f_i}^{k} \land (\forall_{0\leq j \leq n} \ldotp j\neq i \implies l_i \neq l_j) }
-
-
-
-\newcommand{\rpath}{\rho \in \textsf{RelativePath} \quad \rho = (f)^{*} \text{   where  } f \in \textsf{FName} \text{  and  } \exists_{k>=0} \ldotp (f)^{*} = \overbrace{f\ldots f}^\text{k} }
-\newcommand{\falt}{f \in \textsf{AlternatingFName} = f_1 | f_2 | \ldots | f_{n-1} | f_n \text{  where  } \forall_{0\leq i \leq n}\ldotp f_i \in \textsf{FName} }
-
-\newcommand{\lenmap}{\mathcal{L} \in \textsf{LPath} : \rho \mapsto \mathbb{N}}
-\newcommand{\etadecl}{\eta = \{f \mapsto y \mid f \in \fname \land y\in \var \}  }
-\newcommand{\rcunfd}{\textsf{rcuFresh} \,  \N}
-\newcommand{\rcunfdecl}{x : \textsf{rcuFresh} \;\; \N }
-\newcommand{\rcunf}[3]{#1 : \textsf{rcuFresh} \;\; \N(\cup_{ #2 \rightharpoonup #3}) } %x, f , y
-\newcommand{\rcuf}[1]{#1 : \textsf{rcuFresh} \;\;\N } %x, f , y
-\newcommand{\rcunextfresh}[1]{\textsf{rcuFresh} \;\; \N #1 }
-\newcommand{\ftypedecl}{\textsf{FType} : \fname \mapsto \tau}
-\newcommand{\ftype}[2]{\textsf{FType}(f_{#1}) \mapsto \textsf{#2}}
-%%%
-\newcommand{\typedepthdecl}{\textsf{TypeDepth}(x:\text{T}) =  \mid\rho\mid \;\; \texttt{where T} = \textsf{rcuItr} \underset{y}{\mid} \rho \,\, \N }
-%%%
-\newcommand{\rcuonly}{\textsf{RCUOnly}(x) \overset{\texttt{def}}{=} x:T \text{ where } T = \textsf{rcuItr}\_}
-\newcommand{\rcumodonlydecl}{\textsf{RCUModifiedOnly}(C) \overset{\texttt{def}}{=} \forall_{x \in \textsf{Modifies}(C)}\ldotp \textsf{RcuOnly}(x) }
-\newcommand{\rcufilterb}{\textsf{RemRcu} : \Gamma \mapsto \Gamma}
-\newcommand{\rcufilterr}[1]{\textsf{RemRcu} ( #1 ) = \texttt{filter} \, ( \lambda x \ldotp x \neq \textsf{rcuItr \_ } ) \,  #1 }
-\newcommand{\rcufiltera}[1]{\textsf{RemRcu} ( #1 ) }
-%%%Alias
-\newcommand{\aliaswith}[2]{#1 \in \textsf{AliasWith}(#2)}
-\newcommand{\aliaswithdecl}{\textsf{AliasWith}(x) = \{y \mid y:\textsf{rcuItr}\underset{r',k'}{\mid} \rho' \;\; \N' \land \rho = \rho' \land \N = \N' \}  \texttt{  where  }  \rcuitrT{x}{r}{k}{kk}{\_} }
-%%%Framing Type Contexts
-    \newcommand{\wellframed}{
-      \mathsf{WellFramed}(\Gamma,\Delta)\overset{def}{=}
-      \left\{\begin{array}{l}
-      
-        \forall_{z\in dom(\Gamma),f,\rho,y }\ldotp                           z\notin dom(\Delta) \land            z:\textsf{rcuItr}\,\rho\,\N([f\rightharpoonup y]) \implies \\
-                      \left\{ 
-	              \begin{array}{l}
-                        y\notin dom(\Delta) \land y\in dom(\Gamma) \land \forall_{n\in dom(\Delta),\rho',f',m}\ldotp n\notin dom(\Gamma) \land 	\\
-            \left\{
-            \begin{array}{l}
-              n:\textsf{rcuItr}\,\rho'\,\N([f'\rightharpoonup m]) \implies \\
-              \left\{\begin{array}{l}
-              m \notin dom(\Gamma) \land \\
-              m \in dom(\Delta) \land
-              \rho \neq \rho'                    
-              \end{array} \right\}
-            \end{array}\right\}
-     \end{array}\right\}
-         \end{array}\right.      
-      
-}
-
-%%%Framing Type Contexts ends
-\newcommand{\deltaepsilon}{\Delta >= 0 \qquad 0\leq \epsilon \leq \Delta }
-\newcommand{\reduce}[2]{\textsf{InReduction}(#1,#2) = \{ \Gamma' \mid  \Gamma' \preceq_{\varepsilon} \Gamma \} }
-\newcommand{\rename}[2]{\textsf{ContextRename}(#1,#2) = #2 \mapsto #1 }
-%%Sep RCU
-\newcommand{\seprcu}[4]{\textsf{SepLoop}(#1,#2,#3,#4) \overset{\texttt{def}}{=} \text{dom}(#1)\cap \text{dom}(#2) = \emptyset \, \land \, #1\uplus#2= #4 \, \land \, \textsf{RcuModifiedOnly}(#2,#3)}
-\newcommand{\seprcud}[4]{\textsf{SepLoop}(#1,#2,#3,#4)}
+%% The "title" command has an optional parameter,
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 %%
-\newcommand{\seprcub}[5]{\textsf{SepBranch}(#1,#2,#3,#4,#5) \overset{\texttt{def}}{=}
-   \left\{\begin{array}{cl}
-  \text{dom}(#2)\cap \text{dom}(#3) = \emptyset \, \land \, #2\uplus#3=#1 \land \\
-  \textsf{RcuModifiedOnly}(#2,#4) \,\land\, \textsf{RcuModifiedOnly}(#2,#5)\,\land \\
-
- \end{array}\right\}
-}
-\newcommand{\seprcubd}[5]{\textsf{SepBranch}(#1,#2,#3,#4,#5)}
-%%
-\newcommand{\precgamma}[2]{#1  \preceq #2 \overset{\texttt{def}}{=} \forall_{(x)\in #1}\ldotp x \in #2 \implies  #1 \preceq_{x} #2}
-%%%if branches
-\newcommand{\iffree}{\textsf{if}(\text{e})\{\text{C}\}}
-\newcommand{\ifelse}{\textsf{if}(\text{e})\{\text{C}_1\}\textsf{else}\{\text{C}_2\}}
-%%var  root,k  , k+1 mappedvar
-\newcommand{\rcuitertype}[4]{\textsf{rcuItr}(#1,#2)\;#3\;#4}
-\newcommand{\rcuit}[4]{#1:\textsf{rcuItr}\;\; #3 \;\; #4 }
-\newcommand{\rcuitrT}[5]{#1:\textsf{rcuItr}\;\; \rho \;\; \N }
-\newcommand{\rcuitrn}[5]{#1:\textsf{rcuItr}\;\; \rho \, f \;\; \N }
-\newcommand{\rcuitr}[5]{#1:\textsf{rcuItr}\;\; \rho \;\; \N[f  \rightharpoonup #5] }
-\newcommand{\rcustack}[2]{#1 : \textsf{rcuItr}\underset{#2}{\mid}}
-\newcommand{\afree}[1]{\textsf{asyncDelayedFree}(#1)}
-\newcommand{\allocate}{\textsf{asyncDelayedFree}}
-\newcommand{\typelocal}{\tau_{local}}
-\newcommand{\typeglobal}{\tau_{global}::=\textsf{rcuRoot}  }
-\newcommand{\rcutypes}{ \typelocal ::=   \textsf{undef} \mid \textsf{rcuItr} \,\, \rho \,\, \N \mid \rcunfd \mid \textsf{unlinked}  \mid \textsf{freeable}}
-\newcommand{\typelocalmap}{\textsf{TypeLocal} : \var \mapsto \typelocal}
-\newcommand{\command}[1]{\db{#1} \mstate \commandeq}
-\newcommand{\commandm}[2]{\db{#1} #2 \commandeq}
-
-\newcommand{\mstate}{(s,h,l,R,F)}
-\newcommand{\commandeq}{\;\;\Downarrow_{\mathrm{tid}}\;\;\overset{\Delta}{=}}
-\newcommand{\op}[2]{\begin{array}{rll}\command{#1} & #2\end{array}}
-\newcommand{\opm}[3]{\begin{array}{rll}\commandm{#1}{#2} & #3\end{array}}
-%%%
-\newcommand{\return}[1]{\mathsf{return~\mathit{#1}}}
-\newcommand{\bind}[2]{\mathsf{Bind}(#1;#2)}
-\newcommand{\result}[1]{\mathsf{y = \mathsf{result}}}
-\newcommand{\mbody}[2]{\mathsf{mbody}(#1,#2)}
-\newcommand{\pre}{\textsf{pre}}
-\newcommand{\assume}[1]{\textsf{assume}(#1)}
-\newcommand{\lift}[1]{\lceil #1\rceil}
-\newcommand{\erase}[1]{\lfloor #1\rfloor}
-%%%
-\newcommand{\M}{\ensuremath{\mathcal{M}}}
-\newcommand{\s}{\ensuremath{\mathcal{S}}}
-\newcommand{\R}{\ensuremath{\mathcal{R}}}
-\newcommand{\N}{\ensuremath{\mathcal{N}}}
-\newcommand{\condexpr}{e \in \textsf{CondExpr}}
-%function definitions for paths
-
-\newcommand{\lengthofpath}{$\mid \rho\mid \;=\;
-  \begin{cases}
-      0+ \mid \rho'\mid &  \rho = \rho_{i}^{k}\rho' \text{   where  } 0\leq i  \text{   and   } \rho_{i}^{k} = \epsilon \\
-         k + \mid \rho'\mid & \rho = \rho_{i}^{k}\rho' \text{   where  } 0\leq i
-  \end{cases}$
-
-}
-%%\textsf{Stabilize}(\Gamma,e) = \forall x \in \N[\fname] \ldotp \exists_{f_1,f_2 \in \fname}\ldotp \N[f_1] =  \N[f_2] \implies \N[f_1,f^{*}] \land \N[f_2,f^{*}]
-
-\newcommand{\stabilizenext}{\textsf{StabilizeNext}(a,b,f)}
-\newcommand{\stabilizepath}{\textsf{StabilzePath}(b,f,k)}
-\newcommand{\stabilizecontext}{\textsf{StabilizeContext}(\Gamma,e) =
-    \left\{\begin{array}{cl}
-    e \in \textsf{PointsToExpr} \land
-    \exists_{a,b,f}\ldotp  (a,b,f) = \textsf{PointsToExprMap}(e) \land \\
-  \pi_{\N}(a) = \textsf{StabilizeNextMap}(a,b,f) \land \\
-  \pi_{\rho}(b) = \textsf{StabilizePath}(b,f, \mid \pi_{\rho}(b)\mid ) \land\\
-  \forall_{c \in \Gamma \land \textsf{TypeDepth}(c) >= \textsf{TypeDepth}(b)} \ldotp \pi_{\rho}(c) = \textsf{StabilizePath}(c,f,\mid\pi_{\rho}(c)\mid)
-  \end{array}\right\}
-}
-%%%frame branch
-\newcommand{\alternatingvars}[1]{\textsf{AbstractVars}(#1)}
-\newcommand{\alternatingvarsdecl}{\textsf{AbstractVars}(\Gamma) \;=\; \{ x,y \mid  (x,y)\in \textsf{AbstractPairs}(\Gamma)\}}
-\newcommand{\alternatetype}{ \text{x:}\textsf{rcuItr}\;\; \rho \;\; \N[f^{*}\mapsto y] \qquad   \text{y:}\textsf{rcuItr}\;\; \rho.\rho^{k} \;\; \N \text{    where    } \rho^{k}[k]=f^{*}}
-\newcommand{\alternatingpath}[1]{f^{*} \; = \; f_1 \mid f_2  \; \text{where} \;  (f=f_1) \;\oplus \; ( f=f_2 )  }
-\newcommand{\alternatingpathsdecl}[1]{\textsf{AbstractPairs}(#1) = \; \{ (\text{x},\text{y}) \mid \text{x} \in #1 \land \text{y} \in #1\}}
-\newcommand{\alternatingpaths}[1]{\textsf{AbstractPairs}(#1)}
-\newcommand{\pointstotuple}{\textsf{PointsToTuple}}
-\newcommand{\pointstoexpr}{\textsf{PointsToExpr} = \{ x.f==y  \in \textsf{Expr} \mid \text{x} \in \var \; \land \; \text{y} \in \var \; \land \; f \in \fname \}}
-\newcommand{\pointstopair}[1]{\textsf{PointsTo}(\text{#1})}
-\newcommand{\projectfieldecl}{\pi_{f} : (\text{x},\text{y},f) \mapsto f}
-\newcommand{\projectfield}[1]{\pi_{f}(#1)}
-\newcommand{\projectpairdecl}{\pi_{\var} :(\text{x},\text{y},f) \mapsto (\text{x},\text{y})}
-\newcommand{\projectpair}[1]{\pi_{\var}(#1)} % tuple,f.
-\newcommand{\pointstoexprdecl}{\textsf{PointsToExpr} = \{e \mid  e = (a.f == b) \land \condexpr \land a,b \in \var \land f \in \fname  \} }
-\newcommand{\pointstostmtdecl}{\textsf{PointsToExprMap}: \textsf{PointsToExpr}\mapsto \var \times \var \times \fname}
-\newcommand{\pointstostmt}[1]{\textsf{PointsToExprMap}(#1) }
-\newcommand{\freductionindexdecl}{\textsf{FieldReductionIndex}(\text{C},\text{x},\text{y},\text{irdc})\; = \;
-  \left\{\begin{array}{cl}
-    \forall_{0 \leq  i \leq n} \ldotp &  (x',y',f')_{i}  \in \pointstostmt{C} \land \\
-    &(\text{x},\text{y})= \projectpair{(\text{x}',\text{y}',f')_{i}} \implies\\
-    & \left\{\begin{array}{cl}
-    \exists_{ firdc} \ldotp  & firdc \leq i \land  (firdc = 0 \implies firdc=irdc) \land \\
-     & \left\{\begin{array}{cl}
-    \forall_{0 \leq none \le firdc} \ldotp & (\text{x},\text{y}) \neq \projectpair{(\text{x}',\text{y}',f')_{none})}  \land \\
-    &  firdc = \text{irdc}
-      \end{array}\right\}
-    \end{array}\right\}
-  \end{array}\right\}
-}
-
-\newcommand{\projectsharpdecl}{\Pi_{\varphi_{e}}(f^{*}) \mapsto f_1 \qquad \Pi_{\lnot\varphi_{e}}(f^{*}) \mapsto f_2 }
-\newcommand{\projectsharpdeclback}{\Pi(\varphi_{e})\mapsto e}
-
-\newcommand{\frenamefielddecl}{\textsf{FieldRename}(\text{x},f,f')  \; = \; \text{x:T}[f/f'] }
-
-
-
-
-\newcommand{\freductiondecl}{\textsf{FieldReduction}(\Gamma,\varphi_{e}) \; = \;
-\left\{\begin{array}{cl}
-  \textsf{FieldRename}(\text{x},f^{*},\Pi_{\varphi_{e}}(f^{*})),
-  \textsf{FieldRename}(\text{y},f^{*},\Pi_{\varphi_{e}}(f^{*})) \mid (\text{x},\text{y}) =\projectpair{\pointstostmt{\Pi(\varphi_{e})}}
-\end{array}\right\}
-}
-
-\newcommand{\freductiondeclneq}{\textsf{FieldReduction}(\Gamma,\lnot\varphi_{e}) \; = \;
-\left\{\begin{array}{cl}
-  \textsf{FieldRename}(\text{x},f^{*},\Pi_{\lnot\varphi_{e}}(f^{*})),
-  \textsf{FieldRename}(\text{y},f^{*},\Pi_{\lnot\varphi_{e}}(f^{*})) \mid (\text{x},\text{y}) = \projectpair{\pointstostmt{\Pi(\varphi_{e})}}
-\end{array}\right\}
-  }
-
-
-\newcommand{\gammafieldreduction}[4]{\textsf{ReduceAbstractPaths}(#3,#4,#2,#1) = \forall_{x,y \in \textsf{AbstractVars}(#4)} \ldotp \textsf{FieldReduction}(\text{x},\text{y},\varphi_{#3}) = #2 \land \textsf{FieldReduction}(\text{x},\text{y},\varphi_{#3}) = #1  } % x,y,gamma,c
-\newcommand{\alterinxys}{\text{a:}\textsf{rcuItr}\;\; \rho \;\; \N[f_1\mapsto b] \qquad
-  \text{b:}\textsf{rcuItr}\;\; \rho.f_1 \;\; \N  \text{  or }\text{b:}\textsf{rcuItr}\underset{r}{\mid} \rho.\{...f_1\} \;\; \N \\
-  \text{a:}\textsf{rcuItr}\;\; \rho \;\; \N[f_2\mapsto b] \qquad
-  \text{b:}\textsf{rcuItr}\;\; \rho.f_2 \;\; \N \text{  or  } \text{b:}\textsf{rcuItr}\;\; \rho.\{...f_2\} \;\; \N }
-\newcommand{\reducedpathsdecl}[2]{\textsf{ReducedPaths}(#1,#2)\; = \; \left\{\begin{array}{cll}
-  (a,b) \mid  &\text{a:}\textsf{rcuItr}\;\; \rho \;\; \N[f_1\mapsto b] \in #1 & \\
-  &  \land  \text{b:}\textsf{rcuItr}\;\; \rho.\rho^{k} \;\; \N \in #1  & \text{     where    } \rho^{k}[k]=f_1 \\
-  &  \land  \text{a:}\textsf{rcuItr}\;\; \rho \;\; \N[f_2\mapsto b] \in #2 & \\
-  &  \land \text{b:}\textsf{rcuItr}\;\; \rho.\rho^{k} \;\; \N  \in #2 & \text{     where    } \rho^{k}[k]=f_2
-  \end{array}\right\} }
-\newcommand{\exprTopredDecl}{\textsf{ExprToPredicate}(e) \mapsto \varphi_{e}}
-\newcommand{\reducedvars}{\textsf{ReducedVars}(\Gamma_1,\Gamma_2)}
-\newcommand{\reducedvarsdecl}{\textsf{ReducedVars}(\Gamma_1,\Gamma_2)\;=\; \{\forall_{a,b \in \Gamma_1 \cup \Gamma_2} \ldotp (a,b) \in \textsf{ReducedPaths}(\Gamma_1,\Gamma_2) \}}
-\newcommand{\reducedpaths}[2]{\textsf{ReducedPaths}(#1,#2)}
-\newcommand{\abstractpaths}[4]{\textsf{AbstractPaths}(#1,#2,#3,#4) \; = \; \left\{\begin{array}{cl} a ,b \mid
-
-  \begin{array}{cl}
- \forall_{a,b \in #1}\ldotp & \textsf{FieldRename}(a,#2,\rewritealternate{#2}{#3}{#4}) \land \\
-  &\textsf{FieldRename}(a,#3,\rewritealternate{#2}{#3}{#4}) \land\\
-  &\textsf{FieldRename}(b,#2,\rewritealternate{#2}{#3}{#4}) \land \\
-  &\textsf{FieldRename}(b,#3,\rewritealternate{#2}{#3}{#4})
-  \end{array}
-   \end{array}\right\}
- }
-\newcommand{\rewritealternatedecl}[3]{\textsf{AbstractField}(#1,#2,#3) = f^{*} \; \texttt{    where   } f^{*} \;=\;  \frac{\varphi_{#3}}{#1 \mid #2} }
-  \newcommand{\rewritealternate}[3]{\textsf{AbstractField}(#1,#2,#3)}
-\newcommand{\composerename}{\circ \text{  provides composing renaming of types ... removes duplicates? [TODO : May change this, keep this simple, now it is nothing, same as ;]. }}
-
-%%%%%%%
-\newcommand{\p}{\rho}
-
-\newcommand{\ptriple}[3]{\{#1\}#2\{#3\}}
-\newcommand{\atriple}[3]{\begin{array}{l}\{#1\}\\#2\\\{#3\}\end{array}}
-\newcommand{\assert}[1]{\{#1\}}
-\newcommand{\modifies}[1]{\textsf{Modifies}(#1)}
-
-%\usepackage[usenames,dvipsnames]{color}
-\definecolor{framed}{gray}{0.50}
-\newcommand{\framed}[1]{\textcolor{framed}{\assert{#1}}}
-
-% Make sure these are all done
-\usepackage{todonotes}
-
-\newcommand{\iso}[1]{\textrm{\color{magenta}\ensuremath{\llbracket}\textrm{Iso says:} #1\ensuremath{\rrbracket}}}
-\newcommand{\colin}[1]{\textrm{\color{cyan}\ensuremath{\llbracket}\textrm{Colin says:} #1\ensuremath{\rrbracket}}}
-%\newcommand{\tocite}[1]{\textrm{\color{green}$\llbracket$CITE: #1$\rrbracket$}}
-
-\newcommand{\mypar}[1]{\textbf{#1}~\xspace}
-
-\newcommand{\hallocprovided}{
-  \texttt{ provided } s[(y,tid)\mapsto o], \;  h[o \mapsto \texttt{new}] \text{ and } \texttt{ default }(\textsf{FType}(f))\\
-  \lambda o', f  \ldotp  \text{ if }  o = o' \;  \text{ skip } \text{ else }  h(o',f)
-}
-\newcommand{\gcprovided}{
-  \texttt{ provided }  s[(x,tid)\mapsto o], \; (\forall f, o' \ldotp o\neq o' \Rightarrow h(o',f) = h'(o',f))) \\
-  \text{ and } \forall f \ldotp h'(o,f)\; \textsf{ undefined }
-}
-\newcommand{\rcuwbeginprovided}{
- \textrm{provided }tid \notin R
-}
-\newcommand{\rcurbeginprovided}{
- \textrm{provided }tid \neq l
-}
-\newcommand{\rcurendprovided}{
- \textrm{provided } \; F \setminus tid \; \textrm{ as } \; \{ (T \setminus tid \},o) \mid (T,o) \in F \}
-}
-\newcommand{\gc}{
-  \inferrule*[left={\scriptsize(Garbage-Collect)}]{}
-           {
-             \op{\texttt{gcStep}}{(s,h',l,R,F)}
-           }
-}
-%%%
-\newcommand{\rcuwbegin}{
-  \inferrule*[left={\scriptsize(RCU-WriteBegin)}]{}
-           {
-            \opm{\texttt{WriteBegin}}{(s,h,\mathrm{unlocked},R,F)}{(s,h,\mathrm{tid},R,F)}
-           }
-}
-\newcommand{\rcuwend}{
-  \inferrule*[left={\scriptsize(RCU-WriteEnd)}]{}
-           {
-            \opm{\texttt{WriteEnd}}{(s,h,\mathrm{tid},R,F)}{(s,h,\textsf{unlocked},R,F)}
-           }
-}
-\newcommand{\rcurbegin}{
-  \inferrule*[left={\scriptsize(RCU-ReadBegin)}]{}{
-    \opm{\texttt{ReadBegin}}{(s,h,l,R,F)}{(s,h,l,R \uplus \{ \mathrm{tid}\},F)}
-  }
-}
-\newcommand{\rcurend}{
-  \inferrule*[left={\scriptsize(RCU-ReadEnd)}]{}{
-    \opm{\texttt{ReadEnd}}{( s,h,l,R \uplus \{ \mathrm{tid} \},F)}{(s,h,l,R,F \setminus \mathrm{tid}) }
-  }
-}
-
-%%%
-\newcommand{\asyncfree}{
-\inferrule*[left={\scriptsize(Async-Free)}]{}
-           {
-            \op{\texttt{asyncDelayedFree}(x)}{(s,h,l,R,F \uplus \{ (R,S(x))\} )}
-           }
-
-}
-\newcommand{\hallocate}{
-  \inferrule*[left={\scriptsize(Heap-Allocate)}]{}
-             {
-                \op{\texttt{y=new}}{(s,h,l,R,F)}
-             }
-}
-\newcommand{\supdate}{
-  \inferrule*[left={\scriptsize(Stack-Update)}]{}
-           {
-             \op{\texttt{y=x}}{(s[(y,tid) \mapsto (x,tid)],h,l,R,F)}
-           }
-}
-\newcommand{\hread}{
-  \inferrule*[left={\scriptsize(Heap-Read)}]{}
-             {
-               \op{\texttt{y=x.f}}{((s[(y,tid) \mapsto h(s(x,tid),f)],h,l,R,F)}
-             }
-}
-\newcommand{\hupdate}{
-  \inferrule*[left={\scriptsize(Heap-Update)}]{}
-             {
-               \op{\texttt{x.f=y}}{(s,h[s(x,tid),f \mapsto s(y,tid)],l,R,F)}
-             }
-}
-\newcommand{\tuigread}[1][T-UniqueGlobalRead]{
-\infer[\textsc{#1}]{
-  \Gamma \, , y:\_ \vdash_{M,R} y = G \dashv y: \textsf{rcuItr}\;\; \rho \;\; \N_{\emptyset} , \Gamma
-}{
-\begin{array}{c}
-   G : \uiglobal \\
-\end{array}
-}
-}
-
-\newcommand{\tuisread}[1][T-UniqueStackRead]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
-  \Gamma,\rcuitrn{y}{G}{0}{k+1}{\_} , x:\textsf{\_}  \vdash_{M,R} x = y \dashv  \rcuitrn{x}{y}{1}{2}{\_} , \rcuitrn{y}{G}{0}{1}{\_}, \Gamma \\
-  \end{array}
-}{
-\begin{array}{c}
-   G : \uiglobal \\
-\end{array}
-}
-}
-
-\newcommand{\toverwc}[1][T-OverWrite]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, x:\textsf{rcuItr}\;\; \rho \;\; \N([f \rightharpoonup \_])  \vdash_{M,R} x = x.f \dashv   x:\textsf{rcuItr}\;\; \rho' \;\; \N(\setminus_{f\rightharpoonup \_})  ,\,  \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}}  \qquad \mid \rho \mid +1 = \mid \rho' \mid  \\
-\end{array}
-}
-}
-%\qquad \aliaswith{z}{x} \rcuitr{z}{y}{k}{k+1}{x}\,
-
-\newcommand{\treadstack}[1][T-ReadStack]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:{\_}, \rcuitrT{x}{y}{k}{k+1}{\_}   \vdash_{M,R} z=x \dashv  \rcuitrT{x}{y}{k}{k+1}{\_}, \rcuitrT{z}{y}{k}{k+1}{\_} , \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
- \\
-\end{array}
-}
-}
-
-\newcommand{\treadnext}[1][T-ReadNext]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:{\_},  x:\textsf{rcuItr}\;\; \rho \;\; \N([f\rightharpoonup \_])   \vdash_{M,R} z=x.f \dashv  x:\textsf{rcuItr}\;\; \rho \;\; \N(f\rightharpoonup \_ \setminus z),\;\;z:\textsf{rcuItr}\;\; \rho' \;\; \N \;, \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}} \qquad \mid \rho \mid + 1 = \mid \rho' \mid \\
-\end{array}
-}
-}
-%%%This is read and assignment for loop
-
-\newcommand{\tloverwc}[1][T-OverLoopWrite]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma,  x:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N   \vdash_{M,R} x = x.f \dashv   \textsf{rcuItr}\;\; \rho\{...f\}_{\Delta} \,\, \N ,\,  \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}}  \\
-\end{array}
-}
-}
-\newcommand{\tlreadstackext}[1][T-ReadLoopStack1]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:{\_}, x:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N \\  \vdash_{M,R} z=x \dashv \\ x:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N, z:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N \, , \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
- \\
-\end{array}
-}
-}
-\newcommand{\tlreadstackinit}[1][T-ReadLoopStackInit]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N[f \mapsto x], x:\textsf{rcuItr}\;\; \rho f \{...f_{loop}\}_{\Delta} \,\, \N \\  \vdash_{M,R} z=x \dashv \\ x:\textsf{rcuItr}\;\; \rho f \{...f_{loop}\}_{\Delta} \,\, \N, z:\textsf{rcuItr}\;\; \rho\{...f\}_{\Delta} \,\, \N \, , \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}} \qquad f_{loop} = \epsilon \\
-\end{array}
-}
-}
-\newcommand{\tlreadnextone}[1][T-ReadLoopNextAbstract]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:\textsf{rcuItr}\;\; \rho f_1\{...f_{loop}\}_{\Delta} \,\, \N, x:\textsf{rcuItr}\;\; \rho\{...f_1\}_{\Delta} \,\, \N[f_1\mapsto z] \\  \vdash_{M,R} z=x.f_2 \dashv \\  x:\textsf{rcuItr}\;\; \rho\{...f_1\}_{\Delta} \,\, \N[\frac{}{f_1 \mid f_2}\mapsto z],\, z:\textsf{rcuItr}\;\; \rho\{...f_2\}_{\Delta} \,\, \N \,, \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}} \qquad f_{loop}=\epsilon  \\
-\end{array}
-}
-}
-\newcommand{\tlreadnexttwo}[1][T-ReadLoopNextExtend]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:\textsf{rcuItr}\;\; \rho f_1\{...f_{loop}\}_{\Delta} \,\, \N, x:\textsf{rcuItr}\;\; \rho\{...f_1\}_{\Delta} \,\, \N[f_1\mapsto z] \\  \vdash_{M,R} z=x.f_1 \dashv \\  x:\textsf{rcuItr}\;\; \rho\{...f_1\}_{\Delta} \,\, \N[f_1\mapsto z],\, z:\textsf{rcuItr}\;\; \rho\{...f_1\}_{\Delta} \,\, \N \,, \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}} \qquad f_{loop}=\epsilon  \\
-\end{array}
-}
-}
-\newcommand{\tlreadnextthree}[1][T-ReadLoopNext3]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, z:{\_}, x:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N \\  \vdash_{M,R} z=x.f \dashv \\  x:\textsf{rcuItr}\;\; \rho\{...f_{loop}\}_{\Delta} \,\, \N[f\mapsto z],\, z:\textsf{rcuItr}\;\; \rho\{...f\}_{\Delta} \,\, \N \,, \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}} \\
-\end{array}
-}
-}
-\newcommand{\approximatedecl}{\textsf{Approximate}(x:\textsf{rcuItr}\;\; \rho \;\; \N, \Delta)\mapsto x:\textsf{rcuItr} \;\;\rho\{...\} \;\;\N}
-\newcommand{\approxtype}[2]{\textsf{Approximate}(#1,#2)}
-\newcommand{\gammaapproxdecl}{\Gamma_1 \approx_{\Delta} \Gamma_2 \text{   where  } \Gamma_2 = \{\approxtype{x:\text{T}}{\Delta} \mid \forall_{x:\text{T}\in\Gamma_1}  \}}
-\newcommand{\gammapprox}[3]{#1 \approx_{#3} #2}
-% \qquad \aliaswith{t}{x} \rcuitr{t}{y}{k}{k+1}{z}
-\newcommand{\tunlinknode}[1][T-UnlinkANode]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-\Gamma, \,
-x:\textsf{rcuItr}\;\; \rho \;\; \N([f_1\rightharpoonup z]) , \;\;\;
-z:\textsf{rcuItr} \;\; \rho' \;\; \N'([f_2\rightharpoonup r]) , \;\;\; r:\textsf{rcuItr}\;\; \rho'' \;\; \N'' \\
-\vdash_{M} x.f=r \dashv \\
-z:\unlinked, \,
-x:\textsf{rcuItr}\;\; \rho \;\; \N(f_1\rightharpoonup z \setminus r), \;\;\;
-r:\textsf{rcuItr}\;\; \rho' \;\; \N'' \;\;
-\Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-  \ftype{ }{\textsf{rcu}} \qquad \mid\rho\mid + 1= \mid \rho' \mid  \qquad \mid \rho' \mid + 1 = \mid \rho'' \mid  \\ \forall_{f\in dom(\N')} \ldotp f\neq f_2 \implies \N'([f\rightharpoonup \textsf{Null}])  \\
-\end{array}
-}
-}
-%\qquad  \aliaswith{t}{z} t: \unlinked , \,
-\newcommand{\tafree}[1][T-AsyncFree]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, x:\unlinked \vdash_{M} \afree{x} \dashv x:\udef , \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-   \\
-\end{array}
-}
-}
-
-\newcommand{\tallocate}[1][T-Allocate]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, x:\_ \vdash_{M} x = \NEW \dashv x:\textsf{rcuFresh} \;\; \N_{\emptyset} , \, \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-   \\
-\end{array}
-}
-}
-
-\newcommand{\tsetfieldfresh}[1][T-SetFieldFresh]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, \rcuf{p} \;\;, x:\textsf{rcuItr}\;\; \rho \;\; \N([f\rightharpoonup z]) \;\; \\
-  \vdash_{M} p.f = x.f \dashv \\
-  \rcunf{p}{f}{z} ,  \;\;, x:\textsf{rcuItr}\;\; \rho \;\; \N([f\rightharpoonup z])\;\;, \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-   \\ f \notin \N
-\end{array}
-}
-}
-
-
-\newcommand{\tlinkfreshf}[1][T-LinkFreshNext]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, \:\;
-z:\textsf{rcuItr}\;\; \rho \;\; \N([f\rightharpoonup x]) \;\;,
-x:\textsf{rcuItr}\;\; \rho' \;\; \N \;\;,
-r:\textsf{rcuFresh} \;\; \N([f\rightharpoonup x]) \\
-  \vdash_{M} z.f = r \dashv \\
-z:\textsf{rcuItr}\;\; \rho \;\; \N(f\rightharpoonup x\setminus r) \;\;,
-r:\textsf{rcuItr}\;\; \rho' \;\; \N([f\rightharpoonup x]) \;\; ,
-x:\textsf{rcuItr}\;\; \rho'' \;\; \N
- \;\; , \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
-   \ftype{ }{\textsf{rcu}} \qquad \mid\rho\mid + 1= \mid \rho' \mid  \qquad \mid \rho' \mid + 1 = \mid \rho'' \mid \\
-\end{array}
-}
-}
-
-\newcommand{\tlinkfresh}[1][T-LinkFresh]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma, \;\;
-  p:\textsf{rcuItr}\;\; \rho \;\; \N([f\rightharpoonup o]) \;\;,
-  o:\textsf{rcuItr}\;\; \rho' \;\; \N' \;\;, n:\textsf{rcuFresh} \;\; \N'' \\
-  \vdash_{M} p.f = n \dashv \\
-  p:\textsf{rcuItr}\;\; \rho \;\; \N(f \rightharpoonup o \setminus n) \;\;,
-  n:\textsf{rcuItr}\;\; \rho' \;\; \N'' \;\;,
-  o:\unlinked, \;\;  \Gamma
-\end{array}
-}{
-\begin{array}{c}
-   \ftype{ }{\textsf{rcu}}  \qquad \mid \rho \mid + 1= \mid \rho' \mid \qquad \N' = \N'' \\
-\end{array}
-}
-}
-\newcommand{\tloop}[1][T-Loop]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \Gamma \vdash \text{C}^{*} \dashv  \Gamma \\
-\end{array}
-}{
-  \begin{array}{c}
-     \Gamma \vdash C \dashv \Gamma
-\end{array}
-}
-}
-\newcommand{\tloopold}[1][T-LoopOld]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
- \Gamma_1',\Gamma_1'' \vdash \text{C}^{\Delta} \dashv   \Gamma_1'''',\Gamma_1''    \\
-%  \tloopweaken\\
-\end{array}
-}{
-  \begin{array}{c}
-    \tframeloop \\
-       \Delta = 0 \implies \Gamma_1' =\Gamma_1''''  \land \\
-       \Delta >0 \implies
-       \left\{\begin{array}{cl}
-       \Gamma_1'\approx_{\Delta}\Gamma_1''' \land \left\{\begin{array}{cl}
-       \exists_{0<\varepsilon \leq\Delta} \ldotp 0<\varepsilon<\Delta  \implies  \Gamma_1'''\vdash C \dashv \textsf{ContexRename}(\Delta,\Gamma_1''',\Gamma_1'''') \land \\
-       \varepsilon = \Delta  \implies \Gamma_1'''\vdash C \dashv \Gamma_1''''
-       \end{array}\right\}
-       \end{array}\right\} \\
-\end{array}
-}
-}
-
-% \qquad \rcuitrT{y}{G}{0}{k+1}{\_} \\  \rcuonly{\rcufiltera{\Gamma_1}}{k}{y} \\ \rcuonly{\rcufiltera{\Gamma_2}}{k'}{y} \\   \Gamma_1 \vdash C \dashv   \Gamma_2
-
-\newcommand{\tpar}[1][T-Par]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma_1 \; \Gamma_2  \vdash_{M,R} \bar{s_1} || \bar{s_2} \dashv  \Gamma'_1 \; , \Gamma'_2 \\
-\end{array}
-}{
-\begin{array}{c}
-   \Gamma_1 \vdash_{R} \bar{s_1} \dashv   \Gamma'_1  \qquad   \Gamma_2 \vdash_{M,R} \bar{s_2} \dashv   \Gamma'_2\\
-\end{array}
-}
-}
-\newcommand{\tllinkfresh}[1][T-LoopExtLinkFresh]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \{\text{TODO}\} \\
-\end{array}
-}{
-\begin{array}{c}
- \{\text{TODO}\}\\
-\end{array}
-}
-}
-\newcommand{\tllinkfreshnext}[1][T-LoopExtLinkFreshNext]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-\{\text{TODO}\}\\
-\end{array}
-}{
-\begin{array}{c}
-\{\text{TODO}\} \\
-\end{array}
-}
-}
-\newcommand{\tlunlink}[1][T-LoopExtUnlink]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \{\text{TODO}\} \\
-\end{array}
-}{
-\begin{array}{c}
- \{\text{TODO}\}\\
-\end{array}
-}
-}
-\newcommand{\tskip}[1][T-Skip]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \Gamma \vdash \textsf{skip} \dashv   \Gamma \\
-\end{array}
-}{
-\begin{array}{c}
- \\
-\end{array}
-}
-}
-\begin{comment}
-\newcommand{\tframebranch}[1][T-FrameRCUBranch]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
- \Gamma_{1\text{C}_1}, \, \Gamma'_{1\text{C}_1}  \vdash C_1 \dashv \Gamma'_{23R},\, \Gamma_{abs} \qquad  \Gamma_{1\text{C}_1}, \, \Gamma'_{1\text{C}_2}  \vdash C_2 \dashv  \Gamma'_{23R},\, \Gamma_{abs}
-\end{array}
-}{
-  \begin{array}{c}
-    \Gamma_1  \vdash \text{if e C_1 else C_2}  \dashv  \Gamma_4 \\
-    \exists_{\Gamma'_1} \ldotp \Gamma'_1= \textsf{AbstractVars}(\Gamma_1) \qquad \exists_{\Gamma''_1}\ldotp \Gamma_1 = \Gamma'_1 \uplus \Gamma''_1\\
-    \Gamma''_1,\Gamma'_1\vdash C_1 \dashv   \Gamma_2 \qquad \Gamma''_1,\Gamma'_1 \vdash C_2 \dashv \Gamma_3
-
-\end{array}
-}
-}
-\end{comment}
-
-\newcommand{\tbranch}[1][T-Branch]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
- \Gamma,x:\textsf{rcuItr}\;\; \rho \;\; \N([f_1\mid f_2 \rightharpoonup z]) \vdash \text{if e C$_1$ else C$_2$} \dashv \Gamma_4
-\end{array}
-}{
-  \begin{array}{c}
-    e \in \textsf{PointsToExpr} \qquad e \text{ is } x.f_1==z \\
- \Gamma,x:\textsf{rcuItr}\;\; \rho \;\; \N([f_1 \rightharpoonup  z]) \vdash C_1 \dashv\Gamma_4 \qquad \Gamma,x:\textsf{rcuItr}\;\; \rho \;\; \N([f_2 \rightharpoonup z]) \vdash C_4 \dashv \Gamma_4
-\end{array}
-}
-}
-
-\newcommand{\tframe}[1][T-Frame]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
- \Gamma, \; \Gamma_1 \vdash C \dashv \Gamma, \; \Gamma_2
-\end{array}
-}{
-  \begin{array}{c}
- \Gamma_1 \vdash C\dashv \Gamma_2  \qquad \textsf{RcuModifiedOnly}(C)
-\end{array}
-}
-}
-
-%%\seprcubd{\Gamma_1}{\Gamma_2}{\Gamma_3}{\Gamma_4}{C_1}{C_2}{\Gamma}
-
-%\Gamma''_1,\Gamma'_3\vdash \text{C$_1$} \dashv   \Gamma_2 \qquad \Gamma''_1,\Gamma'_1 \vdash \text{C$_2$} \dashv \Gamma_3 \qquad \Gamma_{23} = \Gamma_2 \cup \Gamma_3  \\
-   %  \Gamma_{23R} = \textsf{ReducedVars}(\Gamma_2,\Gamma_3) \qquad \Gamma'_{23R}=\Gamma_{23} - \Gamma_{23R} \qquad \Gamma_{abs} = \textsf{AbstractPaths}(\Gamma_{23R},\text{f$_1$},\text{f$_2$},e) \qquad \Gamma_4 =  \Gamma'_{23R},\, \Gamma_{abs}
-
-
-\newcommand{\tchoosef}[1][T-Choose-First]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma_1  \vdash C_1 \dashv  \Gamma_2 \\
-\end{array}
-}{
-\begin{array}{c}
-   \Gamma_1 \vdash C_1 \dashv   \Gamma_2  \qquad   \Gamma_1 \vdash C_2 \dashv   \Gamma_3\\
-\end{array}
-}
-}
-\newcommand{\tchooses}[1][T-Choose-Second]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma_1  \vdash C_2 \dashv  \Gamma_3 \\
-\end{array}
-}{
-\begin{array}{c}
-   \Gamma_1 \vdash C_1 \dashv   \Gamma_2  \qquad   \Gamma_1 \vdash C_2 \dashv   \Gamma_3\\
-\end{array}
-}
-}
-\newcommand{\tseq}[1][T-Seq]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \Gamma_1  \vdash \bar{s_1} \; ; \; \bar{s_2} \dashv  \Gamma_3 \\
-\end{array}
-}{
-\begin{array}{c}
-   \Gamma_1 \vdash \bar{s_1} \dashv   \Gamma_2  \qquad   \Gamma_2 \vdash \bar{s_2} \dashv   \Gamma_3\\
-\end{array}
-}
-}
-
-\newcommand{\tshuffle}[1][T-Exchange]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \Gamma, \, x:T , \, y:T' , \, \Gamma' \vdash \bar{s} \dashv   \Gamma'' \\
-\end{array}
-}{
-\begin{array}{c}
-   \Gamma, \, y:T' , \, x:T, \, \Gamma' \vdash \bar{s} \dashv   \Gamma'' \\
-\end{array}
-}
-}
-\newcommand{\tconsequence}[1][T-Conseq]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \Gamma \vdash C \dashv \Gamma''' \\
-\end{array}
-}{
-\begin{array}{c}
-   \Gamma \subt \Gamma'  \qquad \Gamma' \vdash C \dashv \Gamma'' \qquad \Gamma'' \subt \Gamma''' \\
-\end{array}
-}
-}
-
-%%Sub typing
-\newcommand{\nsubone}[1][N-Sub-F1]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash \, \N \subt \N'  \\
-\end{array}
-}{
-\begin{array}{c}
-   \text{T } = \textsf{rcuItr}\;\; \rho \;\; \N([f_1 \rightharpoonup y]) \\
-   \text{T}'=\textsf{rcuItr}\;\; \rho \;\; \N'([f^{*} \rightharpoonup y])
-\end{array}
-}
-}
-
-\newcommand{\nsubtwo}[1][N-Sub-F2]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash \, \N \subt \N'  \\
-\end{array}
-}{
-\begin{array}{c}
-   \text{T} = \textsf{rcuItr}\;\; \rho \;\; \N([f_2 \rightharpoonup y]) \\
-   \text{T}'=\textsf{rcuItr}\;\; \rho \;\; \N'([f^{*} \rightharpoonup y])
-\end{array}
-}
-}
-\newcommand{\nsubthree}[1][N-Sub]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash \, \N_1 \subt \N \, \land \, \N_2 \subt \N  \\
-\end{array}
-}{
-\begin{array}{c}
-  \N_1[f_2\mapsto x] \qquad  \N_2[f_1\mapsto x] \qquad  \N[f^{*} \mapsto x] \qquad f^{*} = \frac{\varphi_{e}}{f_1 \mid f_2}\\
-\end{array}
-}
-}
-
-
-
-\newcommand{\psubone}[1][P-Sub]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash  \rho' \subt \rho'' \\
-\end{array}
-}{
-  \begin{array}{c}
-  \rho'' = \rho'\rho^{k}
-\end{array}
-}
-}
-
-\newcommand{\psubtwo}[1][P-Sub-Ref]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash  \rho \subt \rho  \\
-\end{array}
-}{
-  \begin{array}{c}
-  \\
-\end{array}
-}
-}
-
-\newcommand{\psubthree}[1][P-Sub-Trans]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash  \rho' \subt \rho'''  \\
-\end{array}
-}{
-  \begin{array}{c}
-    \vdash  \rho' \subt \rho'' \qquad
-    \vdash  \rho'' \subt \rho'''
-\end{array}
-}
-}
-
-\newcommand{\csubfour}[1][C-Sub-Emp]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash  \epsilon \subt \epsilon  \\
-\end{array}
-}{
-  \begin{array}{c}
-\end{array}
-}
-}
-
-
-
-\newcommand{\tsubase}[1][S-Base]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
- \vdash \, \text{T} \prec_{\varepsilon = 0} \text{T'} \qquad \text{T} =_{\varepsilon = 0} \text{T'} \\
-\end{array}
-}{
-\begin{array}{c}
- \varepsilon = 0 \\
-\end{array}
-}
-}
-\newcommand{\tsubreflexive}[1][S-Reflexive]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
- \vdash \, \text{T} \preceq_{\varepsilon} \text{T} \\
-\end{array}
-}{
-\begin{array}{c}
-  \\
-\end{array}
-}
-}
-\newcommand{\tsubtransitive}[1][S-Transitive]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-  \vdash \, \text{T}_1 \preceq_{2\varepsilon} \text{T}_3 \\
-\end{array}
-}{
-\begin{array}{c}
-    \vdash \, \text{T}_1 \preceq_{\varepsilon} \text{T}_2 \qquad \vdash \, \text{T}_2 \preceq_{\varepsilon} \text{T}_3 \\
-\end{array}
-}
-}
-\newcommand{\tsubempty}[1][S-Empty]{
-\infer[\textsc{#1}]{
-\begin{array}{c}
-   \vdash \, \epsilon \preceq_{\varepsilon} \epsilon \\
-\end{array}
-}{
-\begin{array}{c}
-    \\
-\end{array}
-}
-}
-\newcommand{\subcontextone}[1][C-Sub-Red-notsure]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
-        \vdash \Gamma_1  \subt \Gamma \, \land \, \Gamma_2 \subt \Gamma \\
-\end{array}
-}{
-  \begin{array}{c}
-    \textsf{ReduceAbstractPaths}(e,\Gamma,\Gamma_1,\Gamma_2) \\
-\end{array}
-}
-}
-\newcommand{\subeqcontexttwo}[1][C-Sub-Abs-notsure]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
-        \vdash \Gamma'  \subt \Gamma \\
-\end{array}
-}{
-  \begin{array}{c}
-    \textsf{ReducedVars}(\Gamma_1,\Gamma_2) = \Gamma' \qquad \textsf{AbstractPaths}(\Gamma',f_1,f_2,e) =\Gamma
-\end{array}
-}
-}
-\newcommand{\subeqcontextthree}[1][C-Sub]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
-        \vdash \Gamma,\, x:\text{T}  \subt \Gamma',\, x:\text{T'} \\
-\end{array}
-}{
-  \begin{array}{c}
-    \vdash\Gamma \subt \Gamma' \qquad
-    \vdash \text{T}  \subt \text{T'}
-\end{array}
-}
-}
-
-
-
-\begin{comment}
-\newcommand{\tsubcons}[1][S-Cons]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
-        \vdash \Gamma, \, \text{x:T}  \prec \Gamma',\, \text{x':T'}  \\
-\end{array}
-}{
-\begin{array}{c}
-      \vdash \Gamma \prec \Gamma'  \qquad \text{T} \prec \text{T'}  \\
-\end{array}
-}
-}
-
-\newcommand{\tsubdrop}[1][S-Drop]{
-\infer[\textsc{#1}]{
-  \begin{array}{c}
-      \vdash \Gamma \prec \Gamma' \\
-\end{array}
-}{
-\begin{array}{c}
-    \vdash \Gamma, \, \text{x:T}  \prec \Gamma'  \\
-\end{array}
-}
-}
-\end{comment}
-%%%%
-\newcommand{\tsmovewrite}{
-\infer[\textsc{Move-To-RCUWrite}]{
-\begin{array}{c}
-  \Gamma \vdash \textsf{RCUWrite}\, x.f \textsf{ as }y\textsf{ in }\{C\} \\
-\end{array}
-}{
- \begin{array}{c}
- \Gamma, y : \textsf{rcuItr} \vdash_M C \dashv \Gamma' \qquad
- \ftype{}{\textsf{RCU}} \\
- \textsf{NoFresh}(\Gamma') \qquad
-\textsf{NoUnlinked}(\Gamma')
-\end{array}
-}
-}
-\newcommand{\tsmoveread}{
-  \infer[\textsc{Move-To-RCURead}]{
-\begin{array}{c}
-\Gamma \vdash \textsf{RCURead}\, x.f \textsf{ as }y\textsf{ in }\{C\} \\
-\end{array}
-}{
-\begin{array}{c}
-\ftype{}{\textsf{rcu}} \\
-\Gamma, y : \textsf{rcuItr} \vdash_R C \dashv \Gamma' \\
-\end{array}
-}
-}
-
-\newcommand{\meta}{
-\[
-\begin{array}{rclcl}
-a & \textsf{atoms} \\
-s & \textsf{statement}  & & s::= & a \mid skip \mid s;s \mid s+s \mid s \parallel s \mid s^{*} \\
-n,x,y,z,o,p & \textsf{variables}  & &  \Gamma::= & . \mid \Gamma,x:t \\
-t & \textsf{types}  & & t::= & \mathsf{int} \mid \mathsf{bool} \mid \mathsf{struct} \; sn \{ \overline{fld}\} \mid T\\
-T & \textsf{Qualified types} & & T::= & t<rt> \\
-f & \textsf{field name}  & & fld::= & t \; f \mid  t<rt> \; f\\
-rb & \textsf{rcu blocks}  & & rb::= & \mathsf{ReadBegin} \, ; \bar{s}  \, ; \mathsf{ReadEnd} \mid \mathsf{WriteBegin} \, ; \bar{s}  \, ;  \mathsf{WriteEnd} \\
-fld & \textsf{field decl}  & & rt::= & \mathsf{rcu} \mid \mathsf{rcuItr} \mid \mathsf{rcuRoot} \\
-sn & \textsf{struct name}   & &  i,j & \mathsf{nat (indices)}  \\
-
-\end{array}
-\]\\
-\[
-\begin{array}{rclcl}
-\alpha &::= & \mathsf{skip} \mid \mathsf{x.f = y} \mid \mathsf{y=x} \mid \mathsf{y =x.f}  \mid \mathsf{y =new}\mathsf{Free}\mathsf{(\textsf{x})} \mid \mathsf{Sync}
- \end{array}
-\]
-}
-
-\newcommand{\grammar}{
-\[
-\begin{array}{rclcl}
-\alpha &::= & \mathsf{skip} \mid \mathsf{x.f = y} \mid \mathsf{y=x} \mid \mathsf{y =x.f}  \mid \mathsf{y =new} \mid  \mathsf{Free}\mathsf{(\textsf{x})} \mid \mathsf{Sync}                   
-\end{array}\quad
-\textsf{Sync} \overset{\Delta}{=} \texttt{\textsf{SyncStart};\textsf{SyncStop}}
-\]
-}
-
-
-\lstset{numbersep=1.7pt,xrightmargin=-0.7cm,xleftmargin=0.7em,numbers=left,columns=fullflexible,escapechar=`,mathescape,language=Java,basicstyle=\small\ttfamily,keywordstyle=\color{blue},morekeywords={ReadBegin,ReadEnd,WriteBegin,WriteEnd,SyncStart,SyncStop,Free,foreach,in,var,consume,readable,r,isolated,writable,immutable}}
-
-%\lstset{
-%  xleftmargin=1em,      % <-- change this to a suitable length
-%  xrightmargin=-0.5cm,  % <-- change this to a suitable negative length
-%  numbersep=2pt,        % default 10pt
-%  numbers=left,
-%  numberstyle=\footnotesize,
-%  basicstyle=\ttfamily,
-%  breaklines=true}
-\usepackage{lipsum} % for dummy text
-\usepackage{comment}
-
-\renewcommand{\and}{\\}
-
-\usepackage{microtype}%if unwanted, comment out or use option "draft"
-%\bibliographystyle{plainurl}% the recommended bibstyle
-
-%\bibliography{references/paper}
+%% end of the preamble, start of the body of the document source.
 \begin{document}
-%
-\title{Modal Verification Patterns for Systems}
-%
-%\titlerunning{RCU Types}
-% If the paper title is too long for the running head, you can set
-% an abbreviated paper title here
-%
-\author{Ismail Kuru \orcidID{0000-0002-5796-2150} \and
-Colin S. Gordon \orcidID{0000-0002-9012-4490}}
-%%%Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
-%
-\authorrunning{Kuru and Gordon}
-% First names are abbreviated in the running head.
-% If there are more than two authors, 'et al.' is used.
-%
-\institute{Drexel University \\ %\and
-%%%Springer Heidelberg, Tiergartenstr. 17, 69121 Heidelberg, Germany
-\email{\{ik335,csgordon\}@drexel.edu}}%\\
-%%%\url{http://www.springer.com/gp/computer-science/lncs} \and
-%%%ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
-%%%\email{\{abc,lncs\}@uni-heidelberg.de}}
-%
-\maketitle              % typeset the header of the contribution
 
-%\input{chapters/squeezing.tex}
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{On Verification Patterns for Low-Level Systems via Modal Abstractions}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+% Commentout
+%\author{Ben Trovato}
+%\authornote{Both authors contributed equally to this research.}
+%\email{trovato@corporation.com}
+%\orcid{1234-5678-9012}
+%\author{G.K.M. Tobin}
+%\authornotemark[1]
+%\email{webmaster@marysville-ohio.com}
+%\affiliation{%
+ % \institution{Institute for Clarity in Documentation}
+ % \city{Dublin}
+ % \state{Ohio}
+ % \country{USA}
+%}
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+\renewcommand{\shortauthors}{}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
 \begin{abstract}
- Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
-\begin{comment}
-  In this paper, we argue the position that \emph{modalities}, in the sense of modal logic, 
-  should be a go-to approach when specifying and verifying low-level systems code.
-  We explain how the concept of a \emph{resource context} helps guide the design of new modalities
-  for verification of systems code, and
-  we justify our perspective by discussing prior systems that have used modalities for systems verification
-  successfully, arguing that they fit into the verification design pattern we articulate,
-  and explaining how this approach might apply to other systems verification challenges.
-\end{comment}
-  % \todo[inline]{Colin says: how about this framing instead of the second paragraph above:}
+  Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
   
   In this paper we examine how modalities have emerged as a common structure in formal verification
   of low-level software, and explain how many recent examples naturally share 
@@ -1314,8 +253,7 @@ Colin S. Gordon \orcidID{0000-0002-9012-4490}}
 %%
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
-%\maketitle
-
+\maketitle
 \section{Introduction}
 Although they differ in the functionality they offer, low-level systems exhibit certain patterns of design and utilization of computing resources.
 Systems software, in general, interfaces with an underlying computing substrate such that any software system at any higher level in the software stack can (at least indirectly) utilize the resources of the machine.
@@ -1337,10 +275,10 @@ to modalities. We believe that certain properties of modalities enable us to und
 address the verification challenges of these systems by tailoring specification and proof
 to the same patterns used to design the systems.
 
-\paragraph{Contributions} We argue that modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
+\textit{Contributions} We argue that modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
 \begin{itemize}
 \item \textbf{Identifying System Verification Challenges}: We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
-\item \textbf{Introducing Modal \emph{Resource Contexts}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
+\item \textbf{Introducing Modal \emph{Resource Contexts}}: Then we discuss the concept of \emph{resource}, which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
 \item \textbf{Introducing \emph{Nominals for System Resources}}:
 Existing logics for systems software must frequently identify
 individual resources within a given context ---
@@ -1375,13 +313,11 @@ for the connections to modalities to be clear (Section \ref{sec:background}).
 
 \subsection{Hybrid Logic, Dynamic Logic, and Nominals in Program Logics}
 \label{sec:modalbackground}
-
-
-\paragraph{Dynamic Logics as Program Logics}
+\textit{Dynamic Logics as Program Logics}
 We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
-Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
+Broadly speaking, modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
 
-\emph{Dynamic logic}~\cite{pratt1976semantical}, a (multi)modal logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
+\emph{Dynamic logic}~\cite{pratt1976semantical} is a (multi)modal logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
 This same idea is used to encode Hoare triples in the Iris program logic~\cite{jung2018iris}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
 Iris is now one of the most successful foundational program logics, and its rich support for
 extending the base logic with additional modalities~\cite{krebbers2017essence} means that
@@ -1389,23 +325,21 @@ modal logics, and in particular dynamic logic, now play an outsized role in prog
 many challenging proofs of program correctness use a substructural dynamic logic containing
 many additional modalities which interact with the weakest precondition modality.
 
-
 % A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
-\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\l \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
-Newer work surveyed here adapts this idea to deal with different structures specified in
+\textit{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_l\varphi$ asserts that $\varphi$ is true in the state identified by $l$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
+Newer work ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024}  surveyed here adapts this idea to deal with different structures specified in
 separation logic.
 %We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
 % In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
 %This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
 %We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
-
 % \paragraph{Temporal Operators}
 % The best known class of modal logics in the systems community is undoubtedly temporal logics (whether \textsc{LTL}~\cite{pnueli1977temporal}, \textsc{CTL}~\cite{emerson1982using}, \textsc{TLA}~\cite{lamport1994temporal}, or others),
 % due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
 % distributed algorithms \cite{ongaro2014search,ailijiang2019wpaxos}.
 
-\paragraph{Nominalization}
+\textit{Nominalization}
 Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
 % This naming generally resembles
 % the \emph{satisfaction} operator of 
@@ -1428,7 +362,6 @@ Alternatively, a modality $@_i(P)$ may represent that $P$ is true of/at the spec
 piece of data to reliable storage).
 These permit capturing specific concepts relevant to the correctness (and reasoning about correctness) of a certain class of systems,
 involving facts about specific named entities in the system.
-\\
 
 In each of these cases, the fact that these facts are described using modalities with the core modal property $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$ means, for example, that if a
 process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
@@ -1453,7 +386,7 @@ Filesystems virtualize locations on disk~\cite{rodeh2013btrfs,hitz1994file,Rosen
 Programs built on top of the corresponding systems software layer work logically at the level of these virtualized resources,
 and it makes sense to specify the systems software directly in terms of those abstractions.
 
-\paragraph{Access by Translation}
+\textit{Access by Translation}
 Accessing virtualized resources via translation is a common way to virtualize notions of location (e.g.,
 virtual memory addresses, inodes or object IDs instead of disk addresses~\cite{bonwick2003zettabyte,hitz1994file,Rosenblum1992LFS,rodeh2013btrfs}).
 %Accessing the hardware resources in the presence of sharing means having more resource references (references to the virtualized resources) to access the \emph{mapped} resources that are physical and potentially fewer. 
@@ -1471,20 +404,17 @@ A program asking for a memory unit from an operating system kernel is served wit
 such that it may be \emph{mapped to} a physical RAM location or not. 
 As our informal definition suggests, the common technique for \emph{virtualization} of memory locations in OS 
 kernels relies \emph{translating} (\emph{mapping}) virtual addresses into physical ones. 
-The conceptual address-translation map is implemented with processor's page-table trees as shown in 
-Figure \ref{fig:pagetables}. In this Figure, we see a typical 4 levels of page tables, a virtual address on the 
-top indexing into the different levels of the page-table tree (the larger rectangles along the bottom
-are blocks of memory which serve as nodes of the tree along a particular lookup path). 
+The conceptual address-translation map is implemented with processor's page-table trees. A virtual address indexing into the different levels of the page-table tree 
+are blocks of memory which serve as nodes of the tree along a particular lookup path. 
 Fabrication of virtual addresses out of limited physical addresses is provided with entries 
 in the page-table tree where each points to a physical address aligned to 4KB (4096 byte) boundaries. 
-An address translation requires traversal of a series of tables starting from level 4, and it is 
-conventionally referred as a \emph{page-table walk}. 
+An address translation requires traversal of a series of tables starting from top level, and it is  conventionally referred as a \emph{page-table walk}. 
 The traversal ends in the level 1 page table with the final lookup to the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.
-\begin{figure}
-    \includegraphics[width=\columnwidth]{pagetables2.png}
-    \caption{x86-64 page table lookups.}
-    \label{fig:pagetables}
-\end{figure}
+%\begin{figure}
+%    \includegraphics[width=\columnwidth]{pagetables2.png}
+%    \caption{x86-64 page table lookups.}
+%    \label{fig:pagetables}
+%\end{figure}
 
 A page table tree is referred to as a (virtual) \emph{address space}, as it presents an abstraction
 of how different memory addresses could be related in space.
@@ -1493,31 +423,27 @@ a range of logically (virtually) contiguous memory addresses may be translated t
 in actual memory.
 The address space then acts as a kind of container for virtualized memory resources tied to that container.
 
-
 % \paragraph{Virtual Memory Managers(VMM) with Multiple Address-Spaces}
 % \label{sec:backgroundonvmm}
 % \todo{change the text}
 % An intuition for the abstraction that \emph{contains} a page-table tree is called an \emph{address-space} of a process whose virtual addresses to physical addresses. 
 A typical OS manages multiple address spaces at once.
-Each program is associated with a unique page table tree, which is stored in a specific hardware register (\texttt{cr3} in Figure \ref{fig:pagetables}). 
+Each program is associated with a unique page table tree, which is stored in a specific hardware register (e.g., \texttt{cr3}). 
 Using different mappings, which map only disjoint portions of physical memory in the map's codomain, 
 is how the OS ensures memory isolation between processes. 
 
 
 \subsubsection{Virtualized Resources in Filesystems}
 Another important computer resource computer resource that is \emph{virtualized} for access is disk blocks. 
-Filesystems are software components that abstract disk access on behalf of normal programs
-Similar to how VMMs using page-table trees to fabricate more memory addresses than what actually exists, 
-filesystems uses indexing maps for fabricating more \emph{virtual disk-page} addresses which are conventionally called \emph{disk-pages} 
-to be distinguished from physical \emph{disk-block} addresses.
+Filesystems are software components that abstract disk access on behalf of normal programs.
+Similarly to how VMMs use page-table trees to fabricate more memory addresses than actually exist, filesystems use indexing maps to fabricate more virtual disk-page addresses (which are conventionally called disk-pages) to be distinguished from physical disk-block addresses.
 When a regular program accesses a file, it requests a specific logical offset from the start of that file's contents.
 As with virtual memory, the filesystem may map adjacent logical blocks of a single file to physically disparate parts of the disk (or even
 to different disks), though this translation mapping is implemented entirely in software (as opposed to the hardware cooperation that exists
 for memory virtualization).
 
 % \paragraph{Overview of Policies in Filesystems}
-Filesystems not only handle the address-translation from a disk-page to a disk-block but also need to handle different
-\emph{modes} of computing where to find disk resources: a disk block may live on a disk in stable storage,
+Filesystems not only handle the address-translation from a disk-page to a disk-block but also need to handle different modes of computing, representing where to find disk resources: a disk block may live on a disk in stable storage,
 or the most up-to-date version of a block may live only in memory (for the filesystem to write to disk at a later time, batched for efficiency).
 To handle the consistency of the disk resources in the existence of different modes of execution, filesystems employ different policies when indexing the disk resource.
 Which data-structure is going to be used to implement address-translation from disk-pages to disk-blocks? 
@@ -1581,7 +507,7 @@ state established in the event of a hardware failure immediately after that oper
 
 \subsubsection{Reference-Counting Memory Reclamation}
 In a typical configuration, allocating, deallocating and referencing memory locations for client code 
-leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive decent tree allows non-duplication on the reference counts for the identical memory objects.
+leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive descent tree allows non-duplication on the reference counts for the identical memory objects.
 % To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
 % \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, 
 % from which a path is created for a stack pointer reference to the allocated memory. 
@@ -1656,14 +582,14 @@ successfully, arguing that they fit into the verification design pattern we arti
 and explaining how this approach might apply to other systems verification challenges.
 
 To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
-  
-\paragraph{Shallow Modalities in the Iris Separation Logic}
+
+\textit{Shallow Modalities in the Iris Separation Logic}
 \label{sec:modal_in_iris}
 Classically modal operators are given direct semantics in terms of an underlying model, 
-which for \textsf{Iris}~\cite{jung2018iris} would be a collection of \textsc{CMRA}s ---
+which for \textsf{Iris}~\cite{jung2018iris} would be a collection of \textsc{CMRA}s (complete metric resource algebras) ---
 an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}.
 This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
-However in general, many modalities can be given proof-theoretic semantics directly within a logic. 
+However, in general, many modalities can be given proof-theoretic semantics directly within a logic. 
 This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} 
 logic itself), as well as for a wide range of other modalities in the 
 literature~\cite{restall2002introduction}. These modalities are typically multi-modal, 
@@ -1676,7 +602,7 @@ Taking this interpretation literally gives rise to a convenient way to embed new
 in a way well-suited to many use cases. 
 If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the 
 \emph{pointwise lifting} of the algebra. A number of 
-projects for for systems software verification now take advantage of this,
+projects for systems software verification ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2024modalabstractionsvirtualizingmemory,amalreal2024} now take advantage of this,
 explicitly or implicitly lifting the BI-algebra structure from \textsf{Iris} itself to \textsf{Iris} predicates 
 used as assertions within modalities. 
 Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{krebbers2018mosel,krebbers-17} then permits working within the embedded logic as in \textsf{Iris}.
@@ -1686,7 +612,7 @@ This allows modalities to simultaneously represent ownership of certain resource
 
 \subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
-\begin{sidewaystable*}[t]
+\begin{table*}[t]\scriptsize
 \centering
 \caption{Modal Decomposition of Program-Logics.}
 \label{table:decomposition}
@@ -1706,7 +632,7 @@ This allows modalities to simultaneously represent ownership of certain resource
 
 {\scriptsize *The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
 %and the $\Diamond$ Figure for Post-Crash Modality uses notationis taken from NextGen Modality paper ~\cite{larsnextgen25}.
-\end{sidewaystable*}
+\end{table*}
 
 Many existing program logics for system verifications have a common structure, which maps to modalities with a couple extra dimensions of design.
 We summarize our discussion of these logics in Table \ref{table:decomposition}.
@@ -1728,22 +654,21 @@ In general,  we call these domains that any resource element is tied to \emph{re
 \begin{definition}[Resource Context]
 A resource context is an abstraction, context, or container of resource elements of the same type, e.g., an address space of a process.
 \end{definition}
-We discuss a range of examples for each of these in turn.
-
-Table \ref{table:decomposition} gives additional examples of systems and their corresponding resource elements and contexts where these elements reside, though none of the work in that table analyzes itself according to the structure we are giving.
+We discuss a range of examples for each of these in turn. Table \ref{table:decomposition} gives additional examples of systems and their corresponding resource elements and contexts where these elements reside, though none of the work in that table analyzes itself according to the structure we are giving.
 
 Except for Post-Crash-Modality, one can think of the resource contexts in the first column in Table \ref{table:decomposition} as containers for the corresponding resource elements in the second column.
 
-\paragraph{Stack Regions} When reasoning about stack frame contents, the resource element would be a stack-memory points-to assertion ( $\fbox{n} \; \ell \mapsto v$)
+\textit{Stack Regions} When reasoning about stack frame contents, the resource element would be a stack-memory points-to assertion ( $\fbox{n} \; \ell \mapsto v$)
 indicating that a certain offset into stack region $n$ holds value $v$. 
+
 %which is an instance of ownership assertion ($\textsf{Own(t(a))}$) for which a well-behaved transformation ($\textsf{t}$), e.g. $\textsf{ICut}^{n}$ algebra quantifying over valid stack region ids. 
-\paragraph{Virtual Memory} For virtual memory management, a \textit{virtual-points-to} ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space is natural. A process's address space with the root address \textsf{r} is an abstraction that is treated as a container for virtual address mappings, $\ell \mapsto v$;
+\textit{Virtual Memory} For virtual memory management, a \textit{virtual-points-to} ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space is natural. A process's address space with the root address \textsf{r} is an abstraction that is treated as a container for virtual address mappings, $\ell \mapsto v$;
 
-\paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
+\textit{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
 
-\paragraph{Reference Counting} When dealing with reference-counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
+\textit{Reference Counting} When dealing with reference-counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
 
-\paragraph{Post-Crash}
+\textit{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
 %that can be jumped from a shared memory referenced whose reference count is at least 1 are also example resource elements from memory management task at different abstraction levels. 
 The resource element of Post-Crash Modality is not obvious in Table \ref{table:decomposition}, and needs a bit of explanation. Perennial, based on the Iris logic, has both disk-points-to assertions $d[\textsf{p}] \mapsto_{n} v$ (for a specific disk $d$) and in-memory points-to assertions $\ell \mapsto_{n}^{\overline{\gamma}}$. Perennial crash-recovery logic book-keeps resource names (can be thought of as logical variables) $\overline{\gamma}$ to identify 
@@ -1797,8 +722,7 @@ technical constraints that are unrelated to our point here.}
 %Not all use cases for modal assertions require an ambiance, only those where the modality corresponds to modes of execution.
 %
 \subsection{Nominals for Systems Resource Contexts}
-Finally, another design point is the question of whether or not resource element assertions must explicitly track
-their corresponding context, or if they implicitly pick up their context from where they are used.
+Finally, another design point is the question of whether or not resource element assertions must explicitly track their corresponding contexts, or if they implicitly pick up their context from where they are used.
 
 \emph{Strong nominalization} is the case where resource elements must explicitly include
 the identity of their intended context, while \emph{weak nominalization} occurs when the resource
@@ -1886,18 +810,11 @@ are at issue should prefer weak nominalization.
 %\end{definition}
 %Although it is almost always the case that when a modality is defined, classical proof rules such as introduction and elimination are also defined and proven. However, an interesting perspective emerges when we realize that, in fact, the proof rule for switching address spaces resembles an introduction (also elimination) rule for adding resource elements into an address-space modality's resource context.
 %\Colin{So far I like how this is shaping up as a kind of ``design recipe'' for approaching this style of verification!}
-
-
-\section{Conclusion}
+\textbf{Conclusion}
 \label{sec:conclusion}
 % \todo[inline]{this definitely needs adjusting for both audience and emphasis on this being a survey}
-We have argued that there is a systematic pattern emerging in the use of modalities in the verification of low-level systems software,
+A systematic pattern emerging in the use of modalities in the verification of low-level systems software,
 and explained how a range of modern work fits into this pattern.
-% We have argued the essential patterns that help to choose the modalities when working out how to specify different kinds of systems code based on recent successes.
-While we have focused our attention on public verification work carried out in Iris,
-it also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, 
-% virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, 
-and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). 
 So not only are the modalities observably present, but they are demonstrably useful
 for conducting proofs of systems software.
 %  the pieces we have identified seem to be an effective way of working out
@@ -1905,11 +822,16 @@ for conducting proofs of systems software.
 We believe that these essential patterns in the designs of modal abstractions for systems verification constitute a fundamental
 concept
 when working out how to specify different kinds of systems code.
-
-\bibliographystyle{splncs04}
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{software}
-\newpage
+
+
+%%
+%% If your work has an appendix, this is the place to put it.
 \appendix
 
+
 \end{document}
-\grid
+\endinput
+%%
+%% End of file `sample-sigconf-authordraft.tex'.
