@@ -284,7 +284,7 @@ to the same patterns used to design the systems.
 \textit{Contributions} We argue that modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
 \begin{itemize}
 \item \textbf{Identifying System Verification Challenges}: We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
-\item \textbf{Introducing Modal \emph{Resource Contexts}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in the systems, we define what a resource and its context are in the modal abstractions.
+\item \textbf{Introducing Modal \emph{Resource Contexts}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in systems, we define what a resource and its context are in the modal abstractions. For example, the \emph{transaction} abstraction, which behaves like a container for in-memory dirty disk pages, can be considered as a resrouce context for any dirty in-memory disk page resource associated with it.
 \item \textbf{Introducing \emph{Nominals for System Resources}}:
 Existing logics for systems software must frequently identify
 individual resources within a given context ---
