@@ -310,6 +310,12 @@ We discuss other examples to contextualize the existing systems surveyed.
 \item \textbf{Taxonomy of Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, reasoning about weak memory models and storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
 \end{itemize}
 
+\section{Background on Modal Logics for Programs, and Low-Level Systems Software}
+
+This section briefly recalls related concepts from modal logic of particular relevance
+to our taxonomy, which should be familiar but benefit from fixing notation (Section \ref{sec:modalbackground}),
+and enough general background on the systems software concepts organized by our taxonomy
+for the connections to modalities to be clear (Section \ref{sec:background}).
 
 \subsection{Hybrid Logic, Dynamic Logic, and Nominals in Program Logics}
 \label{sec:modalbackground}
@@ -330,7 +336,7 @@ many additional modalities which interact with the weakest precondition modality
 
 % A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
-\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $\ell$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
+\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
 Newer work surveyed here adapts this idea to deal with different structures specified in
 separation logic.
 %We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
@@ -372,8 +378,8 @@ In each of these cases, the fact that these facts are described using modalities
 process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
 no extra work is required to conclude that the node knows it is greater than 3 (i.e., that $\mathcal{K}_p(\mathsf{commitIndex} > 3)$),
 because this follows from standard properties of modal operators as described above.
-In contrast, if verification instead used a custom assertion \[ \mathsf{minCommitIndex}(5)\] to represent the former knowledge,
-one would need to separately provide custom reasoning to conclude \[ \mathsf{minCommitIndex}(3)\].
+In contrast, if verification instead used a custom assertion \[\mathsf{minCommitIndex}(5) \] to represent the former knowledge,
+one would need to separately provide custom reasoning to conclude \[\mathsf{minCommitIndex}(3)\].
 As our survey shows, the value of the modal view (which grants both intuitive specifications and natural
 reasoning principles) is becoming apparent in systems software verification.
 
