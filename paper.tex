@@ -336,7 +336,7 @@ many additional modalities which interact with the weakest precondition modality
 
 % A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 
-\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $l$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
+\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $\ell$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
 Newer work surveyed here adapts this idea to deal with different structures specified in
 separation logic.
 %We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
@@ -368,13 +368,13 @@ Halpern et al.'s work adapting modal logics of
 knowledge to deal with distributed systems~\cite{halpern1990knowledge,halpern1989modelling,halpern2017reasoning}.
 In most of that line of work, $\mathcal{K}_a(P)$ indicates that the node $a$ in the system \emph{knows} or \emph{possesses knowledge of} $P$
 (for example, a Raft node may ``know'' a lower bound on the commit index).
-Alternatively, a modality $@_i(P)$ may represent that $P$ is true of/at the specific node $i$~\cite{gordon2019modal} (e.g., that node $i$ has stored a certain
+Alternatively, a modality $@_i(P)$ may represent that $P$ is true of/at the specific node $i$~\cite{gordon2019modal} (e.g., that node $i$ has physically stored a certain
 piece of data to reliable storage).
 These permit capturing specific concepts relevant to the correctness (and reasoning about correctness) of a certain class of systems,
 involving facts about specific named entities in the system.
 \\
 
-In each of these cases, the fact that these facts are described using modalities with the core modal property $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$ means, for example, that if a
+In each of these cases, the fact that these facts are described using modalities with the core modal property that if $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$. This means, for example, that if a
 process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
 no extra work is required to conclude that the node knows it is greater than 3 (i.e., that $\mathcal{K}_p(\mathsf{commitIndex} > 3)$),
 because this follows from standard properties of modal operators as described above.
@@ -415,14 +415,14 @@ A program asking for a memory unit from an operating system kernel is served wit
 such that it may be \emph{mapped to} a physical RAM location or not. 
 As our informal definition suggests, the common technique for \emph{virtualization} of memory locations in OS 
 kernels relies \emph{translating} (\emph{mapping}) virtual addresses into physical ones. 
-The conceptual address-translation map is implemented with processor's page-table trees as shown in 
+The conceptual address-translation map is implemented with processor's page table trees as shown in 
 Figure \ref{fig:pagetables}. In this Figure, we see a typical 4 levels of page tables, a virtual address on the 
-top indexing into the different levels of the page-table tree (the larger rectangles along the bottom
+top indexing into the different levels of the page table tree (the larger rectangles along the bottom
 are blocks of memory which serve as nodes of the tree along a particular lookup path). 
 Fabrication of virtual addresses out of limited physical addresses is provided with entries 
-in the page-table tree where each points to a physical address aligned to 4KB (4096 byte) boundaries. 
+in the page table tree where each points to a physical address aligned to 4KB (4096 byte) boundaries. 
 An address translation requires traversal of a series of tables starting from level 4, and it is 
-conventionally referred as a \emph{page-table walk}. 
+conventionally referred as a \emph{page table walk}. 
 The traversal ends in the level 1 page table with the final lookup to the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.
 \begin{figure}
     \includegraphics[width=\columnwidth]{pagetables2.png}
@@ -451,7 +451,7 @@ is how the OS ensures memory isolation between processes.
 \subsubsection{Virtualized Resources in Filesystems}
 Another important computer resource computer resource that is \emph{virtualized} for access is disk blocks. 
 Filesystems are software components that abstract disk access on behalf of normal programs
-Similar to how VMMs using page-table trees to fabricate more memory addresses than what actually exists, 
+Similar to how VMMs using page table trees to fabricate more memory addresses than what actually exists, 
 filesystems uses indexing maps for fabricating more \emph{virtual disk-page} addresses which are conventionally called \emph{disk-pages} 
 to be distinguished from physical \emph{disk-block} addresses.
 When a regular program accesses a file, it requests a specific logical offset from the start of that file's contents.
