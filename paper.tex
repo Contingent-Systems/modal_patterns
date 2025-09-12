@@ -677,7 +677,7 @@ indicating that a certain offset into stack region $n$ holds value $v$.
 
 \paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
 
-\paragraph{Reference Counting} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j \)$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
+\paragraph{Reference Counting} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j )$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
 
 \paragraph{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
