@@ -522,7 +522,7 @@ Because disk blocks associated with a file could now be in many states (on-disk,
 the specification of these systems is complex. And because some states are only possible after a system failure,
 each line of filesystem code has two conceptual post-conditions: one referring to the successfully stored disk pages from a disk page container (e.g, a disk tree) , which can be uniquely identified by the last successful commit identifer (e.g., a transaction identifier or snapshot identifier), as the current view of the disk in the specification for continued execution, and one referring to the previous view of the disk in the specification for the stable state established in the event of a hardware failure immediately after that operation.
 
-\subsubsection{Reference-Counting Memory Reclamation}
+\subsubsection{Reference Counting Memory Reclamation}
 In a typical configuration, allocating, deallocating and referencing memory locations for client code 
 leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive decent tree allows non-duplication on the reference counts for the identical memory objects.
 % To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
@@ -540,7 +540,7 @@ to a memory allocation --- that is, when the allocation is no longer \emph{reach
 In that case the program \emph{cannot} access the memory again, so the memory location can be reclaimed \emph{soundly} ---
 i.e., without violating any access through a reference to it.
 
-To reclaim the allocated memory location that is no longer being accessed, many systems use a well-known method called \emph{reference-counting} in which 
+To reclaim the allocated memory location that is no longer being accessed, many systems use a well-known method called \emph{reference counting} in which 
 each memory allocation includes not only its data but also a counter of how many pointers to that memory exist in the rest of the program.
 Any time a new reference to the allocated memory is created, the  counter is incremented,
 and every time an existing reference is destroyed (by overwriting or dropping) the counter is decremented.\footnote{This may be done
@@ -684,7 +684,7 @@ indicating that a certain offset into stack region $n$ holds value $v$.
 
 \paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
 
-\paragraph{Reference Counting} When dealing with reference-counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
+\paragraph{Reference Counting} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
 
 \paragraph{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
