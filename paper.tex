@@ -626,7 +626,7 @@ This allows modalities to simultaneously represent ownership of certain resource
  Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} &  $\triangle_{\pi}$ and $\triangledown_{\pi}$      &  $\ell \mapsto v$                                 &  Weak &  Fence Acquire and Release  \\
  Address Space~\cite{kuru2025modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address Space Switch  \\ 
  Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\
-  Actor~\cite{gordon2019modal}& [A(t)]P    &  $(t,x,y)$ &  Weak  &  Send Message \\\bottomrule
+  Actor~\cite{gordon2019modal}& [A(t)]P    &  $(t,x,y)$ &  Strong  &  Send Message \\\bottomrule
 \end{tabular}
 
 {*The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
