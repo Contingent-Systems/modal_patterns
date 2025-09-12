@@ -415,7 +415,7 @@ A program asking for a memory unit from an operating system kernel is served wit
 such that it may be \emph{mapped to} a physical RAM location or not. 
 As our informal definition suggests, the common technique for \emph{virtualization} of memory locations in OS 
 kernels relies \emph{translating} (\emph{mapping}) virtual addresses into physical ones. 
-The conceptual address-translation map is implemented with processor's page table trees as shown in 
+The conceptual address translation map is implemented with processor's page table trees as shown in 
 Figure \ref{fig:pagetables}. In this Figure, we see a typical 4 levels of page tables, a virtual address on the 
 top indexing into the different levels of the page table tree (the larger rectangles along the bottom
 are blocks of memory which serve as nodes of the tree along a particular lookup path). 
@@ -438,10 +438,10 @@ in actual memory.
 The address space then acts as a kind of container for virtualized memory resources tied to that container.
 
 
-% \paragraph{Virtual Memory Managers(VMM) with Multiple Address-Spaces}
+% \paragraph{Virtual Memory Managers(VMM) with Multiple Address Spaces}
 % \label{sec:backgroundonvmm}
 % \todo{change the text}
-% An intuition for the abstraction that \emph{contains} a page-table tree is called an \emph{address-space} of a process whose virtual addresses to physical addresses. 
+% An intuition for the abstraction that \emph{contains} a page-table tree is called an \emph{address space} of a process whose virtual addresses to physical addresses. 
 A typical OS manages multiple address spaces at once.
 Each program is associated with a unique page table tree, which is stored in a specific hardware register (\texttt{cr3} in Figure \ref{fig:pagetables}). 
 Using different mappings, which map only disjoint portions of physical memory in the map's codomain, 
@@ -460,12 +460,12 @@ to different disks), though this translation mapping is implemented entirely in 
 for memory virtualization).
 
 % \paragraph{Overview of Policies in Filesystems}
-Filesystems not only handle the address-translation from a disk-page to a disk-block but also need to handle different
+Filesystems not only handle the address translation from a disk-page to a disk-block but also need to handle different
 \emph{modes} of computing where to find disk resources: a disk block may live on a disk in stable storage,
 or the most up-to-date version of a block may live only in memory (for the filesystem to write to disk at a later time, batched for efficiency).
 To handle the consistency of the disk resources in the existence of different modes of execution, filesystems employ different policies when indexing the disk resource.
-Which data-structure is going to be used to implement address-translation from disk-pages to disk-blocks? 
-What is going to be the \emph{update-policy} to the indexing map implementing address-translation which defines the \emph{consistency-policy} for the disk resources? 
+Which data-structure is going to be used to implement address translation from disk-pages to disk-blocks? 
+What is going to be the \emph{update policy} to the indexing map implementing address translation which defines the \emph{consistency policy} for the disk resources? 
 Different filesystem implementations give different answers to these questions. 
 
 % One example answer to updating policy is copy-on-write (\textsf{CoW}). A (\textsf{CoW}) filesystem performs updates by copying modified data to \emph{new and unused} locations on disk rather than updating \emph{in-place}, ensuring that in the absence of physical storage corruption, there is \emph{always} a fully consistent filesystem on disk, removing the need for recovery from journals in the case of a crash, which can be very expensive for large volumes.
@@ -500,7 +500,7 @@ Different filesystem implementations give different answers to these questions.
 %     \label{fig:cowindex}
 % \end{figure}
 % \paragraph{Examples to Different Policies on Navigating on Consistent Views of Disk}
-% Like VMMs navigating between different address-spaces, a \textsf{CoW} filesystem switches from either the old to the new root yields consistent views of the filesystem at different points in time, each commonly referred to as a \emph{snapshot}. A \textsf{CoW} filesystems treat the snapshot abstraction as VMMs treat the address-space abstraction, container of the relevant resources. Like VMMs loading a process's memory mappings to be the current view of the memory by setting the control register to show the unique root address of the page-table tree of the process, the filesystem to atomically switch between consistent on-disk states, by updating the oldest so-called \emph{super} chunk at a fixed location on disk. Super chunks, as we see in Figure \ref{fig:cowindex} as ($\textsf{Super}_0$ and $\textsf{Super}_1$), are the first two blocks of the disk dedicated to keep the state of the file system which is composed of some meta-data on the filesystem, and most importantly to the root chunk of the filesystem index tree. 
+% Like VMMs navigating between different address spaces, a \textsf{CoW} filesystem switches from either the old to the new root yields consistent views of the filesystem at different points in time, each commonly referred to as a \emph{snapshot}. A \textsf{CoW} filesystems treat the snapshot abstraction as VMMs treat the address space abstraction, container of the relevant resources. Like VMMs loading a process's memory mappings to be the current view of the memory by setting the control register to show the unique root address of the page-table tree of the process, the filesystem to atomically switch between consistent on-disk states, by updating the oldest so-called \emph{super} chunk at a fixed location on disk. Super chunks, as we see in Figure \ref{fig:cowindex} as ($\textsf{Super}_0$ and $\textsf{Super}_1$), are the first two blocks of the disk dedicated to keep the state of the file system which is composed of some meta-data on the filesystem, and most importantly to the root chunk of the filesystem index tree. 
 % \begin{figure}
 %     \includegraphics[width=\columnwidth]{journalling.png}
 %     \caption{A Filesystem Utilizing \emph{Journalling} for Consistent Disk-Layout ~\cite{chajed2021gojournal}}
@@ -520,8 +520,7 @@ or completed using a write-ahead journal that first writes new data in unused sp
 % In other words, unlike our ability to distinguish all resources (disk-pages and dis-kblocks) either being consistent under a snapshot or not in filesystems with \textsf{CoW}, with in-place updates, journalling mechanism does not allow such a claim. In other words, as we see in Figure \ref{fig:journal}, unlike \textsf{CoW}'s uniform persistency claim over disk resources under a snapshot as a resource container, elaborative bookkeeping mechanism of journalling leaves the filesystem treat disk resources in one of the resource groups in non-uniform fashion: disk-pages loaded into memory, updated disk-page not logged yet, updated and being logged or already logged disk-pages. Being able to treat the resources in a uniform fashion determines wwhether we need to consider the specification and proof of crash condition separately; instead a global never-violated invariant (not even temporarily broken) of the filesystem ensures the on-disk state is always consistent.
 Because disk blocks associated with a file could now be in many states (on-disk, journaled but not updated in place, or both)
 the specification of these systems is complex. And because some states are only possible after a system failure,
-each line of filesystem code has two conceptual post-conditions: one for continued execution, and one for the stable
-state established in the event of a hardware failure immediately after that operation.
+each line of filesystem code has two conceptual post-conditions: one referring to the successfully stored disk pages from a disk page container (e.g, a disk tree) , which can be uniquely identified by the last successful commit identifer (e.g., a transaction identifier or snapshot identifier), as the current view of the disk in the specification for continued execution, and one referring to the previous view of the disk in the specification for the stable state established in the event of a hardware failure immediately after that operation.
 
 \subsubsection{Reference-Counting Memory Reclamation}
 In a typical configuration, allocating, deallocating and referencing memory locations for client code 
@@ -644,7 +643,7 @@ This allows modalities to simultaneously represent ownership of certain resource
  NextGen~\cite{larsnextgen25} &   $\overset{t}{\hookrightarrow} \; P$  &  Own (t(a))  &  Strong &  Determined Based on the Model$^{*}$   \\
  StackRegion$^{*}$  ~\cite{larsnextgen25} &  $\overset{ICut^{n}}{\hookrightarrow} \; P$      &  $\fbox{n} \; \ell \mapsto v$                                 &  Strong &  Alloc and Return to/from stack\\
  Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} &  $\triangle_{\pi}$ and $\triangledown_{\pi}$      &  $\ell \mapsto v$                                 &  Weak &  Fence Acquire and Release  \\
- Address-Space~\cite{kuru2025modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address-Space Switch  \\ 
+ Address Space~\cite{kuru2025modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address Space Switch  \\ 
  Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\ \bottomrule
 \end{tabular}
 
@@ -657,7 +656,7 @@ We summarize our discussion of these logics in Table \ref{table:decomposition}.
 We discuss, based on examples, common aspects of how we intuitively think about correctness of systems code in many contexts,
 articulate those pieces, and call out the commonalities across a range of systems.
 \subsection{Resource}
-Consider first the address-space abstraction in an OS kernel. An address-space of a process is a \textsf{container} of \textsf{virtual} addresses referencing data in memory. One would expect to have \textit{points-to} assertion from separation logic to specify \textit{ownership} of a memory reference pointing to some data. But that ownership is relative to a specific
+Consider first the address space abstraction in an OS kernel. An address space of a process is a \textsf{container} of \textsf{virtual} addresses referencing data in memory. One would expect to have \textit{points-to} assertion from separation logic to specify \textit{ownership} of a memory reference pointing to some data. But that ownership is relative to a specific
 address space --- a specific container. We tend to think directly about what is true \emph{in an address space},
 with the simplest piece being an association between a virtual address and the data it points to.
 We call the simplest piece, in this and other examples, the \emph{resource element}:
@@ -809,18 +808,18 @@ are at issue should prefer weak nominalization.
 %%When we look at the third column, we see the modal program logics that require strong normalization. Thinking of in-memory updates to be persistent on the disk, Perennial ~\cite{tejperennial19} decorates the in-memory ownership capabilities, which is resource elements of the  (e.g. $p \mapsto_{n} v_0$) with generation numberbrs 
 %%For example, the resource elements in the separation logic utilizing \textsf{NextGen} modality and the modality itself are subject to strong normalization: both weakest-precondition and the ownership assertions are nominalized with region index such that the ownerships are valid as long as the constraint on the region index is satisfied -- e.g., all the ownership assertions with region index greater than the one on the weakest-precondition are valid against a crash-step in a filesystem or garbage collecting step in another system updating the consistent disk or reclaimed memory layout. \todo[inline]{maybe paraphrase more on referring them in the ambient logic}.
 %
-%\paragraph{Weak Context Nominalization} Unlike the resources we discussed so far, some resource elements are \emph{agnostic} to the resource context they belong. That means the resource context needs a nominalization as it needs to be distinguished from other resource contexts when certain actions in the operational semantics are taken (e.g., address-space switch in Table \ref{table:decomposition}), but the resource elements of the context are unaware of this context nominalization, and they may even not be labeled with any other nominal as well. For example, virtual memory references in an address space do not know which address space they belong, but the address spaces are distinguished w.r.t. the unique memory address of the root page-table tree therefore, a virtual-address-points-to ownership assertion does not need to be aware (or nominalized with) of the nominal of the address-space which is the unique memory address of the address table. Logically, specifying an address-space switch ~\cite{kuru2024modalabstractionsvirtualizingmemory} from the address space with the root address $r2$ to the one with the root address $r1$
+%\paragraph{Weak Context Nominalization} Unlike the resources we discussed so far, some resource elements are \emph{agnostic} to the resource context they belong. That means the resource context needs a nominalization as it needs to be distinguished from other resource contexts when certain actions in the operational semantics are taken (e.g., address space switch in Table \ref{table:decomposition}), but the resource elements of the context are unaware of this context nominalization, and they may even not be labeled with any other nominal as well. For example, virtual memory references in an address space do not know which address space they belong, but the address spaces are distinguished w.r.t. the unique memory address of the root page-table tree therefore, a virtual-address-points-to ownership assertion does not need to be aware (or nominalized with) of the nominal of the address space which is the unique memory address of the address table. Logically, specifying an address space switch ~\cite{kuru2024modalabstractionsvirtualizingmemory} from the address space with the root address $r2$ to the one with the root address $r1$
 %\[
 %\{[r1] P \ast Q \} cr3 := r1 \{P \ast [r2]Q\}_{\textsf{cr3}}
 %\]
 %requires having the resource elements to be loaded into the memory 
 %\[P \triangleq \ell_1 \mapsto v ...\]
-%to be in the resource context of the address-space modality with the nominal $r1$, and, once the new address space is loaded --- i.e., cr3 is loaded with the other address-space root address ---, the resource elements ($Q$) that were loaded in the previous view of the memory are now introduced to the resource context with the nominal $r2$. Unlike what we discuss in the strong normalization (e.g. StackModality in Return specification) in which nominalized resource elements (stack points-to assertions) are guarded by Independence Modality ~\cite{larsnextgen25} (StackModality row in Table \ref{table:decomposition}) to preserve the soundness of the proof rule. However, with weak-nominalization, resource elements don't have nominals (Address-Space Modality Resource Element Column in Table \ref{table:decomposition}), and most importantly, address-space resource context switch, unlike shifted stack region in Return Specification, does not require any explicit independence check because all the resource elements at any time are either in one of two resource contexts or hosted in the ambient logic.
+%to be in the resource context of the address space modality with the nominal $r1$, and, once the new address space is loaded --- i.e., cr3 is loaded with the other address space root address ---, the resource elements ($Q$) that were loaded in the previous view of the memory are now introduced to the resource context with the nominal $r2$. Unlike what we discuss in the strong normalization (e.g. StackModality in Return specification) in which nominalized resource elements (stack points-to assertions) are guarded by Independence Modality ~\cite{larsnextgen25} (StackModality row in Table \ref{table:decomposition}) to preserve the soundness of the proof rule. However, with weak-nominalization, resource elements don't have nominals (Address Space Modality Resource Element Column in Table \ref{table:decomposition}), and most importantly, address space resource context switch, unlike shifted stack region in Return Specification, does not require any explicit independence check because all the resource elements at any time are either in one of two resource contexts or hosted in the ambient logic.
 
 %\begin{definition}[Transforming Resource Context in Resource Ambience]
 %    For the examples in this paper, a Resource ambiance is always a Hoare Triple indexed with the resource context nominals, which hosts the resource contexts. Unlike the transformation of resource elements hosted by a resource context (\textbf{Definition 3.3.}) handled by a relation in the modality definition, e.g. the resource element transformation relation in Post-Crash modality, updating the resource contexts themselves depends on the operational semantics action ( the last column in Table \ref{table:decomposition}) a resource ambiance is operating on.
 %\end{definition}
-%The address-space switch updating the cr3 register that holds the nominal value for address-space modality's resource contexts and the resource ambiance's (Hoare Triple indexed with resource context nominal) is an example of updating a resource context in a resource ambiance.
+%The address-space switch updating the cr3 register that holds the nominal value for address space modality's resource contexts and the resource ambiance's (Hoare Triple indexed with resource context nominal) is an example of updating a resource context in a resource ambiance.
 %\paragraph{Composition of Contingent Truth} Another example of weak-nominalization is Ref-Counter Modality (jump modality ($@_{l} \; P$ ~\cite{amalreal2024}) shown in Table \ref{table:decomposition}. The resource context $@_{l} \; P$ is a container of memory nodes (i.e. the resource elements ($\ell \mapsto v$ in Table \ref{table:decomposition}) that are \emph{reachable} by a jump over the shared/duplicable root address $\ell$. In addition to being weakly nominalized due to its agnostic resource elements, it exhibits a good example of how one contingent truth \emph{entails} another. Wagner et.al., also define \emph{reachability} modality --- a monad style modality for specification of non-destructive actions ($\blackdiamond$) ~\cite{amalreal2024} --- to assert the reachability to a certain memory node. Knowing $P$ satisfied under \emph{jump} ~\cite{amalreal2024} modality (\textsf{Ref-Counter Modality} in \ref{table:decomposition}) entails the satisfaction of $P$ under non-destructive reachability modality
 %\[ 
 %@_{\ell} \;P \vdash  \blackdiamond \; P 
@@ -828,7 +827,7 @@ are at issue should prefer weak nominalization.
 %\begin{definition}[Resource Interaction]
 %A resource interaction rule defines a particular way to interact with a resource context to access resource elements. A resource interaction is defined by a proof rule with the relevant resource context in the specification. 
 %\end{definition}
-%Although it is almost always the case that when a modality is defined, classical proof rules such as introduction and elimination are also defined and proven. However, an interesting perspective emerges when we realize that, in fact, the proof rule for switching address spaces resembles an introduction (also elimination) rule for adding resource elements into an address-space modality's resource context.
+%Although it is almost always the case that when a modality is defined, classical proof rules such as introduction and elimination are also defined and proven. However, an interesting perspective emerges when we realize that, in fact, the proof rule for switching address spaces resembles an introduction (also elimination) rule for adding resource elements into an address space modality's resource context.
 %\Colin{So far I like how this is shaping up as a kind of ``design recipe'' for approaching this style of verification!}
 
 
