@@ -582,17 +582,17 @@ To explain our ideas in the general systems understanding, we briefly recap some
 Program logics which would like to enjoy modal propositions need to have an underlying model that allows encoding of the propositions. Since . Kripke model is the model all program logics directly or indirectly, sits on. Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function.  
 \paragraph{Encoding Hoare Triples} With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires to be given a semantics which is in terms of an underlying model.
 
-Conventionally, a Kripke model with its constituent must be picked. Gordon give a Kripke model for an actor-based hybrid modal logic ~\cite{} in which the transition relation is indexed by a particular command and a particular actor. Wagner et.al. takes the similar approach for the design of their program logic for reference counted memory.
+Conventionally, a Kripke model with its constituent must be picked. Gordon give a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal} in which the transition relation is indexed by a particular command and a particular actor. Wagner et.al. takes the similar approach for the design of their program logic for reference counted memory.
 
-The underlying model for \textsf{Iris}~\cite{jung2018iris} would be a collection of \textsc{CMRA}s ---
-an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}.
+On the other hand, program logics such as \textsf{Iris}~\cite{jung2018iris} utilizes Kripke model in ordering the separation algebras (a collection of \textsc{CMRA}s as an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}) both by heap extension and step index. 
 This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
 However in general, many modalities can be given proof-theoretic semantics directly within a logic. 
 This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} 
 logic itself) , as well as for a wide range of other modalities in the 
 literature~\cite{restall2002introduction}. These modalities are typically multi-modal, 
-with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. 
-\paragraph{Shallow Modalities in Iris Separation Logic}
+with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$.
+
+\paragraph{Shallow Modalities in Separation Logic}
 \label{sec:modal_in_iris}
 In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ 
 is typically replaced with substructural implication $\sepimp$. 
