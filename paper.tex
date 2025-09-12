@@ -319,23 +319,18 @@ for the connections to modalities to be clear (Section \ref{sec:background}).
 
 \subsection{Hybrid Logic, Dynamic Logic, and Nominals in Program Logics}
 \label{sec:modalbackground}
-
-
 \paragraph{Dynamic Logics as Program Logics}
 We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
 Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
 
 \emph{Dynamic logic}~\cite{pratt1976semantical}, a (multi)modal logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
-This same idea is used to encode Hoare triples in the Iris program logic~\cite{jung2018iris}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
-Iris is now one of the most successful foundational program logics, and its rich support for
-extending the base logic with additional modalities~\cite{krebbers2017essence} means that
-modal logics, and in particular dynamic logic, now play an outsized role in program verification ---
-many challenging proofs of program correctness use a substructural dynamic logic containing
-many additional modalities which interact with the weakest precondition modality.
-
-
+%This same idea is used to encode Hoare triples in the Iris program logic~\cite{jung2018iris}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
+%Iris is now one of the most successful foundational program logics, and its rich support for
+%extending the base logic with additional modalities~\cite{krebbers2017essence} means that
+%modal logics, and in particular dynamic logic, now play an outsized role in program verification ---
+%many challenging proofs of program correctness use a substructural dynamic logic containing
+%many additional modalities which interact with the weakest precondition modality.
 % A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
-
 \paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $\ell$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
 Newer work surveyed here adapts this idea to deal with different structures specified in
 separation logic.
@@ -343,12 +338,10 @@ separation logic.
 % In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
 %This section provides details of and models for each modal abstraction, focusing on how each data structure can act as a model for a data-structure-specific logic.
 %We continue to motivate the development with aspects of the write amplification process described in the previous section; Section \ref{sec:evaluation} provides further examples using the modal abstractions in proofs.
-
 % \paragraph{Temporal Operators}
 % The best known class of modal logics in the systems community is undoubtedly temporal logics (whether \textsc{LTL}~\cite{pnueli1977temporal}, \textsc{CTL}~\cite{emerson1982using}, \textsc{TLA}~\cite{lamport1994temporal}, or others),
 % due in part to Lamport's influence~\cite{lamport2002specifying} leading to its not-infrequent use in specifying
 % distributed algorithms \cite{ongaro2014search,ailijiang2019wpaxos}.
-
 \paragraph{Nominalization}
 Some classes of assertions benefit specifically from \emph{naming} the explicit conditions where they are true (as opposed to simply requiring them to be true \emph{somewhere} or \emph{everywhere} as in the most classic modal operators).
 % This naming generally resembles
@@ -437,7 +430,6 @@ a range of logically (virtually) contiguous memory addresses may be translated t
 in actual memory.
 The address space then acts as a kind of container for virtualized memory resources tied to that container.
 
-
 % \paragraph{Virtual Memory Managers(VMM) with Multiple Address Spaces}
 % \label{sec:backgroundonvmm}
 % \todo{change the text}
@@ -446,8 +438,6 @@ A typical OS manages multiple address spaces at once.
 Each program is associated with a unique page table tree, which is stored in a specific hardware register (\texttt{cr3} in Figure \ref{fig:pagetables}). 
 Using different mappings, which map only disjoint portions of physical memory in the map's codomain, 
 is how the OS ensures memory isolation between processes. 
-
-
 \subsubsection{Virtualized Resources in Filesystems}
 Another important computer resource computer resource that is \emph{virtualized} for access is disk blocks. 
 Filesystems are software components that abstract disk access on behalf of normal programs
@@ -510,7 +500,6 @@ Different filesystem implementations give different answers to these questions.
 %   it used in this publication, it means we'd need to completely rewrite the relevant text in that draft.}
 % Therefore, in case of a crash during the update to the \textsf{file "foo"}, we can reboot the file system from the previous persisted root, \textsf{root chunk}, via reading the $\textsf{Super}_0$. This means the whole disk consistency checks are unnecessary when recovering from a crash~\cite{bonwick2003zettabyte,hitz1994file}; recovery is immediate, as opposed to requiring hours or days~\cite{henson2006reducing,agrawal2009speedy} (or longer~\cite{henson2006chunkfs}) for recovering a large volume’s consistency from logs. 
 % An important additional subtlety with this kind of filesystem is \emph{when} blocks in the reclaimed region can actually be reused: only \emph{after} the snapshot that made those blocks ``free'' has been completely written to disk. Allowing reuse before this could result in in-place updates: part of the new snapshot could attempt to store data in space used by the prior snapshot, allowing inconsistent on-disk structures.
-
 While exceptions exist~\cite{bonwick2003zettabyte,rodeh2013btrfs,Rosenblum1992LFS,hitz1994file},
 most filesystems will continue to store a given block of a given file in the same physical disk block for as long as the file exists.
 These filesystems with in-place updates need to implement some form of \emph{journalling}~\cite{hagmann1987reimplementing,chutani1992episode} to ensure that a crash partway through an in-place update
@@ -521,7 +510,6 @@ or completed using a write-ahead journal that first writes new data in unused sp
 Because disk blocks associated with a file could now be in many states (on-disk, journaled but not updated in place, or both)
 the specification of these systems is complex. And because some states are only possible after a system failure,
 each line of filesystem code has two conceptual post-conditions: one referring to the successfully stored disk pages from a disk page container (e.g, a disk tree) , which can be uniquely identified by the last successful commit identifer (e.g., a transaction identifier or snapshot identifier), as the current view of the disk in the specification for continued execution, and one referring to the previous view of the disk in the specification for the stable state established in the event of a hardware failure immediately after that operation.
-
 \subsubsection{Reference Counting Memory Reclamation}
 In a typical configuration, allocating, deallocating and referencing memory locations for client code 
 leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive decent tree allows non-duplication on the reference counts for the identical memory objects.
@@ -550,8 +538,6 @@ decrements the count to 0, no other references to that memory exist in the progr
 
 Reasoning about the correctness of such code requires reasoning about these reachability relations and reference counts, relative to specific
 stack frames.
-
-
 % \paragraph{Buffering} Buffering is a technique used in variety of systems (filesystem page caching, write buffer in multi-processor architectures, 
 % translation-lookaside-buffers for translated addresses etc.) to delay the costly operation (committing file pages, flushing buffered writes from write-cache 
 % to memory etc.) making updates consistent.
@@ -559,7 +545,6 @@ stack frames.
 % the operation making them \emph{observable}. A typical architecture such as Intel-x86 considers the \emph{flush} of buffered writes 
 % \emph{non-deterministically} --- i.e., at any time at any number of buffered writes. On the other hand, a typical filesystem can follow a certain 
 % policy to commit the in-memory file pages to the disk.   
-
 \subsubsection{Weak Memory Models}
 % I reworked this to be less general, and more about just weak memory, as thats all the survey section discusses.
 Multi-core and multi-processor systems do not directly write every memory update back to memory (or even a coherent hardware cache)
@@ -593,25 +578,28 @@ successfully, arguing that they fit into the verification design pattern we arti
 and explaining how this approach might apply to other systems verification challenges.
 
 To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
-\paragraph{Shallow Modalities in the Iris Separation Logic}
-\label{sec:modal_in_iris}
-Classically modal operators are given direct semantics in terms of an underlying model, 
-which for \textsf{Iris}~\cite{jung2018iris} would be a collection of \textsc{CMRA}s ---
+\subsection{Encoding Modalities in Program Logics}
+
+\paragraph{Encoding Hoare Triples} With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires to be given a semantics which is in terms of an underlying model. 
+
+
+On the other hand the underlying model for \textsf{Iris}~\cite{jung2018iris} would be a collection of \textsc{CMRA}s ---
 an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}.
 This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
 However in general, many modalities can be given proof-theoretic semantics directly within a logic. 
 This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} 
-logic itself), as well as for a wide range of other modalities in the 
+logic itself) , as well as for a wide range of other modalities in the 
 literature~\cite{restall2002introduction}. These modalities are typically multi-modal, 
 with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$. 
+\paragraph{Shallow Modalities in Iris Separation Logic}
+\label{sec:modal_in_iris}
 In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ 
 is typically replaced with substructural implication $\sepimp$. 
 
 This definition also reveals a subtlety about the denotation of assertions $\phi$ --- they are effectively \emph{predicates} of some kind, functions from some possible world into some logical algebra such as a BI-algebra~\cite{ohearn1999bunched}. 
 Taking this interpretation literally gives rise to a convenient way to embed new modalities in \textsf{Iris} 
 in a way well-suited to many use cases. 
-If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the 
-\emph{pointwise lifting} of the algebra. A number of 
+If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the \emph{pointwise lifting} of the algebra. A number of 
 projects for for systems software verification now take advantage of this,
 explicitly or implicitly lifting the BI-algebra structure from \textsf{Iris} itself to \textsf{Iris} predicates 
 used as assertions within modalities. 
@@ -619,7 +607,6 @@ Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{kreb
 
 In addition, the modal definitions themselves may represent ownership of resources in a substructural setting~\cite{restall1993modalities,dovsen1992modal,kamide2002kripke}. 
 This allows modalities to simultaneously represent ownership of certain resources used for interpreting the modality itself, as well as whatever resource ownership is implied by the modal argument.
-
 \subsection{Decomposing a System into its Constituents \emph{Contingently}}
 \label{sec:definitions}
 \begin{table*}[t]\small
@@ -760,7 +747,6 @@ says that $\ell$ points to a reference count wrapping $\ell_1$, while placing th
 In general, use cases where code frequently manipulates small parts of multiple contexts together
 should prefer strong nominalization, while use cases where usually larger portions of a single context
 are at issue should prefer weak nominalization.
-
 % \section{Universal Properties over Resource Contexts with Nominals:  An Filesystem Recursive Trees Structure}
 % \label{sec:overviewnode}
 % Up until now, we discuss the concept of resource and resource context related under a certain \emph{nominalization} scheme. These definitions establishes the foundation for local properties of modal patterns. In this section, we discuss how we would be discussing the universal properties over the modal context themselves through an filesystem tree example. By doing so, we are able to show how the local properties defined over a resource and its context can be interfaced and exposed universally through reasoning over resource contexts. 
@@ -788,6 +774,7 @@ are at issue should prefer weak nominalization.
 %\item Horizontally, amplifcation path splits the bottom part of the tree into three different contexts: untouched tree nodes, nodes on the amplification path, and the ones generated as part of node splitting. 
 %\end{itemize}
 %Based on these two observations, in fact, bottom-up amplification determines the choice of modal context by giving the boundries of \textit{any claimable knowledge} (e.g. $\varphi_{\textsf{amplified}}$, $\varphi_{\textsf{untouched}}$): a subtree bounded by the cursor node.
+
 %$\paragraph{Strong Nominalization} Some resource elements require strong \emph{association} with their contexts as \emph{up-to} proper identification of resource context. That means, not only does the resource context have to be identified with a nominal, but also resource elements need to be associated with some nominals that are related to the context nominal, because certain actions in operational semantics require \emph{identification} of the resource context and elements together. For a stack with $m$ regions, returning from a i$^{th}$ index roughly (ignoring the evaluation context issues related to the underlying logic):
 %\[
 %\infer{\textsf{wp} \; return \; cont^{i}(K') \{Q\}_n}{%
