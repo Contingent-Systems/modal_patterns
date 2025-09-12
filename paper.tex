@@ -574,12 +574,8 @@ Most of this coordination comes through reasoning about what \emph{will be true 
 or what \emph{will be true after remote operations become visible locally}~\cite{sieczkowski2015separation,dang2022compass,fsl}. Each of these flavors of contingent reasoning
 depend on use of certain \emph{fence} or \emph{memory barrier} operations, which block execution of a CPU until either all incoming or outgoing
 memory transactions are complete.
-
 %\section{Resources in Systems Software}
 %\label{sec:systemsoft}
-
-
-
 %\subsection{Speculation in Consistency} \todo{speak about the weak-mem modalities in here.}
 %\subsection{Sharing} Sharing is one of the fundamental reasons for kernels to {virtualize} resources,
 %for creating the illusion of exclusive access to virtualized versions of shared resources, including CPU time (via preemption).
@@ -587,8 +583,6 @@ memory transactions are complete.
 %%\paragraph{Isolation Hand-in-Hand with Sharing}
 %%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
 %%\Colin{Not sure what you want here?}
-
-
 \section{Contingency Decomposition of a System}
 In this section, we argue the position that \emph{modalities}  
 should be a go-to approach when specifying and verifying low-level systems code.
@@ -599,7 +593,6 @@ successfully, arguing that they fit into the verification design pattern we arti
 and explaining how this approach might apply to other systems verification challenges.
 
 To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
-  
 \paragraph{Shallow Modalities in the Iris Separation Logic}
 \label{sec:modal_in_iris}
 Classically modal operators are given direct semantics in terms of an underlying model, 
