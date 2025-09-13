@@ -568,8 +568,9 @@ memory transactions are complete.
 %%\paragraph{Isolation Hand-in-Hand with Sharing}
 %%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
 %%\Colin{Not sure what you want here?}
-\subsubsection{Actor Model} An alternative to deal with the shared mmemory concurrency complication, i.e., data races, is using actors ~\cite{actormodel} which appears as a way of sequentializing the concurrent interleaved execution with some dependency on the \emph{knowledge} about the other actors. 
+\subsubsection{Actor Model} An alternative approach to addressing the shared memory concurrency complication, i.e., data races, is to use actors ~\cite{actormodel} by eliminating shared mutable state and enforcing updates on exclusive local mutable state via exchanging immutable messages among processes. This exhibits itself as a way of sequentializing the concurrent interleaved execution with some dependency on the \emph{knowledge} about other actors. In a typical consensus algorithm, an operation is committed if nodes reach an agreement on it.
 
+Therefore, as expected, the specification of an actor in the current view would refer to the other actors' states and has to validate that the shared knowledge amongst actors is preserved ~\cite{gordon2019modal}.
 \section{Contingency Decomposition of a System}
 In this section, we argue the position that \emph{modalities}  
 should be a go-to approach when specifying and verifying low-level systems code.
@@ -582,9 +583,9 @@ and explaining how this approach might apply to other systems verification chall
 To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
 \subsection{Encoding Modalities in Program Logics}
 Program logics which would like to enjoy modal propositions need to have an underlying model that allows encoding of the propositions. Since . Kripke model is the model all program logics directly or indirectly, sits on. Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function.  
-\paragraph{Encoding Hoare Triples} With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires to be given a semantics which is in terms of an underlying model.
+\paragraph{Encoding Hoare Triples}  With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires a semantics, which is defined in terms of an underlying model.
 
-Conventionally, a Kripke model with its constituent must be picked. Gordon give a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal} in which the transition relation is indexed by a particular command and a particular actor which relates pre- and post-states of a particular actor referenced by a nominal executing the command. Gordon encodes this hybrid logic in Dafny program logic ~\cite{leino2010dafny} with the help of two state invariants and rely-guarantee assertions checking the stability of invariants. Wagner et.al. takes the similar approach for the design of their separation logic and pick up a Kripke model for reference counted memory reasoning principles.
+Conventionally, a Kripke model with its constituent must be picked. Gordon provides a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal}, in which the transition relation is indexed by a particular command and a particular actor, relating pre- and post-states of a specific actor referenced by a nominal executing the command. Gordon encodes this hybrid logic in Dafny program logic ~\cite{leino2010dafny} with the help of two state invariants and rely-guarantee assertions checking the stability of invariants. Wagner et al. take a similar approach to the design of their separation logic and utilize a Kripke model for reference-counted memory reasoning principles.
 
 On the other hand, program logics such as \textsf{Iris}~\cite{jung2018iris} utilizes Kripke model in ordering the separation algebras (a collection of \textsc{CMRA}s as an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}) both by heap extension and step index. 
 This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
