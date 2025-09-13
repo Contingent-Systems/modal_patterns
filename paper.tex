@@ -547,7 +547,7 @@ stack frames.
 % policy to commit the in-memory file pages to the disk.   
 \subsubsection{Weak Memory Models}
 % I reworked this to be less general, and more about just weak memory, as thats all the survey section discusses.
-Multi-core and multi-processor systems do not directly write every memory update back to memory (or even a coherent hardware cache)
+Multicore and multiprocessor systems do not directly write every memory update back to memory (or even a coherent hardware cache)
 individually, as this would be extremely slow. Instead, they effectively buffer reads and writes to and from memory
 locally within each CPU core~\cite{owens2009better}\footnote{This is a layer below the better-known L1 cache, which is coherent across all CPUs in the system.}
 so that operations can be partially reordered and batched to improve performance. For most code --- where the different CPUs are doing
@@ -568,7 +568,7 @@ memory transactions are complete.
 %%\paragraph{Isolation Hand-in-Hand with Sharing}
 %%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
 %%\Colin{Not sure what you want here?}
-\subsubsection{Actor Models}
+\subsubsection{Actor Model} An alternative to deal with the shared mmemory concurrency complication, i.e., data races, is using actors ~\cite{actormodel} which appears as a way of sequentializing the concurrent interleaved execution with some dependency on the \emph{knowledge} about the other actors. 
 
 \section{Contingency Decomposition of a System}
 In this section, we argue the position that \emph{modalities}  
