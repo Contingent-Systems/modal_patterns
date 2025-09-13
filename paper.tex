@@ -146,7 +146,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{On Verification Patterns for Low-Level Systems via Modal Abstractions}
+\title{Modal Verification Patterns for Systems Software}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -307,7 +307,7 @@ We discuss other examples to contextualize the existing systems surveyed.
 % piece of information related to their address space, we still have to associate them. 
 % We call this kind of unilateral nominalization -- \emph{weak nominalization}.
 % \todo[inline,color=cyan]{I left this paragraph alone, mostly, but it's too detailed for the new intro section position here}
-\item \textbf{Taxonomy of Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, reasoning about weak memory models and storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024} because we would like to justify that our \emph{definitions} are not domain dependent.
+\item \textbf{Taxonomy of Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, reasoning about weak memory models and storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024,gordon2019modal} and using different programming logics such as Iris ~\cite{jung2018iris} and Dafny ~\cite{leino2010dafny} because we would like to justify that our \emph{definitions} are neither domain nor programming logic dependent. 
 \end{itemize}
 
 \section{Background on Modal Logics for Programs, and Low-Level Systems Software}
@@ -582,7 +582,7 @@ To explain our ideas in the general systems understanding, we briefly recap some
 Program logics which would like to enjoy modal propositions need to have an underlying model that allows encoding of the propositions. Since . Kripke model is the model all program logics directly or indirectly, sits on. Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function.  
 \paragraph{Encoding Hoare Triples} With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires to be given a semantics which is in terms of an underlying model.
 
-Conventionally, a Kripke model with its constituent must be picked. Gordon give a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal} in which the transition relation is indexed by a particular command and a particular actor. Wagner et.al. takes the similar approach for the design of their program logic for reference counted memory.
+Conventionally, a Kripke model with its constituent must be picked. Gordon give a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal} in which the transition relation is indexed by a particular command and a particular actor which relates pre- and post-states of a particular actor referenced by a nominal executing the command. Gordon encodes this hybrid logic in Dafny program logic ~\cite{leino2010dafny} with the help of two state invariants and rely-guarantee assertions checking the stability of invariants. Wagner et.al. takes the similar approach for the design of their separation logic and pick up a Kripke model for reference counted memory reasoning principles.
 
 On the other hand, program logics such as \textsf{Iris}~\cite{jung2018iris} utilizes Kripke model in ordering the separation algebras (a collection of \textsc{CMRA}s as an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}) both by heap extension and step index. 
 This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
@@ -667,7 +667,7 @@ indicating that a certain offset into stack region $n$ holds value $v$.
 \paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
 
 \paragraph{Reference Counting} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j )$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
-
+\paragraph{Actors} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j )$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
 \paragraph{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
 %that can be jumped from a shared memory referenced whose reference count is at least 1 are also example resource elements from memory management task at different abstraction levels. 
