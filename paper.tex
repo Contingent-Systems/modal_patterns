@@ -626,10 +626,10 @@ This allows modalities to simultaneously represent ownership of certain resource
 %GC-Modality &      & \multicolumn{2}{c}{\multirow{2}{*}{Because why not}} & 8                                   & & ~\cite{}\\
  NextGen~\cite{larsnextgen25} &   $\overset{t}{\hookrightarrow} \; P$  &  Own (t(a))  &  Strong &  Determined Based on the Model$^{*}$   \\
  StackRegion$^{*}$  ~\cite{larsnextgen25} &  $\overset{ICut^{n}}{\hookrightarrow} \; P$      &  $\fbox{n} \; \ell \mapsto v$                                 &  Strong &  Alloc and Return to/from stack\\
+ Actor~\cite{gordon2019modal}& @$_{t}$ P    &  $(t,x,y)$ &  Strong  &  Send Message \\
  Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} &  $\triangle_{\pi}$ and $\triangledown_{\pi}$      &  $\ell \mapsto v$                                 &  Weak &  Fence Acquire and Release  \\
  Address Space~\cite{kuru2025modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address Space Switch  \\ 
- Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\
-  Actor~\cite{gordon2019modal}& @$_{t}$ P    &  $(t,x,y)$ &  Strong  &  Send Message \\\bottomrule
+ Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\ \bottomrule
 \end{tabular}
 
 {*The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
@@ -671,11 +671,9 @@ indicating that a certain offset into stack region $n$ holds value $v$.
 requires having the resource elements loaded into the memory 
 \[P \triangleq \ell_1 \mapsto v ...\]
 to be in the resource context of the address space modality with the root $r1$, and, once the new address space is loaded—i.e., cr3 is loaded with the other address space root address—the resource elements ($Q$) that were loaded in the previous view of the memory are now introduced to the resource context with the root $r2$.
-
 \paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
-
 \paragraph{Reference Counting} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j )$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
-\paragraph{Actors} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j )$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
+\paragraph{Actors} When specifying the consistency of an actor in the current view,  we need to refer to other actors' state: $@_{t}(P)$ asserts that $P$ is true in the actor reference by a token identifying the message class. To be able to validate that the knowledge shared via immutable messages (resource elements), $(t,x,y)$, are preserved, the logic has to acknowledge the message class, $t$ both when referring to the messages and when referring to the other actors' state.   
 \paragraph{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
 %that can be jumped from a shared memory referenced whose reference count is at least 1 are also example resource elements from memory management task at different abstraction levels. 
