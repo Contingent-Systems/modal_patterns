@@ -629,7 +629,7 @@ This allows modalities to simultaneously represent ownership of certain resource
  Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} &  $\triangle_{\pi}$ and $\triangledown_{\pi}$      &  $\ell \mapsto v$                                 &  Weak &  Fence Acquire and Release  \\
  Address Space~\cite{kuru2025modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address Space Switch  \\ 
  Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\
-  Actor~\cite{gordon2019modal}& [A(t)]P    &  $(t,x,y)$ &  Strong  &  Send Message \\\bottomrule
+  Actor~\cite{gordon2019modal}& @$_{t}$ P    &  $(t,x,y)$ &  Strong  &  Send Message \\\bottomrule
 \end{tabular}
 
 {*The StackRegion Modality is an instance of NextGen (called the Independence Modality in \cite{larsnextgen25})}.
@@ -661,11 +661,16 @@ We discuss a range of examples for each of these in turn.
 Table \ref{table:decomposition} gives additional examples of systems and their corresponding resource elements and contexts where these elements reside, though none of the work in that table analyzes itself according to the structure we are giving.
 
 Except for Post-Crash-Modality, one can think of the resource contexts in the first column in Table \ref{table:decomposition} as containers for the corresponding resource elements in the second column.
-
 \paragraph{Stack Regions} When reasoning about stack frame contents, the resource element would be a stack-memory points-to assertion ( $\fbox{n} \; \ell \mapsto v$)
 indicating that a certain offset into stack region $n$ holds value $v$. 
 %which is an instance of ownership assertion ($\textsf{Own(t(a))}$) for which a well-behaved transformation ($\textsf{t}$), e.g. $\textsf{ICut}^{n}$ algebra quantifying over valid stack region ids. 
-\paragraph{Virtual Memory} For virtual memory management, a \textit{virtual-points-to} ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space is natural. A process's address space with the root address \textsf{r} is an abstraction that is treated as a container for virtual address mappings, $\ell \mapsto v$;
+\paragraph{Virtual Memory} For virtual memory management, a \textit{virtual-points-to}, $\ell \mapsto v$, is an ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space, which is a resource context for virtual address mappings, $\ell \mapsto v$, and uniquely identified with a root address. Logically, specifying an address space switch ~\cite{kuru2025modalabstractionsvirtualizingmemory} from the address space with the root address $r2$ to the one with the root address $r1$
+\[
+\{[r1] P \ast Q \} cr3 := r1 \{P \ast [r2]Q\}_{\textsf{cr3}}
+\]
+requires having the resource elements loaded into the memory 
+\[P \triangleq \ell_1 \mapsto v ...\]
+to be in the resource context of the address space modality with the root $r1$, and, once the new address space is loaded—i.e., cr3 is loaded with the other address space root address—the resource elements ($Q$) that were loaded in the previous view of the memory are now introduced to the resource context with the root $r2$.
 
 \paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
 
