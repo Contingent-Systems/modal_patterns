@@ -305,7 +305,7 @@ the construction of higher layers of the stack.
 % \subsection{Conclusion \& Contributions}
 % \paragraph{Conclusion} 
 Interacting with computing resources is the essential point which shapes the design of low-level systems software. 
-Exploiting these design choices has been an important field of study.
+Exploiting similar design choices has been an important field of study.
 This survey examines these common patterns in systems software, and their relationships
 to modalities. We believe that certain properties of modalities enable us to understand and 
 address the verification challenges of these systems by tailoring specification and proof
@@ -361,7 +361,8 @@ Broadly speaking modal logics incorporate \emph{modal operators}, which take as 
 %many additional modalities which interact with the weakest precondition modality.
 % A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
 \paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $\ell$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
-Newer work surveyed here adapts this idea to deal with different structures specified in
+Newer work~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024}:w
+ surveyed here adapts this idea to deal with different structures specified in
 separation logic.
 %We adapt these ideas to assertions of the form $@[l]\varphi$ asserts that $\varphi$ is true in a data structure with \emph{logical} state $\sigma$ \emph{at location} $l$.
 % In practice we must design variants of this for each kind of structure we wish to apply this to, e.g. tree nodes, free list, or snapshots.
@@ -541,7 +542,7 @@ the specification of these systems is complex. And because some states are only 
 each line of filesystem code has two conceptual post-conditions: one referring to the successfully stored disk pages from a disk page container (e.g, a disk tree) , which can be uniquely identified by the last successful commit identifer (e.g., a transaction identifier or snapshot identifier), as the current view of the disk in the specification for continued execution, and one referring to the previous view of the disk in the specification for the stable state established in the event of a hardware failure immediately after that operation.
 \subsubsection{Reference Counting Memory Reclamation}
 In a typical configuration, allocating, deallocating and referencing memory locations for client code 
-leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive decent tree allows non-duplication on the reference counts for the identical memory objects.
+leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive descent tree allows non-duplication on the reference counts for the identical memory objects.
 % To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
 % \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, 
 % from which a path is created for a stack pointer reference to the allocated memory. 
@@ -611,7 +612,9 @@ and explaining how this approach might apply to other systems verification chall
 
 To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
 \subsection{Encoding Modalities in Program Logics}
-Program logics which would like to enjoy modal propositions need to have an underlying model that allows encoding of the propositions. Since . Kripke model is the model all program logics directly or indirectly, sits on. Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function.  
+Program logics which would like to enjoy modal propositions need to have an underlying model that allows encoding of the propositions. 
+Since . Kripke model is the model all program logics directly or indirectly, sits on. 
+Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function.  
 \paragraph{Encoding Hoare Triples}  With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires a semantics, which is defined in terms of an underlying model.
 
 Conventionally, a Kripke model with its constituent must be picked. Gordon provides a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal}, in which the transition relation is indexed by a particular command and a particular actor, relating pre- and post-states of a specific actor referenced by a nominal executing the command. Gordon encodes this hybrid logic in Dafny program logic ~\cite{leino2010dafny} with the help of two state invariants and rely-guarantee assertions checking the stability of invariants. Wagner et al. take a similar approach to the design of their separation logic and utilize a Kripke model for reference-counted memory reasoning principles.
@@ -620,7 +623,7 @@ On the other hand, program logics such as \textsf{Iris}~\cite{jung2018iris} util
 This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
 However in general, many modalities can be given proof-theoretic semantics directly within a logic. 
 This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} 
-logic itself) , as well as for a wide range of other modalities in the 
+logic itself), as well as for a wide range of other modalities in the 
 literature~\cite{restall2002introduction}. These modalities are typically multi-modal, 
 with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$.
 
@@ -633,7 +636,7 @@ This definition also reveals a subtlety about the denotation of assertions $\phi
 Taking this interpretation literally gives rise to a convenient way to embed new modalities in \textsf{Iris} 
 in a way well-suited to many use cases. 
 If $B$ is a type with a BI-algebra structure, then any space of predicate functions (e.g., $\mathsf{val}\rightarrow B$ as a simplification) also carries a BI-algebra structure, lifted from $B$, often called the \emph{pointwise lifting} of the algebra. A number of 
-projects for for systems software verification now take advantage of this,
+projects for systems software verification~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024} now take advantage of this,
 explicitly or implicitly lifting the BI-algebra structure from \textsf{Iris} itself to \textsf{Iris} predicates 
 used as assertions within modalities. 
 Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{krebbers2018mosel,krebbers-17} then permits working within the embedded logic as in \textsf{Iris}.
