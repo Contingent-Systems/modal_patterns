@@ -4,6 +4,22 @@
     author = {Lamport, Leslie},
     year = {2002},
 }
+@inproceedings{actormodel,
+author = {Hewitt, Carl and Bishop, Peter and Greif, Irene and Smith, Brian and Matson, Todd and Steiger, Richard},
+title = {Actor induction and meta-evaluation},
+year = {1973},
+isbn = {9781450373494},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/512927.512942},
+doi = {10.1145/512927.512942},
+abstract = {The PLANNER project is continuing research in natural and effective means for embedding knowledge in procedures. In the course of this work we have succeeded in unifying the formalism around one fundamental concept: the ACTOR. Intuitively, an ACTOR is an active agent which plays a role on cue according to a script. We use the ACTOR metaphor to emphasize the inseparability of control and data flow in our model. Data structures, functions, semaphores, monitors, ports, descriptions, Quillian nets, logical formulae, numbers, identifiers, demons, processes, contexts, and data bases can all be shown to be special cases of actors. All of the above are objects with certain useful modes of behavior. Our formalism shows how all of these modes of behavior can be defined in terms of one kind of behavior: sending messages to actors. An actor is always invoked uniformly in exactly the same way regardless of whether it behaves as a recursive function, data structure, or process.},
+booktitle = {Proceedings of the 1st Annual ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages},
+pages = {153–168},
+numpages = {16},
+location = {Boston, Massachusetts},
+series = {POPL '73}
+}
 @article{lmcs:8851,
     title = {Verifying an Effect-Handler-Based Define-By-Run Reverse-Mode AD
              Library},
@@ -3169,34 +3185,7 @@
     year = {2013},
 }
 
-@inproceedings{10.1007/978-3-662-54434-1_34,
-    author = "Tassarotti, Joseph and Jung, Ralf and Harper, Robert",
-    editor = "Yang, Hongseok",
-    title = "A Higher-Order Logic for Concurrent Termination-Preserving
-             Refinement",
-    booktitle = "Programming Languages and Systems",
-    year = "2017",
-    publisher = "Springer Berlin Heidelberg",
-    address = "Berlin, Heidelberg",
-    pages = "909--936",
-    abstract = "Compiler correctness proofs for higher-order concurrent
-                languages are difficult: they involve establishing a
-                termination-preserving refinement between a concurrent high-level
-                source language and an implementation that uses low-level shared
-                memory primitives. However, existing logics for proving
-                concurrent refinement either neglect properties such as
-                termination, or only handle first-order state. In this paper, we
-                address these limitations by extending Iris, a recent
-                higher-order concurrent separation logic, with support for
-                reasoning about termination-preserving refinements. To
-                demonstrate the power of these extensions, we prove the
-                correctness of an efficient implementation of a higher-order,
-                session-typed language. To our knowledge, this is the first
-                program logic capable of giving a compiler correctness proof for
-                such a language. The soundness of our extensions and our compiler
-                correctness proof have been mechanized in Coq.",
-    isbn = "978-3-662-54434-1",
-}
+
 
 @inproceedings{sergey15,
     author = {Sergey, Ilya and Nanevski, Aleksandar and Banerjee, Anindya},
@@ -7796,9 +7785,7 @@
     number = "2",
     pages = "195--244",
     year = "1996",
-    URL = "
-           http://seclab.illinois.edu/wp-content/uploads/2011/04/ChirimarGR96a.pdf
-           ",
+    URL = "http://seclab.illinois.edu/wp-content/uploads/2011/04/ChirimarGR96a.pdf",
 }
 
 @inproceedings{chitil-01,
@@ -17474,7 +17461,7 @@
              978-3-662-54433-4}, ignorepublisher = {Springer-Verlag},
              ignoreaddress = {Berlin, Heidelberg}, ignoreurl = {
              https://doi.org/10.1007/978-3-662-54434-1_17}, doi = {
-             10.1007/978-3-662-54434-1_17}, abstract = {We extend fenced
+             10.1007/978-3-662-54434-1\_17}, abstract = {We extend fenced
              separation logic (FSL), a program logic for reasoning about C11
              relaxed access and memory fences. Our extensions to FSL allow us to
              handle concurrent algorithms appearing in practice. New features
