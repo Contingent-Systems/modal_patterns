@@ -78,6 +78,8 @@
 \acmConference[PLOS '25]{13th Workshop on Programming Languages and Operating Systems}{October 13--16, 2025}{Seoul, Republic of Korea}
 \acmBooktitle{13th Workshop on Programming Languages and Operating Systems (PLOS '25), October 13--16, 2025, Seoul, Republic of Korea}
 \acmDOI{10.1145/3764860.3768337}
+\acmISBN{979-8-4007-2225-7/25/10}
+
 %%
 %% Submission ID.
 %% Use this when submitting an article to a sponsored event. You'll
@@ -202,8 +204,8 @@
   to reason about) naturally corresponds to families of modal operators indexed by
   system data, and how this naturally leads to using modal assertions to describe
   \emph{resource elements} (data in the relevant context).
-  We also describe extensions of this idea to ongoing work in formal verification
-  of filesystems code.
+  % We also describe extensions of this idea to ongoing work in formal verification
+  % of filesystems code.
   % \todo[inline,color=cyan]{Ismail, why did you comment out my suggestion and keep the original?}
   % \todo[inline,color=pink]{Sorry, I thought I did the other way}
 \end{abstract}
@@ -305,7 +307,7 @@ the construction of higher layers of the stack.
 % \subsection{Conclusion \& Contributions}
 % \paragraph{Conclusion} 
 Interacting with computing resources is the essential point which shapes the design of low-level systems software. 
-Exploiting similar design choices has been an important field of study.
+Exploiting these design choices has been an important field of study.
 This survey examines these common patterns in systems software, and their relationships
 to modalities. We believe that certain properties of modalities enable us to understand and 
 address the verification challenges of these systems by tailoring specification and proof
@@ -314,16 +316,16 @@ to the same patterns used to design the systems.
 \textit{Contributions} We argue that modal abstractions can be used to identify and abstract system verification challenges. We justify our perspective by discussing prior systems that have successfully used modalities for system verification, arguing that they fit into the verification design pattern we articulate, and explaining how this approach might apply to other systems' verification challenges.
 \begin{itemize}
 \item \textbf{Identifying System Verification Challenges}: We start with identifying common patterns in system verification: \emph{virtualization, sharing, and translation}.
-\item \textbf{Introducing Modal \emph{Resource Contexts}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in systems, we define what a resource and its context are in the modal abstractions. For example, the \emph{transaction} abstraction, which behaves like a container for in-memory dirty disk pages, can be considered as a resrouce context for any dirty in-memory disk page resource associated with it.
+\item \textbf{Introducing Modal \emph{Resource Contexts}}: Then we discuss the concept of \emph{resource} which has already been an essential concept in the design of systems. Inspired by the concept of resource in systems, we define what a resource and its context are in the modal abstractions. For example, the \emph{transaction} abstraction, which behaves like a container for in-memory dirty disk pages, can be considered a resource context for any dirty in-memory disk page resource associated with it.
 \item \textbf{Introducing \emph{Nominals for System Resources}}:
 Existing logics for systems software must frequently identify
 individual resources within a given context ---
 nominalization (in the sense of hybrid logic) enables identifying a resource in its context. 
 For example, a filesystem transaction is a context of resources for in-memory updated disk blocks
 which have not yet been saved to disk.
-The transaction identifier is used to associate a transaction with a disk-block to be persisted so that, 
+The transaction identifier is used to associate a transaction with a disk block to persist so that, 
 in case of a crash while persisting updated disk-blocks, the filesystem can rollback the 
-\emph{already persisted} disk-blocks of the transaction, and reach to the previous consistent disk state. 
+\emph{already persisted} disk-blocks of the transaction, and restore the previous consistent disk state. 
 We discuss other examples to contextualize the existing systems surveyed.
 % to be able to do so, both the updated in-memory disk blocks and the transaction must refer to the transaction 
 % identifier -- \emph{strong nominalization}. 
@@ -336,13 +338,13 @@ We discuss other examples to contextualize the existing systems surveyed.
 % piece of information related to their address space, we still have to associate them. 
 % We call this kind of unilateral nominalization -- \emph{weak nominalization}.
 % \todo[inline,color=cyan]{I left this paragraph alone, mostly, but it's too detailed for the new intro section position here}
-\item \textbf{Taxonomy of Current Modal Approaches in System Verification}: Based on these concepts defined, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, reasoning about weak memory models and storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024,gordon2019modal} and using different programming logics such as Iris ~\cite{jung2018iris} and Dafny ~\cite{leino2010dafny} because we would like to justify that our \emph{definitions} are neither domain nor programming logic dependent. 
+\item \textbf{Taxonomy of Current Modal Approaches in System Verification}: Based on these concepts, we summarize contemporary verification efforts using modal abstractions. We choose them from different domains, for example, reasoning about weak memory models and storage persistence ~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024,gordon2019modal} and using different programming logics such as Iris ~\cite{jung2018iris} and Dafny ~\cite{leino2010dafny} because we would like to justify that our \emph{definitions} are neither domain nor programming logic dependent. 
 \end{itemize}
 
 \section{Background on Modal Logics for Programs, and Low-Level Systems Software}
 
 This section briefly recalls related concepts from modal logic of particular relevance
-to our taxonomy, which should be familiar but benefit from fixing notation (Section \ref{sec:modalbackground}),
+to our taxonomy (Section \ref{sec:modalbackground}),
 and enough general background on the systems software concepts organized by our taxonomy
 for the connections to modalities to be clear (Section \ref{sec:background}).
 
@@ -350,9 +352,10 @@ for the connections to modalities to be clear (Section \ref{sec:background}).
 \label{sec:modalbackground}
 \paragraph{Dynamic Logics as Program Logics}
 We believe that for the kinds of informal reasoning and the sorts of data structures discussed in the previous section, ideas from modal logic are a promising approach to formalization and verification.
-Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the use of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}~P$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
+Broadly speaking modal logics incorporate \emph{modal operators}, which take as arguments a proposition expected to be true in another time~\cite{pnueli1977temporal}, place~\cite{gordon2019modal,goranko1996hierarchies,areces2001hybrid,gargov1993modal,murphy2004symmetric}, circumstance or point-of-view~\cite{hintikka1962knowledge,halpern1985guide}, and result in a proposition true in the \emph{current} time, place, or circumstance at which the truth of the modal operator is being evaluated. Classic examples include modal necessity $\square P$ describing that $P$ is \emph{necessarily} true, $\mathsf{G}(P)$ meaning $P$ is true \emph{globally} (i.e., forever from this time onwards in temporal logics), or $K_i(P)$ describing that a particular participant $i$ \emph{knows} that $P$ is true. The latter is an example of \emph{multimodal} logic, where there is an family of modalities (modal operators) parameterized by some dimension of interest (there, participants).
 
-\emph{Dynamic logic}~\cite{pratt1976semantical}, a (multi)modal logic of weakest preconditions~\cite{dijkstra-75} which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
+\emph{Dynamic logic}~\cite{pratt1976semantical}, a (multi)modal logic variant of weakest preconditions~\cite{dijkstra-75,hahnle2022dijkstra,ahrendt2025many} 
+which works with modalities of the form $[p](P)$, which states that \emph{in the current program state}, \emph{if} program $p$ is run then afterwards $P$ will hold (modulo non-termination).
 %This same idea is used to encode Hoare triples in the Iris program logic~\cite{jung2018iris}, using the same encoding as in Pratt's original presentation, where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$.
 %Iris is now one of the most successful foundational program logics, and its rich support for
 %extending the base logic with additional modalities~\cite{krebbers2017essence} means that
@@ -360,7 +363,7 @@ Broadly speaking modal logics incorporate \emph{modal operators}, which take as 
 %many challenging proofs of program correctness use a substructural dynamic logic containing
 %many additional modalities which interact with the weakest precondition modality.
 % A hallmark of a unary logical operator $M$ being a modality is if $M$ satisfies a property akin to $(\varphi\rightarrow\psi)\rightarrow M(\varphi)\rightarrow M(\psi)$, which roughly states that modus ponens holds under the modality.\footnote{Afficionados of modal logic will note that this property is not quite Axiom K (which requires the initial implication to also hold under $M$), but follows from K and a necessitation rule $\varphi\rightarrow M(\varphi)$. Non-necessitive modalities typically satisfy the weaker property we call out above.} This and related laws allow transporting general reasoning into the specific contexts or hypotheticals modeled by the modalities.
-\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state), so there is exactly one point in the model where a nominal $\loc$ is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at some arbitrary point in the model identified by a nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $\ell$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
+\paragraph{Hybrid Logic} Hybrid logics~\cite{blackburn1995hybrid,goranko1996hierarchies,gargov1993modal,areces2001hybrid,brauner2010hybrid} are a class of modal logics that add two primary new concepts to a logic. Nominals $\ell \in \textsf{Loc}$ uniquely identify points in a model (e.g., a particular state in the state space the logic is used to reason about), so there is exactly one point in the model where a nominal $\loc$ (as a formula) is true. Satisfaction operators are modal operators indexed by nominals, which enable claims about the truth of another proposition at the point in the model identified by a chosen nominal. Traditionally $@_{\ell}\varphi$ asserts that $\varphi$ is true in the state identified by $\ell$. Conceptually, given our context, we might like $l$ to indicate truth in a particular data structure $\ell$.  However, most prior work on hybrid logics works in classical logics rather than a substructural setting like separation logic. 
 Newer work~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024}:w
  surveyed here adapts this idea to deal with different structures specified in
 separation logic.
@@ -397,12 +400,12 @@ These permit capturing specific concepts relevant to the correctness (and reason
 involving facts about specific named entities in the system.
 \\
 
-In each of these cases, the fact that these facts are described using modalities with the core modal property that if $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$. This means, for example, that if a
+In each of these cases, the fact that these facts are described using a modality $M$ with the core modal property that if $P \Rightarrow Q$, then $M(P) \Rightarrow M(Q)$. This means, for example, that if a
 process $p$ knows that the commit index is greater than 5 (e.g., $\mathcal{K}_p(\mathsf{commitIndex} > 5)$)
 no extra work is required to conclude that the node knows it is greater than 3 (i.e., that $\mathcal{K}_p(\mathsf{commitIndex} > 3)$),
 because this follows from standard properties of modal operators as described above.
 In contrast, if verification instead used a custom assertion \[\mathsf{minCommitIndex}(5) \] to represent the former knowledge,
-one would need to separately provide custom reasoning to conclude \[\mathsf{minCommitIndex}(3)\].
+one would need to separately provide custom reasoning to conclude \[\mathsf{minCommitIndex}(3)\]
 As our survey shows, the value of the modal view (which grants both intuitive specifications and natural
 reasoning principles) is becoming apparent in systems software verification.
 
@@ -437,15 +440,14 @@ A typical general purpose computer virtualizes  memory resources in RAM.
 A program asking for a memory unit from an operating system kernel is served with a memory address that is \emph{virtualized}
 such that it may be \emph{mapped to} a physical RAM location or not. 
 As our informal definition suggests, the common technique for \emph{virtualization} of memory locations in OS 
-kernels relies \emph{translating} (\emph{mapping}) virtual addresses into physical ones. 
+kernels relies on \emph{translating} (\emph{mapping}) virtual addresses into physical ones. 
 The conceptual address translation map is implemented with processor's page table trees as shown in 
 Figure \ref{fig:pagetables}. In this Figure, we see a typical 4 levels of page tables, a virtual address on the 
 top indexing into the different levels of the page table tree (the larger rectangles along the bottom
 are blocks of memory which serve as nodes of the tree along a particular lookup path). 
 Fabrication of virtual addresses out of limited physical addresses is provided with entries 
 in the page table tree where each points to a physical address aligned to 4KB (4096 byte) boundaries. 
-An address translation requires traversal of a series of tables starting from level 4, and it is 
-conventionally referred as a \emph{page table walk}. 
+An address translation requires traversal of a series of tables starting from level 4. 
 The traversal ends in the level 1 page table with the final lookup to the actual page of physical memory holding the requested data, and the low-order 12 bits being used to index into this page.
 \begin{figure}
     \includegraphics[width=\columnwidth]{pagetables2.png}
@@ -469,11 +471,11 @@ Each program is associated with a unique page table tree, which is stored in a s
 Using different mappings, which map only disjoint portions of physical memory in the map's codomain, 
 is how the OS ensures memory isolation between processes. 
 \subsubsection{Virtualized Resources in Filesystems}
-Another important computer resource computer resource that is \emph{virtualized} for access is disk blocks. 
+Another important computer resource that is \emph{virtualized} for access is disk blocks. 
 Filesystems are software components that abstract disk access on behalf of normal programs
 Similar to how VMMs using page table trees to fabricate more memory addresses than what actually exists, 
-filesystems uses indexing maps for fabricating more \emph{virtual disk-page} addresses which are conventionally called \emph{disk-pages} 
-to be distinguished from physical \emph{disk-block} addresses.
+filesystems use indexing maps for fabricating more \emph{virtual disk page} addresses which are conventionally called \emph{disk pages},
+to be distinguished from physical \emph{disk block} addresses.
 When a regular program accesses a file, it requests a specific logical offset from the start of that file's contents.
 As with virtual memory, the filesystem may map adjacent logical blocks of a single file to physically disparate parts of the disk (or even
 to different disks), though this translation mapping is implemented entirely in software (as opposed to the hardware cooperation that exists
@@ -483,9 +485,9 @@ for memory virtualization).
 Filesystems not only handle the address translation from a disk-page to a disk-block but also need to handle different
 \emph{modes} of computing where to find disk resources: a disk block may live on a disk in stable storage,
 or the most up-to-date version of a block may live only in memory (for the filesystem to write to disk at a later time, batched for efficiency).
-To handle the consistency of the disk resources in the existence of different modes of execution, filesystems employ different policies when indexing the disk resource.
+To handle the consistency of the disk resources in different modes of execution, filesystems employ different policies when indexing the disk resource.
 Which data-structure is going to be used to implement address translation from disk-pages to disk-blocks? 
-What is going to be the \emph{update policy} to the indexing map implementing address translation which defines the \emph{consistency policy} for the disk resources? 
+What is going to be the \emph{update policy} to the indexing map implementing address translation, which defines the \emph{consistency policy} for the disk resources? 
 Different filesystem implementations give different answers to these questions. 
 
 % One example answer to updating policy is copy-on-write (\textsf{CoW}). A (\textsf{CoW}) filesystem performs updates by copying modified data to \emph{new and unused} locations on disk rather than updating \emph{in-place}, ensuring that in the absence of physical storage corruption, there is \emph{always} a fully consistent filesystem on disk, removing the need for recovery from journals in the case of a crash, which can be very expensive for large volumes.
@@ -541,14 +543,8 @@ Because disk blocks associated with a file could now be in many states (on-disk,
 the specification of these systems is complex. And because some states are only possible after a system failure,
 each line of filesystem code has two conceptual post-conditions: one referring to the successfully stored disk pages from a disk page container (e.g, a disk tree) , which can be uniquely identified by the last successful commit identifer (e.g., a transaction identifier or snapshot identifier), as the current view of the disk in the specification for continued execution, and one referring to the previous view of the disk in the specification for the stable state established in the event of a hardware failure immediately after that operation.
 \subsubsection{Reference Counting Memory Reclamation}
-In a typical configuration, allocating, deallocating and referencing memory locations for client code 
-leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, which resembles the first stack pointer referencing the allocated memory. DAG abstraction instead of recursive descent tree allows non-duplication on the reference counts for the identical memory objects.
-% To ease picturing the memory layout after a set of requests from the client code (for allocation, referencing etc.), we can think of the unique roots of DAGs as 
-% \emph{super} block addresses -- this time multiple ones, not only two -- in Figure \ref{fig:cowindex}, 
-% from which a path is created for a stack pointer reference to the allocated memory. 
-%\todo[inline,color=cyan]{
-%Why is this a DAG? Normally programs can easily create cycles, so the DAG bit requires a little more explanation.
-%Do we mean that it is ``often'' the case that it's a DAG?}
+% In a typical configuration, allocating, deallocating and referencing memory locations for client code 
+% leaves the memory layout \emph{ideally} in a form of DAG (directed acyclic graph) with a unique root, such as the first stack pointer referencing the allocated memory. The DAG allows non-duplication on the reference counts for the identical memory objects.
 
 It is safe to reclaim memory (for later reuse) when that memory allocation will no longer be used by the client program.
 Since that property itself is undecidable, sound heuristics are used instead.
@@ -598,9 +594,10 @@ memory transactions are complete.
 %%\paragraph{Isolation Hand-in-Hand with Sharing}
 %%\Ismail{put a few words on abstractions such as address space, stack region, snapshots ,etc.}
 %%\Colin{Not sure what you want here?}
-\subsubsection{Actor Model} An alternative approach to addressing the shared memory concurrency complication, i.e., data races, is to use actors ~\cite{actormodel} by eliminating shared mutable state and enforcing updates on exclusive local mutable state via exchanging immutable messages among processes. This exhibits itself as a way of sequentializing the concurrent interleaved execution with some dependency on the \emph{knowledge} about other actors. In a typical consensus algorithm, an operation is committed if nodes reach an agreement on it.
-
+\subsubsection{Actor Model} An alternative approach to addressing the shared memory concurrency complication, i.e., data races, is to use actors ~\cite{actormodel,agha1986actors} by eliminating shared mutable state and enforcing updates on exclusive local mutable state via exchanging immutable messages among processes. This is a way of sequentializing the concurrent interleaved execution. Often correctness of one actor depends on \emph{knowledge} about other actors. In a typical consensus algorithm, for example, an operation is committed if a quorum of nodes reach an agreement on it.
+ 
 Therefore, as expected, the specification of an actor in the current view would refer to the other actors' states and has to validate that the shared knowledge amongst actors is preserved ~\cite{gordon2019modal}.
+
 \section{Contingency Decomposition of a System}
 In this section, we argue the position that \emph{modalities}  
 should be a go-to approach when specifying and verifying low-level systems code.
@@ -613,25 +610,29 @@ and explaining how this approach might apply to other systems verification chall
 To explain our ideas in the general systems understanding, we briefly recap some of the background and themes our ideas build on again, casting them in a certain way to bring out the relevance of our philosophy.
 \subsection{Encoding Modalities in Program Logics}
 Program logics which would like to enjoy modal propositions need to have an underlying model that allows encoding of the propositions. 
-Since . Kripke model is the model all program logics directly or indirectly, sits on. 
-Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function.  
-\paragraph{Encoding Hoare Triples}  With Pratt's original representation, we can encode where a Hoare triple $\{P\}C\{Q\}$ is encoded as $P\rightarrow[C](Q)$. However, this modal representation requires a semantics, which is defined in terms of an underlying model.
+A Kripke model can be roughly seen as a triple of set of worlds (e.g., program states), a binary relation between worlds (e.g., transition relations between states) and a state interpretation function. For a modality $M$, $M(\phi)$ is true in one state/world $w$ if states related to $w$ by the binary relation satisfy $P$.
+Whether this is all related states, or just one, or something else varies depending on what $M$ is meant to model, but the modality is always tied
+to the relation of interest. For multimodal logics there are multiple relations.
+For example, for Dynamic Logic, there is a modality for each program, and the relation for running program ``command'' (in old program logic parlance)
+$C$ is the relationship between states before and after executing $C$.
 
-Conventionally, a Kripke model with its constituent must be picked. Gordon provides a Kripke model for an actor-based hybrid modal logic ~\cite{gordon2019modal}, in which the transition relation is indexed by a particular command and a particular actor, relating pre- and post-states of a specific actor referenced by a nominal executing the command. Gordon encodes this hybrid logic in Dafny program logic ~\cite{leino2010dafny} with the help of two state invariants and rely-guarantee assertions checking the stability of invariants. Wagner et al. take a similar approach to the design of their separation logic and utilize a Kripke model for reference-counted memory reasoning principles.
+\paragraph{Encoding Hoare Triples}  Following Pratt's original representation~\cite{pratt1976semantical}, we can encode a Hoare triple $\{P\}C\{Q\}$ (asserting that
+if $P$ holds in some state, then executing $C$ will yield a state where $Q$ holds) as $P\rightarrow[C](Q)$. However, for this to hold for a specific programming language and assertion language, the modal representation requires a semantics in terms of an underlying model.
 
-On the other hand, program logics such as \textsf{Iris}~\cite{jung2018iris} utilizes Kripke model in ordering the separation algebras (a collection of \textsc{CMRA}s as an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}) both by heap extension and step index. 
-This is the case for \textsf{Iris}'s one built-in modality for step-indexing~\cite{nakano-00}.
+Conventionally, a Kripke model with its constituent must be picked. Gordon provides a Kripke model for an actor-based hybrid modal logic~\cite{gordon2019modal}, in which the transition relation is indexed by a particular command and a particular actor, relating pre- and post-states of a specific actor referenced by a nominal executing the command. Gordon encodes this hybrid logic as a library in the Dafny program logic~\cite{leino2010dafny} with the help of two state invariants and rely-guarantee assertions checking the stability of invariants. Wagner et al. take a similar approach to the design of their separation logic and utilize a Kripke model for reference-counted memory reasoning principles~\cite{amalreal2024}.
+
+On the other hand, program logics such as \textsf{Iris}~\cite{jung2018iris} utilizes Kripke models for their separation algebras (a collection of \textsc{CMRA}s as an algebraic cousin of a BI-algebra~\cite{ohearn1999bunched}), modeling modalities for both heap extension and step indexing~\cite{nakano-00}. 
 However in general, many modalities can be given proof-theoretic semantics directly within a logic. 
 This is the case for \textsf{Iris}'s weakest precondition modality (which is defined within the \textsf{Iris} 
 logic itself), as well as for a wide range of other modalities in the 
 literature~\cite{restall2002introduction}. These modalities are typically multi-modal, 
-with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$.
+with a form of roughly $M~\overline{ctxt}~\phi\triangleq\ldots\rightarrow \phi~\overline{ctxt}$,
+such that the evaluation of the modality incorporates the $\overline{ctxt}$ arguments into the evaluation of $\phi$.
 
 \paragraph{Shallow Modalities in Separation Logic}
 \label{sec:modal_in_iris}
 In a substructural setting~\cite{restall1993modalities,krebbers2017essence} the implication $\rightarrow$ 
-is typically replaced with substructural implication $\sepimp$. 
-
+is typically replaced with substructural implication $\sepimp$.
 This definition also reveals a subtlety about the denotation of assertions $\phi$ --- they are effectively \emph{predicates} of some kind, functions from some possible world into some logical algebra such as a BI-algebra~\cite{ohearn1999bunched}. 
 Taking this interpretation literally gives rise to a convenient way to embed new modalities in \textsf{Iris} 
 in a way well-suited to many use cases. 
@@ -639,7 +640,7 @@ If $B$ is a type with a BI-algebra structure, then any space of predicate functi
 projects for systems software verification~\cite{tejthesis,perennialgit,tejperennial19,larsnextgen25,fsl,fsl++,derekrustbelt20,kuru2025modalabstractionsvirtualizingmemory,amalreal2024} now take advantage of this,
 explicitly or implicitly lifting the BI-algebra structure from \textsf{Iris} itself to \textsf{Iris} predicates 
 used as assertions within modalities. 
-Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{krebbers2018mosel,krebbers-17} then permits working within the embedded logic as in \textsf{Iris}.
+Connecting this to \textsf{Iris}'s typeclasses for interactive proofs~\cite{krebbers2018mosel,krebbers-17} then permits working within the embedded logic just as if working in \textsf{Iris}.
 
 In addition, the modal definitions themselves may represent ownership of resources in a substructural setting~\cite{restall1993modalities,dovsen1992modal,kamide2002kripke}. 
 This allows modalities to simultaneously represent ownership of certain resources used for interpreting the modality itself, as well as whatever resource ownership is implied by the modal argument.
@@ -658,7 +659,7 @@ This allows modalities to simultaneously represent ownership of certain resource
 %GC-Modality &      & \multicolumn{2}{c}{\multirow{2}{*}{Because why not}} & 8                                   & & ~\cite{}\\
  NextGen~\cite{larsnextgen25} &   $\overset{t}{\hookrightarrow} \; P$  &  Own (t(a))  &  Strong &  Determined Based on the Model$^{*}$   \\
  StackRegion$^{*}$  ~\cite{larsnextgen25} &  $\overset{ICut^{n}}{\hookrightarrow} \; P$      &  $\fbox{n} \; \ell \mapsto v$                                 &  Strong &  Alloc and Return to/from stack\\
- Actor~\cite{gordon2019modal}& @$_{t}$ P    &  $(t,x,y)$ &  Strong  &  Send Message \\
+ Actor~\cite{gordon2019modal}& @$_{\iota}$ P    &  Variable values &  Weak &  Send Message \\
  Memory-Fence~\cite{fsl,fsl++,derekrustbelt20} &  $\triangle_{\pi}$ and $\triangledown_{\pi}$      &  $\ell \mapsto v$                                 &  Weak &  Fence Acquire and Release  \\
  Address Space~\cite{kuru2025modalabstractionsvirtualizingmemory} &  [r]P     &   $\ell \mapsto v$ &  Weak                         &  Address Space Switch  \\ 
  Ref-Count~\cite{amalreal2024}& @$_{\ell}$ P    &  $\ell_1 \mapsto v$ &  Weak  &  Allocating, Dropping and Sharing a Reference \\ \bottomrule
@@ -673,7 +674,8 @@ We summarize our discussion of these logics in Table \ref{table:decomposition}.
 We discuss, based on examples, common aspects of how we intuitively think about correctness of systems code in many contexts,
 articulate those pieces, and call out the commonalities across a range of systems.
 \subsection{Resource}
-Consider first the address space abstraction in an OS kernel. An address space of a process is a \textsf{container} of \textsf{virtual} addresses referencing data in memory. One would expect to have \textit{points-to} assertion from separation logic to specify \textit{ownership} of a memory reference pointing to some data. But that ownership is relative to a specific
+Consider first the address space abstraction in an OS kernel. An address space of a process is a \textsf{container} of \textsf{virtual} addresses referencing data in memory. One would expect to have \textit{points-to} assertions from separation logic to specify \textit{ownership} of a memory reference pointing to some data. In the classic setting~\cite{Reynolds:2002:SLL:645683.664578}, such a points-to assertion $x\mapsto v$ asserts ownership of memory location $x$, and that the contents of that memory location are $v$.
+But that ownership is relative to a specific
 address space --- a specific container. We tend to think directly about what is true \emph{in an address space},
 with the simplest piece being an association between a virtual address and the data it points to.
 We call the simplest piece, in this and other examples, the \emph{resource element}:
@@ -692,10 +694,11 @@ We discuss a range of examples for each of these in turn.
 
 Table \ref{table:decomposition} gives additional examples of systems and their corresponding resource elements and contexts where these elements reside, though none of the work in that table analyzes itself according to the structure we are giving.
 
-Except for Post-Crash-Modality, one can think of the resource contexts in the first column in Table \ref{table:decomposition} as containers for the corresponding resource elements in the second column.
+Except for the Post-Crash-Modality, one can think of the resource contexts in the first column in Table \ref{table:decomposition} as containers for the corresponding resource elements in the second column.
 \paragraph{Stack Regions} When reasoning about stack frame contents, the resource element would be a stack-memory points-to assertion ( $\fbox{n} \; \ell \mapsto v$)
 indicating that a certain offset into stack region $n$ holds value $v$. 
-%which is an instance of ownership assertion ($\textsf{Own(t(a))}$) for which a well-behaved transformation ($\textsf{t}$), e.g. $\textsf{ICut}^{n}$ algebra quantifying over valid stack region ids. 
+The regions (frames) themselves are the contexts.
+
 \paragraph{Virtual Memory} For virtual memory management, a \textit{virtual-points-to}, $\ell \mapsto v$, is an ownership assertion pairing a virtual address ($\ell$) with data ($v$) in an address space, which is a resource context for virtual address mappings, $\ell \mapsto v$, and uniquely identified with a root address. Logically, specifying an address space switch ~\cite{kuru2025modalabstractionsvirtualizingmemory} from the address space with the root address $r2$ to the one with the root address $r1$
 \[
 \{[r1] P \ast Q \} cr3 := r1 \{P \ast [r2]Q\}_{\textsf{cr3}}
@@ -704,8 +707,13 @@ requires having the resource elements loaded into the memory
 \[P \triangleq \ell_1 \mapsto v ...\]
 to be in the resource context of the address space modality with the root $r1$, and, once the new address space is loaded—i.e., cr3 is loaded with the other address space root address—the resource elements ($Q$) that were loaded in the previous view of the memory are now introduced to the resource context with the root $r2$.
 \paragraph{Weak-Memory} When considering weak memory models, we consider address-value mappings of thread-local views in C11 memory model~\cite{lahav2017repairing}). Modalities $\Delta_\pi(P)$ and $\nabla_\pi(P)$ with $P$ represent the memory address-value mappings that held before or will hold after certain memory fence operations by thread $\pi$.
+The elements are points-to assertions, each specific to views of memory after those fence operations.
+
 \paragraph{Reference Counting} When dealing with reference counting APIs, we may care to specify reachability of memory nodes ($\ell \mapsto v$) in a certain context defined by a shared root address. A shared memory address $\ell$ can be the root of the graph ($@_{\ell}\; ( \ell_1 \mapsto v_1 \;\ast\; ... \; \ast \; \ell_j \mapsto v_j )$) that can be a container of memory nodes ($\ell_1 \mapsto v$) that are reachable from the root $\ell$. 
-\paragraph{Actors} When specifying the consistency of an actor in the current view,  we need to refer to other actors' state: $@_{t}(P)$ asserts that $P$ is true in the actor reference by a token identifying the message class. To be able to validate that the knowledge shared via immutable messages (resource elements), $(t,x,y)$, are preserved, the logic has to acknowledge the message class, $t$ both when referring to the messages and when referring to the other actors' state.   
+\paragraph{Actors} When specifying the consistency of an actor in the current view,  we need to refer to other actors' state: $@_{\iota}(P)$ asserts that $P$ is true in the actor referenced actor ID $\iota$. 
+Assertions may mention local variables and state at the designated actor by name, so the interpretation of variables in assertions depends on which actor
+the assertion applies to.
+% To be able to validate that the knowledge shared via immutable messages (resource elements), $(t,x,y)$, are preserved, the logic has to acknowledge the message class, $t$ both when referring to the messages and when referring to the other actors' state.   
 \paragraph{Post-Crash}
 %\Colin{Ismail, not sure how to describe this. We don't want to go into the weeds on the NextGen}
 %that can be jumped from a shared memory referenced whose reference count is at least 1 are also example resource elements from memory management task at different abstraction levels. 
@@ -768,7 +776,7 @@ the identity of their intended context, while \emph{weak nominalization} occurs 
 elements implicitly pick up the relevant context from how they are used.
 The first three modalities in Table \ref{table:decomposition} are strongly nominalized,
 with the resource elements generally carrying identifiers of a specific modality usage.\footnote{The Post-Crash modality does not look like this in the presentation here; technically the definition of $\diamond$ quantifies over names $\overline{\gamma}$ internally, dealing with sets of possible contexts.}
-The last three are weakly nominalized.
+The rest are weakly nominalized.
 
 This choice trades off complexity against flexibility and scoping constraints.
 Strongly nominalized elements track additional specifier/prover-visible book-keeping data.
@@ -857,10 +865,11 @@ are at issue should prefer weak nominalization.
 We have argued that there is a systematic pattern emerging in the use of modalities in the verification of low-level systems software,
 and explained how a range of modern work fits into this pattern.
 % We have argued the essential patterns that help to choose the modalities when working out how to specify different kinds of systems code based on recent successes.
-While we have focused our attention on public verification work carried out in Iris,
-it also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, 
+While most of our examples come from public verification work carried out in Iris,
+we have one example of these ideas applying in Dafny.
+% it also captures (a slightly more organized version of) our own thinking in coming up with designs for specifying distributed systems~\cite{gordon2019modal}, 
 % virtual memory managers~\cite{kuru2024modalabstractionsvirtualizingmemory}, 
-and in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots). 
+We are applying these ideas in ongoing work using different modalities for different parts of a copy-on-write filesystem (e.g., for assertions true in different snapshots), and are observing more structured specifications as a result. 
 So not only are the modalities observably present, but they are demonstrably useful
 for conducting proofs of systems software.
 %  the pieces we have identified seem to be an effective way of working out
